@@ -1,14 +1,14 @@
-import '../landing/landing.css'
-export default function Landing() {
+import React from 'react';
+import Header from './components/Header/Header';
+import Hero from './components/Hero/Hero';
+
+const Landing = () => {
   return (
-    <>
-      <div className="container">
-        <div className="logoContainer">
-          <img className="logo" src="./assets/images/logo.png" alt="logo" />
-          <span className="logoName">ISEKAI</span>
-          <span className="logoName2">Minh Nguyên đẹp trai</span>
-        </div>
-      </div>
-    </>
+    <div>
+      <Header />
+      <Hero />
+    </div>
   );
-}
+};
+
+export default Landing;
