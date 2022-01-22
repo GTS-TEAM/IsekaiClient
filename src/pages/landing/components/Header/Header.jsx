@@ -3,20 +3,22 @@ import { Link } from 'react-router-dom';
 import { IoIosClose, IoIosMenu } from 'react-icons/io';
 import './Header.scss';
 import { useOverFlowHidden } from '../../../../hooks/useOverFlowHidden';
+import Overlay from '../../../../components/Overlay/Overlay';
+import Sidebar from '../../../../components/Sidebar/Sidebar';
 
 const Header = () => {
-  const [activeNav, setActiveNav] = useState(false);
+  const [activeSidebar, setActiveSidebar] = useState(false);
   const [activeBgHeader, setActiveBgHeader] = useState(false);
 
-  const clickOpenNavHandler = () => {
-    setActiveNav(true);
+  const clickOpenSidebarHandler = () => {
+    setActiveSidebar(true);
   };
 
-  const clickCloseNavHandler = () => {
-    setActiveNav(false);
+  const clickCloseSidebarHandler = () => {
+    setActiveSidebar(false);
   };
 
-  useOverFlowHidden(activeNav);
+  useOverFlowHidden(activeSidebar);
 
   useEffect(() => {
     const scrollHandler = (e) => {
@@ -39,7 +41,7 @@ const Header = () => {
         <Link to="/" className="header__logo header__link">
           isekai
         </Link>
-        <nav className={`header__nav ${activeNav ? 'active' : ''}`}>
+        <nav className="header__nav">
           <div className="nav__col">
             <Link to="about" className="header__link">
               About us
@@ -56,14 +58,13 @@ const Header = () => {
               Register
             </Link>
           </div>
-          <div className="nav__close" onClick={clickCloseNavHandler}>
-            <IoIosClose />
-          </div>
         </nav>
-        <div className="header__toggle" onClick={clickOpenNavHandler}>
+        <div className="header__toggle" onClick={clickOpenSidebarHandler}>
           <IoIosMenu />
         </div>
       </div>
+      {activeSidebar && <Overlay onClose={clickCloseSidebarHandler} />}
+      <Sidebar onClose={clickCloseSidebarHandler} active={activeSidebar} />
     </header>
   );
 };
