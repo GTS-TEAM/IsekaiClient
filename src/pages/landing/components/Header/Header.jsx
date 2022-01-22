@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { IoIosClose, IoIosMenu } from 'react-icons/io';
+import { IoIosMenu } from 'react-icons/io';
 import './Header.scss';
 import { useOverFlowHidden } from '../../../../hooks/useOverFlowHidden';
 import Overlay from '../../../../components/Overlay/Overlay';
