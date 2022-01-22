@@ -8,7 +8,7 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 101;
 
   &.active {
     background-color: #280069;
@@ -37,59 +37,15 @@
     justify-content: space-between;
     flex: 1;
     column-gap: 3rem;
-    position: relative;
 
     @media screen and (max-width: 767px) {
-      position: fixed;
-      width: 30rem;
-      background-color: #fff;
-      right: 0;
-      top: 0;
-      height: 100vh;
-      flex-direction: column;
-      justify-content: unset;
-      padding: 6rem 2rem;
-      gap: 3rem;
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
-        0 2px 4px -2px rgb(0 0 0 / 0.1);
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-
-      &.active {
-        transform: translateX(0);
-      }
+      display: none;
     }
 
     .nav__col {
       display: flex;
       align-items: center;
       column-gap: 3rem;
-
-      @media screen and (max-width: 767px) {
-        flex-direction: column;
-        gap: 3rem;
-
-        a {
-          color: #000;
-        }
-      }
-    }
-
-    .nav__close {
-      display: none;
-      cursor: pointer;
-
-      svg {
-        width: 3rem;
-        height: 3rem;
-      }
-
-      @media screen and (max-width: 767px) {
-        display: block;
-        position: absolute;
-        top: 1.5rem;
-        right: 1.5rem;
-      }
     }
   }
 
