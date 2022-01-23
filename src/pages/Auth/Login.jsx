@@ -1,22 +1,35 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { AiFillFacebook } from 'react-icons/ai';
 import './Auth.scss';
 import { useDispatch } from 'react-redux';
-import { login } from '../../features/authSlice';
+import { authSelector, login } from '../../features/authSlice';
+import { useSelector } from 'react-redux';
 
 const Login = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const { user } = useSelector(authSelector);
 
   const submitHandler = (e) => {
     e.preventDefault();
     if (email.trim().length === 0 || password.trim().length === 0) {
       return;
     }
-    dispatch(login({ email, password }));
+    dispatch(
+      login({
+        email,
+        password,
+        callback: () => {
+          navigate('/', {
+            replace: true,
+          });
+        },
+      }),
+    );
   };
 
   const changeEmailHandler = (e) => {
@@ -27,10 +40,19 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
+
   return (
-    <div className="login">
+    <div className="auth">
       <div className="container">
-        <div className="login__container">
+        <div className="auth__container">
           <h1>Login</h1>
           <div className="btns__provider">
             <button>
@@ -48,21 +70,11 @@ const Login = () => {
           <form action="#" className="auth__form" onSubmit={submitHandler}>
             <div className="input__group">
               <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                onChange={changeEmailHandler}
-              />
+              <input type="email" name="email" id="email" onChange={changeEmailHandler} />
             </div>
             <div className="input__group">
               <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                onChange={changePasswordHandler}
-              />
+              <input type="password" name="password" id="password" onChange={changePasswordHandler} />
             </div>
             <button>Login</button>
           </form>
