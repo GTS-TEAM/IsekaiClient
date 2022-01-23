@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Landing from './pages/landing/Landing';
 import Login from './pages/Auth/Login';
+import Register from './pages/Auth/Register';
 function App() {
   // const { token, dispatch, error } = useContext(AuthContext);
   // axios.interceptors.request.use(function (config) {
@@ -52,7 +53,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route exact path="/login" element={<Login />} />
-
+        <Route path="/register" element={<Register />} />
         {/* 
         <Route path="/login/identify">
           {token.access_token ? <Redirect to="/" /> : <BasicCard />}

@@ -8,8 +8,9 @@ export const authApi = {
     });
   },
   register: (email, password, userName) => {
+    console.log(userName, email);
     return request.post('/auth/register', {
-      userName,
+      username: userName,
       email,
       password,
       roles: 'user',

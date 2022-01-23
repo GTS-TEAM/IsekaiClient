@@ -13,7 +13,7 @@ const authPersistConfig = {
   key: 'auth',
   storage: storage,
   wishlist: ['token', 'user'],
-  blacklist: ['error', 'isFetching'],
+  blacklist: ['errorLogin', 'isFetching', 'errorRegister', 'messageRegister'],
 };
 
 const rootReducer = combineReducers({
@@ -28,6 +28,7 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        ignoredPaths: ['payload'],
       },
     }),
 });

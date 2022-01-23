@@ -1,10 +1,26 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { authApi } from '../api/authApi';
 
-export const login = createAsyncThunk('auth/login', async ({ email, password, callback }) => {
-  const data = await authApi.login(email, password);
-  callback(); // navigate to homepage
-  return data;
+export const login = createAsyncThunk('auth/login', async ({ email, password, callback }, thunkApi) => {
+  try {
+    const data = await authApi.login(email, password);
+    callback(); // navigate to homepage
+    console.log(data);
+    return data;
+  } catch (err) {
+    return thunkApi.rejectWithValue(err.response.data);
+  }
+});
+
+export const register = createAsyncThunk('auth/register', async ({ userName, email, password, callback }, thunkApi) => {
+  try {
+    const data = await authApi.register(email, password, userName);
+    callback(); // navigate to homepage
+    console.log(data);
+    return data;
+  } catch (err) {
+    return thunkApi.rejectWithValue(err.response.data);
+  }
 });
 
 export const refreshToken = createAsyncThunk('auth/refreshToken', async (_, thunkApi) => {
@@ -20,7 +36,9 @@ const initialState = {
     refreshToken: null,
   },
   isFetching: false,
-  error: null,
+  errorLogin: null,
+  errorRegister: null,
+  messageRegister: null,
 };
 
 const authSlice = createSlice({
@@ -32,7 +50,8 @@ const authSlice = createSlice({
       state.token.accessToken = null;
       state.token.refreshToken = null;
       state.isFetching = false;
-      state.error = null;
+      state.errorLogin = null;
+      state.errorRegister = null;
     },
   },
   extraReducers: (builder) => {
@@ -48,7 +67,7 @@ const authSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error;
+        state.errorLogin = action.payload.message;
       })
       .addCase(refreshToken.fulfilled, (state, action) => {
         state.token.accessToken = action.payload.access_token;
@@ -58,6 +77,17 @@ const authSlice = createSlice({
         state.user = null;
         state.token.accessToken = null;
         state.token.refreshToken = null;
+      })
+      .addCase(register.pending, (state) => {
+        state.isFetching = true;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.messageRegister = action.payload.message;
+        state.isFetching = false;
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.errorRegister = action.payload.message;
+        state.isFetching = false;
       });
   },
 });

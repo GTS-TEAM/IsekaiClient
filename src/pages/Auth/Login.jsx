@@ -1,59 +1,58 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { AiFillFacebook } from 'react-icons/ai';
-import './Auth.scss';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { authSelector, login } from '../../features/authSlice';
-import { useSelector } from 'react-redux';
+
+import './Auth.scss';
 
 const Login = () => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { user } = useSelector(authSelector);
+  const { token, isFetching, errorLogin } = useSelector(authSelector);
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-    if (email.trim().length === 0 || password.trim().length === 0) {
-      return;
-    }
-    dispatch(
-      login({
-        email,
-        password,
-        callback: () => {
-          navigate('/', {
-            replace: true,
-          });
-        },
-      }),
-    );
-  };
-
-  const changeEmailHandler = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const changePasswordHandler = (e) => {
-    setPassword(e.target.value);
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    onSubmit: (values) => {
+      dispatch(
+        login({
+          email: values.email,
+          password: values.password,
+          callback: () => {
+            navigate('/', {
+              replace: true,
+            });
+          },
+        }),
+      );
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().email('Invalid email address.').required('You must enter your email.'),
+      password: Yup.string().required('You must enter your password'),
+    }),
+  });
 
   useEffect(() => {
-    if (user) {
+    if (token.accessToken) {
       navigate('/');
     }
-    if (!user) {
+    if (!token.accessToken) {
       navigate('/login');
     }
-  }, [user, navigate]);
+  }, [token.accessToken, navigate]);
 
   return (
     <div className="auth">
       <div className="container">
         <div className="auth__container">
           <h1>Login</h1>
+          {errorLogin && <div className="error-login">{errorLogin}</div>}
           <div className="btns__provider">
             <button>
               <FcGoogle />
@@ -67,16 +66,38 @@ const Login = () => {
           <div className="line">
             <span>Or</span>
           </div>
-          <form action="#" className="auth__form" onSubmit={submitHandler}>
+          <form className="auth__form" onSubmit={formik.handleSubmit}>
             <div className="input__group">
               <label htmlFor="email">Email</label>
-              <input type="email" name="email" id="email" onChange={changeEmailHandler} />
+              <input
+                type="email"
+                name="email"
+                id="email"
+                onChange={formik.handleChange}
+                value={formik.values.email}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.email && formik.errors.email ? (
+                <div className="error-message">{formik.errors.email}</div>
+              ) : null}
             </div>
             <div className="input__group">
               <label htmlFor="password">Password</label>
-              <input type="password" name="password" id="password" onChange={changePasswordHandler} />
+              <input
+                type="password"
+                name="password"
+                id="password"
+                onChange={formik.handleChange}
+                value={formik.values.password}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.password && formik.errors.password ? (
+                <div className="error-message">{formik.errors.password}</div>
+              ) : null}
             </div>
-            <button>Login</button>
+            <button type="submit" disabled={!(formik.dirty && formik.isValid)}>
+              {isFetching ? 'Loading...' : 'Login'}
+            </button>
           </form>
           <Link to="/forgot-password" className="forgot-password ">
             Forgot your password
