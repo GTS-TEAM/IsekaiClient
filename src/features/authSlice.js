@@ -1,13 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { authApi } from '../api/authApi';
 
-export const login = createAsyncThunk(
-  'auth/login',
-  async ({ email, password }) => {
-    const data = await authApi.login(email, password);
-    return data;
-  }
-);
+export const login = createAsyncThunk('auth/login', async ({ email, password }) => {
+  const data = await authApi.login(email, password);
+  return data;
+});
 
 const initialState = {
   user: null,
