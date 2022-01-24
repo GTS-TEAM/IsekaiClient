@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Landing from './pages/landing/Landing';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
-import { RequireAuth } from './components';
+import { Layout, RequireAuth } from './components';
 import Homepage from './pages/Homepage/Homepage';
 function App() {
   // const { token, dispatch, error } = useContext(AuthContext);
@@ -60,7 +60,9 @@ function App() {
           path="/home"
           element={
             <RequireAuth>
-              <Homepage />
+              <Layout>
+                <Homepage />
+              </Layout>
             </RequireAuth>
           }
         />

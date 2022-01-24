@@ -1,12 +1,14 @@
 import React from 'react';
 import { Header, Sidebar } from '../../components';
-import './Homepage.scss';
+import { CreatePost } from './components';
+import styled from './Homepage.module.scss';
 
 const Homepage = () => {
   return (
-    <div className="homepage">
-      <Header />
-      <Sidebar />
+    <div className={styled.homepage}>
+      <div className={styled.feed}>
+        <CreatePost />
+      </div>
     </div>
   );
 };

@@ -1,8 +1,15 @@
 .header {
   height: var(--headerHeight);
+  background-color: var(--textColorWhite);
   display: flex;
   align-items: center;
   font-size: 1.6rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 101;
 }
 
 .container {

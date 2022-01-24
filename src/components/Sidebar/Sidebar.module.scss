@@ -1,8 +1,12 @@
 .sidebar {
   position: fixed;
+  left: 0;
+  top: var(--headerHeight);
   width: var(--sidebarWidth);
   height: 100%;
   padding: 1rem 2rem;
+  background-color: var(--textColorWhite);
+  z-index: 100;
 
   &__list {
     display: flex;

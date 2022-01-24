@@ -1,0 +1,8 @@
+.main {
+  margin-top: var(--headerHeight);
+  margin-left: var(--sidebarWidth);
+
+  @media screen and (max-width: 767px) {
+    margin-left: 9.2rem;
+  }
+}
