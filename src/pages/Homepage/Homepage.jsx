@@ -1,5 +1,4 @@
 import React from 'react';
-import { Header, Sidebar } from '../../components';
 import { CreatePost } from './components';
 import styled from './Homepage.module.scss';
 
