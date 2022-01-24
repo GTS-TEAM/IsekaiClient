@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { IoIosMenu } from 'react-icons/io';
 import './Header.scss';
 import { useOverFlowHidden } from '../../../../hooks/useOverFlowHidden';
-import Overlay from '../../../../components/Overlay/Overlay';
-import Sidebar from '../../../../components/Sidebar/Sidebar';
+import { Overlay } from '../../../../components';
+import { Sidebar } from '..';
 
 const Header = () => {
   const [activeSidebar, setActiveSidebar] = useState(false);
@@ -36,30 +36,30 @@ const Header = () => {
   }, []);
 
   return (
-    <header className={`header ${activeBgHeader ? 'active' : ''}`}>
-      <div className="header__container">
-        <Link to="/" className="header__logo header__link">
+    <header className={`header-landing ${activeBgHeader ? 'active' : ''}`}>
+      <div className="header-landing__container">
+        <Link to="/" className="header-landing__logo header-landing__link">
           isekai
         </Link>
-        <nav className="header__nav">
+        <nav className="header-landing__nav">
           <div className="nav__col">
-            <Link to="about" className="header__link">
+            <Link to="about" className="header-landing__link">
               About us
             </Link>
-            <Link to="about" className="header__link">
+            <Link to="contact" className="header-landing__link">
               Contact
             </Link>
           </div>
           <div className="nav__col">
-            <Link to="/login" className="header__link">
+            <Link to="/login" className="header-landing__link">
               Login
             </Link>
-            <Link to="/register" className="header__link">
+            <Link to="/register" className="header-landing__link">
               Register
             </Link>
           </div>
         </nav>
-        <div className="header__toggle" onClick={clickOpenSidebarHandler}>
+        <div className="header-landing__toggle" onClick={clickOpenSidebarHandler}>
           <IoIosMenu />
         </div>
       </div>

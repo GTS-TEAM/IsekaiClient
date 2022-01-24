@@ -5,7 +5,6 @@ export const login = createAsyncThunk('auth/login', async ({ email, password, ca
   try {
     const data = await authApi.login(email, password);
     callback(); // navigate to homepage
-    console.log(data);
     return data;
   } catch (err) {
     return thunkApi.rejectWithValue(err.response.data);
@@ -15,8 +14,7 @@ export const login = createAsyncThunk('auth/login', async ({ email, password, ca
 export const register = createAsyncThunk('auth/register', async ({ userName, email, password, callback }, thunkApi) => {
   try {
     const data = await authApi.register(email, password, userName);
-    callback(); // navigate to homepage
-    console.log(data);
+    callback(); // navigate to login page
     return data;
   } catch (err) {
     return thunkApi.rejectWithValue(err.response.data);
@@ -58,6 +56,7 @@ const authSlice = createSlice({
     builder
       .addCase(login.pending, (state, action) => {
         state.isFetching = true;
+        state.errorLogin = null;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.user = action.payload.user;
@@ -80,6 +79,7 @@ const authSlice = createSlice({
       })
       .addCase(register.pending, (state) => {
         state.isFetching = true;
+        state.errorRegister = null;
       })
       .addCase(register.fulfilled, (state, action) => {
         state.messageRegister = action.payload.message;

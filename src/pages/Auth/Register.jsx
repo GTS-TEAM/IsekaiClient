@@ -17,7 +17,7 @@ const Register = () => {
       password: '',
       confirmPassword: '',
     },
-    onSubmit: (values) => {
+    onSubmit: (values, actions) => {
       dispatch(
         register({
           userName: values.userName,
@@ -30,6 +30,12 @@ const Register = () => {
           },
         }),
       );
+      actions.resetForm({
+        userName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      });
     },
     validationSchema: Yup.object({
       userName: Yup.string().required('You must enter your name.'),
@@ -46,9 +52,6 @@ const Register = () => {
   useEffect(() => {
     if (token.accessToken) {
       navigate('/');
-    }
-    if (!token.accessToken) {
-      navigate('/register');
     }
   }, [token.accessToken, navigate]);
 
