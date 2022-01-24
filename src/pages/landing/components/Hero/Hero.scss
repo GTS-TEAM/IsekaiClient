@@ -26,6 +26,7 @@
     flex-direction: column;
     color: #fff;
     flex-shrink: 0;
+    font-family: 'Times New Roman', Times, serif;
 
     @media screen and (max-width: 767px) {
       text-align: center;
@@ -69,8 +70,7 @@
       border-radius: 50px;
       padding: 4px;
       background: linear-gradient(to left, #743ad5, #d53a9d);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
     }

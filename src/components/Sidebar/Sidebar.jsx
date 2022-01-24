@@ -1,39 +1,49 @@
 import React from 'react';
-import { createPortal } from 'react-dom';
-import { IoIosClose } from 'react-icons/io';
-import { Link } from 'react-router-dom';
-import './Sidebar.scss';
-const sidebar = document.querySelector('#sidebar');
-const Sidebar = ({ onClose, active }) => {
-  return createPortal(
-    <div className={`sidebar ${active ? 'active' : ''}`}>
-      <ul className="sidebar__list">
-        <li>
-          <Link to="/about" className="sidebar__link">
-            About us
-          </Link>
-        </li>
-        <li>
-          <Link to="/contact" className="sidebar__link">
-            Contact
-          </Link>
-        </li>
-        <li>
-          <Link to="/login" className="sidebar__link">
-            Login
-          </Link>
-        </li>
-        <li>
-          <Link to="/register" className="sidebar__link">
-            Register
-          </Link>
-        </li>
+import styled from './Sidebar.module.scss';
+import { AiFillHome, AiFillMessage } from 'react-icons/ai';
+import { TiGroup } from 'react-icons/ti';
+import { FaHeadphones } from 'react-icons/fa';
+import { NavLink } from 'react-router-dom';
+const sidebars = [
+  {
+    name: 'Home',
+    path: '/home',
+    icon: AiFillHome,
+  },
+  {
+    name: 'Friends',
+    path: '/friends',
+    icon: TiGroup,
+  },
+  {
+    name: 'Message',
+    path: '/message',
+    icon: AiFillMessage,
+  },
+  {
+    name: 'Music',
+    path: '/music',
+    icon: FaHeadphones,
+  },
+];
+
+const Sidebar = () => {
+  return (
+    <aside className={styled.sidebar}>
+      <ul className={styled.sidebar__list}>
+        {sidebars.map((item) => (
+          <li key={item.name}>
+            <NavLink
+              to={item.path}
+              className={(props) => (props.isActive ? `${styled.active} ${styled.sidebar__link}` : styled.sidebar__link)}
+            >
+              <item.icon />
+              <span>{item.name}</span>
+            </NavLink>
+          </li>
+        ))}
       </ul>
-      <div className="sidebar__close" onClick={onClose}>
-        <IoIosClose />
-      </div>
-    </div>,
-    sidebar
+    </aside>
   );
 };
 

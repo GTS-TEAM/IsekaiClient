@@ -19,7 +19,7 @@ const Login = () => {
       email: '',
       password: '',
     },
-    onSubmit: (values) => {
+    onSubmit: (values, actions) => {
       dispatch(
         login({
           email: values.email,
@@ -31,6 +31,10 @@ const Login = () => {
           },
         }),
       );
+      actions.resetForm({
+        email: '',
+        password: '',
+      });
     },
     validationSchema: Yup.object({
       email: Yup.string().email('Invalid email address.').required('You must enter your email.'),
@@ -41,9 +45,6 @@ const Login = () => {
   useEffect(() => {
     if (token.accessToken) {
       navigate('/');
-    }
-    if (!token.accessToken) {
-      navigate('/login');
     }
   }, [token.accessToken, navigate]);
 
