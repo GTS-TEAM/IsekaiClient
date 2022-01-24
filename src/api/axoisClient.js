@@ -4,7 +4,7 @@ import { refreshToken } from '../features/authSlice';
 import { store } from '../store';
 
 export const request = axios.create({
-  baseURL: 'http://159.223.67.126/api',
+  baseURL: 'http://isekai-api.me/api',
   headers: {
     'Content-Type': 'application/json',
     accept: 'application/json',
