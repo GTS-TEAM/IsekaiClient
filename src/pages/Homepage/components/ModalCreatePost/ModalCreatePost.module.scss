@@ -26,12 +26,14 @@
   padding: 2rem;
   max-height: 40rem;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  row-gap: 2rem;
 
   &__header {
     display: flex;
     align-items: center;
     column-gap: 2rem;
-    margin-bottom: 2rem;
   }
 
   .info {
@@ -58,7 +60,6 @@
     display: flex;
     align-items: flex-start;
     column-gap: 2rem;
-    margin-bottom: 2rem;
   }
 
   .user__img {
@@ -96,6 +97,7 @@
 }
 
 .input__photo {
+  flex-shrink: 0;
   height: 15rem;
   width: 100%;
   display: flex;
@@ -166,6 +168,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-top: 1px solid var(--borderColor);
 
   .text {
     font-size: 1.6rem;
@@ -204,8 +207,18 @@
   }
 }
 
+.img__list {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2rem;
+}
+
 .img__preview {
   position: relative;
+  min-height: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   .close {
     cursor: pointer;
@@ -229,5 +242,6 @@
 
   img {
     border-radius: var(--borderRadius);
+    margin: 0 auto;
   }
 }

@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { BiDotsHorizontalRounded } from 'react-icons/bi';
+// import { BiDotsHorizontalRounded } from 'react-icons/bi';
 import { AiOutlineLike, AiOutlineComment, AiOutlineShareAlt, AiFillLike } from 'react-icons/ai';
 import { Comments, UserImg } from '..';
-import styled from './Post.module.scss';
+import classes from './Post.module.scss';
 import { isekaiApi } from '../../api/isekaiApi';
 import { authSelector } from '../../features/authSlice';
+// import styled from 'styled-components';
+
 const Post = ({ post }) => {
-  const [user, setUser] = useState({});
   const [isLiked, setIsLiked] = useState(post.liked);
   const [isOpenComment, setIsOpenComment] = useState(false);
   const [totalLike, setTotalLike] = useState(post.likes);
-  const { token, user: currentUser } = useSelector(authSelector);
+  const [totalComment, setTotalComment] = useState(post.comments);
+  const { user: currentUser } = useSelector(authSelector);
 
   const likePostHandler = async () => {
     setIsLiked(!isLiked);
@@ -24,65 +26,66 @@ const Post = ({ post }) => {
         return totalLike + 1;
       }
     });
-    await isekaiApi.likePost(post.id, token.accessToken);
+    await isekaiApi.likePost(post.id);
   };
 
-  useEffect(() => {
-    const getUser = async () => {
-      const data = await isekaiApi.getUser(post.user.id, token.accessToken);
-      setUser(data);
-    };
-    getUser();
-  }, [post.user.id, token.accessToken]);
+  const increaseTotalCmtHandler = () => {
+    setTotalComment((prev) => prev + 1);
+  };
+
+  const decreaseTotalCmtHandler = () => {
+    setTotalComment((prev) => prev - 1);
+  };
 
   return (
-    <div className={styled.post}>
-      <div className={styled.post__header}>
-        <div className={styled.info}>
+    <div className={classes.post}>
+      <div className={classes.post__header}>
+        <div className={classes.info}>
           <Link to={'/user'}>
-            <UserImg userImg={user.profilePicture} />
+            <UserImg userImg={post.user.profilePicture} />
           </Link>
           <div>
-            <p className={styled.user_name}>{user.username}</p>
-            <div className={styled.created_at}>{moment(post.created_at, moment.defaultFormat).fromNow()}</div>
+            <p className={classes.user_name}>{post.user.username}</p>
+            <div className={classes.created_at}>{moment(post.created_at, moment.defaultFormat).fromNow()}</div>
           </div>
         </div>
         {post.user.id === currentUser.id && (
-          <div className={styled.actions}>
-            <div className={styled.actions_btn}>
+          <div className={classes.actions}>
+            {/* <ButtonActions onClick={handleClick}>
               <BiDotsHorizontalRounded />
-            </div>
-            <div className={styled.actions_dropdown}></div>
+            </ButtonActions> */}
+            {/* <MenuActions anchorEl={anchorEl} open={open} onClose={handleClose}>
+              <MenuItem>Chỉnh sửa</MenuItem>
+              <MenuItem>Xóa</MenuItem>
+            </MenuActions> */}
           </div>
         )}
       </div>
-      <div className={styled.content}>{post.description}</div>
-      {post.image.length === 0 ? null : (
-        <div className={styled.img}>
-          <img src={post.image} alt="" />
-        </div>
-      )}
-
-      {post.comments !== 0 ||
-        (totalLike !== 0 && (
-          <div className={styled.figures}>
-            {totalLike !== 0 && (
-              <div className={styled.total_like}>
-                <AiFillLike />
-                <span>{totalLike}</span>
+      <div className={classes.content}>{post.description}</div>
+      {post.image.length === 0
+        ? null
+        : post.image.map((item) => {
+            return (
+              <div className={classes.img} key={item}>
+                <img src={item} alt="" />
               </div>
-            )}
-            {post.comments !== 0 && <div className={styled.total_comment}>{post.comments}</div>}
-          </div>
-        ))}
-      <div className={styled.post__bottom}>
-        <div className={styled.interacts}>
-          <div className={`${styled.like} ${isLiked ? styled.liked : ''}`} onClick={likePostHandler}>
+            );
+          })}
+
+      <div className={classes.figures}>
+        <div className={classes.total_like}>
+          <span>{totalLike} luợt thích</span>
+        </div>
+        <div className={classes.total_comment}>{totalComment} bình luận</div>
+      </div>
+      <div className={classes.post__bottom}>
+        <div className={classes.interacts}>
+          <div className={`${classes.like} ${isLiked ? classes.liked : ''}`} onClick={likePostHandler}>
             {isLiked ? <AiFillLike /> : <AiOutlineLike />}
             <span>Thích</span>
           </div>
           <div
-            className={styled.comment}
+            className={classes.comment}
             onClick={() => {
               setIsOpenComment(!isOpenComment);
             }}
@@ -90,13 +93,15 @@ const Post = ({ post }) => {
             <AiOutlineComment />
             <span>Bình luận</span>
           </div>
-          <div className={styled.share}>
+          <div className={classes.share}>
             <AiOutlineShareAlt />
             <span>Chia sẻ</span>
           </div>
         </div>
       </div>
-      {isOpenComment && <Comments postId={post.id} />}
+      {isOpenComment && (
+        <Comments postId={post.id} decreaseTotalCmt={decreaseTotalCmtHandler} increaseTotalCmt={increaseTotalCmtHandler} />
+      )}
     </div>
   );
 };

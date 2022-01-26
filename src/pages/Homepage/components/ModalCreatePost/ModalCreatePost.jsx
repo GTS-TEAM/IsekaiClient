@@ -10,8 +10,9 @@ import { useSelector } from 'react-redux';
 import { authSelector } from '../../../../features/authSlice';
 import { useDispatch } from 'react-redux';
 import { createPost } from '../../../../features/postsSlice';
-import { requestPublic } from '../../../../api/axoisClient';
 import { useOverFlowHidden } from '../../../../hooks/useOverFlowHidden';
+import { v4 as uuidv4 } from 'uuid';
+import { isekaiApi } from '../../../../api/isekaiApi';
 const ModalCreatePost = ({
   className = '',
   style,
@@ -24,20 +25,34 @@ const ModalCreatePost = ({
 }) => {
   const [postText, setPostText] = useState('');
   const [disabledBtn, setDisabledBtn] = useState(true);
-  const [previewImg, setPreviewImg] = useState(null);
-  const [formDataImg, setFormDataImg] = useState([]);
+  const [previewImg, setPreviewImg] = useState([]);
   const [emotion, setEmotion] = useState(null);
-
   const { user } = useSelector(authSelector);
   const dispatch = useDispatch();
 
-  const onImageChange = async (event) => {
-    if (event.target.files && event.target.files[0]) {
-      setPreviewImg(URL.createObjectURL(event.target.files[0]));
-      const formData = new FormData();
-      formData.append('file', event.target.files[0]);
-      setFormDataImg([...formDataImg, formData]);
+  const onImageChange = async (e) => {
+    const { files } = e.target;
+    for (const file of files) {
+      const url = URL.createObjectURL(file);
+      setPreviewImg((prev) => {
+        const temp = [...prev];
+        temp.push({
+          id: uuidv4(),
+          url,
+          file: files[0],
+        });
+        return temp;
+      });
     }
+  };
+
+  const removeImgHandler = (id) => {
+    setPreviewImg((prev) => {
+      const temp = [...prev];
+      return temp.filter((item) => {
+        return item.id !== id;
+      });
+    });
   };
 
   const postTextChangeHandler = (e) => {
@@ -45,30 +60,27 @@ const ModalCreatePost = ({
   };
 
   const createPostHandler = async () => {
-    let imgUrl = null;
-
-    if (formDataImg.length !== 0) {
-      imgUrl = await requestPublic.post('/upload', formDataImg, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-    }
-
+    debugger;
     if (postText.trim().length === 0) {
       setDisabledBtn(true);
       return;
     }
-
     setDisabledBtn(false);
+
+    const formData = new FormData();
+
+    previewImg.forEach((item) => {
+      formData.append('file', item.file);
+    });
+
+    const { urls } = await isekaiApi.uploadImg(formData);
 
     dispatch(
       createPost({
         description: postText,
-        image: [imgUrl?.url || ''],
+        image: urls,
         callback: () => {
-          setPostText((prevValue) => (prevValue = ''));
-          setPreviewImg(null);
+          setPostText('');
           setHaveChoosePhoto(false);
           setHaveChooseEmotion(false);
           setEmotion(null);
@@ -113,56 +125,51 @@ const ModalCreatePost = ({
             className={styled.input__post}
             onChange={postTextChangeHandler}
             placeholder={`${user?.username} ơi, bạn đang nghĩ gì thế?`}
+            value={postText}
           ></textarea>
         </div>
-        <div className={styled.img__list}>
-          <div className={styled.img__group}>{/* <img src={photo} alt="" /> */}</div>
-        </div>
-        {haveChoosePhoto && !previewImg && (
+        {previewImg.length !== 0 && (
+          <div className={styled.img__list}>
+            {previewImg.map((img) => {
+              return (
+                <div className={styled.img__preview} key={img.id}>
+                  <img src={img.url} alt="" />
+                  <div
+                    className={styled.close}
+                    onClick={() => {
+                      removeImgHandler(img.id);
+                    }}
+                  >
+                    <IoClose />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        {haveChoosePhoto && (
           <div className={styled.input__photo}>
             <input type="file" accept="image/*" onChange={onImageChange} />
             <div
               className={styled.close}
               onClick={() => {
                 setHaveChoosePhoto(false);
-                setPreviewImg(null);
               }}
             >
               <IoClose />
             </div>
             <div className={styled.input__dummy}>
               <RiImageAddFill />
-              <span>Thêm ảnh</span>
+              <span>Thêm ảnh hoặc kéo và thả</span>
             </div>
           </div>
         )}
-        {previewImg && (
-          <div className={styled.img__preview}>
-            <img src={previewImg} alt="" />
-            <div
-              className={styled.close}
-              onClick={() => {
-                setPreviewImg(null);
-                setHaveChoosePhoto(false);
-              }}
-            >
-              <IoClose />
-            </div>
-          </div>
-        )}
+
         {haveChooseEmotion && <Emotion emotion={emotion} setEmotion={setEmotion} />}
       </div>
       <div className={styled.bottom}>
         <p className={styled.text}>Thêm vào bài viết</p>
         <div className={styled.actions}>
-          <div
-            className={styled.add__photo}
-            onClick={() => {
-              setHaveChoosePhoto(true);
-            }}
-          >
-            <IMG.AddPhoto style={{ fill: '#00a400' }} />
-          </div>
           <div
             className={styled.add__emotion}
             onClick={() => {

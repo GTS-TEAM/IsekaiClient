@@ -3,7 +3,7 @@ import { isekaiApi } from '../api/isekaiApi';
 
 export const loginHandler = createAsyncThunk('auth/login', async ({ email, password, callback }, thunkApi) => {
   try {
-    const data = await isekaiApi.login(email, password);
+    const data = await (await isekaiApi.login(email, password)).data;
     callback(); // navigate to homepage
     return data;
   } catch (err) {
@@ -15,7 +15,7 @@ export const registerHandler = createAsyncThunk(
   'auth/register',
   async ({ userName, email, password, callback }, thunkApi) => {
     try {
-      const data = await isekaiApi.register(email, password, userName);
+      const data = await (await isekaiApi.register(email, password, userName)).data;
       callback(); // navigate to login page
       return data;
     } catch (err) {
