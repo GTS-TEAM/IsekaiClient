@@ -61,11 +61,15 @@ export const isekaiApi = {
   },
 
   deleteComment: (commentId) => {
-    return requestPrivate.patch(`/posts/comments/${commentId}`, {});
+    return requestPrivate.delete(`/posts/comments/${commentId}`);
   },
 
   getTimeline: () => {
-    return requestPrivate.get('/posts/timeline');
+    return requestPrivate.get('/posts/timeline/{page}', {
+      params: {
+        page: 0,
+      },
+    });
   },
 
   getUser: (id) => {

@@ -10,7 +10,6 @@ import { useSelector } from 'react-redux';
 import { authSelector } from '../../../../features/authSlice';
 import { useDispatch } from 'react-redux';
 import { createPost } from '../../../../features/postsSlice';
-import { requestPublic } from '../../../../api/axoisClient';
 import { useOverFlowHidden } from '../../../../hooks/useOverFlowHidden';
 import { v4 as uuidv4 } from 'uuid';
 import { isekaiApi } from '../../../../api/isekaiApi';
@@ -32,9 +31,8 @@ const ModalCreatePost = ({
   const dispatch = useDispatch();
 
   const onImageChange = async (e) => {
-    const files = Array.from(e.target.files);
-    files.forEach((file) => {
-      console.log(file);
+    const { files } = e.target;
+    for (const file of files) {
       const url = URL.createObjectURL(file);
       setPreviewImg((prev) => {
         const temp = [...prev];
@@ -45,7 +43,7 @@ const ModalCreatePost = ({
         });
         return temp;
       });
-    });
+    }
   };
 
   const removeImgHandler = (id) => {
@@ -62,37 +60,34 @@ const ModalCreatePost = ({
   };
 
   const createPostHandler = async () => {
-    const formData = new FormData();
-
-    previewImg.forEach((item) => {
-      formData.append('files', item.file);
-    });
-
-    console.log(formData);
-
+    debugger;
     if (postText.trim().length === 0) {
       setDisabledBtn(true);
       return;
     }
-
     setDisabledBtn(false);
 
-    if (previewImg.length !== 0) {
-      const { urls } = await isekaiApi.uploadImg(formData);
-      dispatch(
-        createPost({
-          description: postText,
-          image: urls,
-          callback: () => {
-            setPostText('');
-            setHaveChoosePhoto(false);
-            setHaveChooseEmotion(false);
-            setEmotion(null);
-            setOpen(false);
-          },
-        }),
-      );
-    }
+    const formData = new FormData();
+
+    previewImg.forEach((item) => {
+      formData.append('file', item.file);
+    });
+
+    const { urls } = await isekaiApi.uploadImg(formData);
+
+    dispatch(
+      createPost({
+        description: postText,
+        image: urls,
+        callback: () => {
+          setPostText('');
+          setHaveChoosePhoto(false);
+          setHaveChooseEmotion(false);
+          setEmotion(null);
+          setOpen(false);
+        },
+      }),
+    );
   };
 
   useEffect(() => {
