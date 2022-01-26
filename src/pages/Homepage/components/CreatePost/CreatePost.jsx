@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { ModalCreatePost } from '..';
 import { Overlay } from '../../../../components';
+import { authSelector } from '../../../../features/authSlice';
 import { IMG } from '../../../../images';
 import styled from './CreatePost.module.scss';
 const CreatePost = () => {
+  const { user } = useSelector(authSelector);
   const [open, setOpen] = useState(false);
   const [haveChoosePhoto, setHaveChoosePhoto] = useState(false);
   const [haveChooseEmotion, setHaveChooseEmotion] = useState(false);
@@ -21,10 +24,10 @@ const CreatePost = () => {
       <div className={styled.top}>
         <div className={styled.user__img}>
           {/* TODO: replace img user here */}
-          <img src="https://st.quantrimang.com/photos/image/2021/05/21/AVT-Doi-Anime-12.jpg" alt="" />
+          <img src={user?.profilePicture} alt="" />
         </div>
         <div className={styled.input__dummy} onClick={openModalCreatePost}>
-          <p>Huy ơi, bạn đang nghĩ gì thế?</p>
+          <p>{user?.username} ơi, bạn đang nghĩ gì thế?</p>
         </div>
       </div>
       <div className={styled.bottom}>
@@ -64,6 +67,8 @@ const CreatePost = () => {
         haveChooseEmotion={haveChooseEmotion}
         setHaveChooseEmotion={setHaveChooseEmotion}
         setHaveChoosePhoto={setHaveChoosePhoto}
+        setOpen={setOpen}
+        open={open}
       />
       {open && <Overlay onClose={closeModalCreatePost} />}
     </div>

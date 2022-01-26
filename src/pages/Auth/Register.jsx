@@ -4,11 +4,11 @@ import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import './Auth.scss';
 import { useDispatch } from 'react-redux';
-import { authSelector, register } from '../../features/authSlice';
+import { authSelector, registerHandler } from '../../features/authSlice';
 import { useSelector } from 'react-redux';
 const Register = () => {
   const dispatch = useDispatch();
-  const { isFetching, token, errorRegister } = useSelector(authSelector);
+  const { token, register } = useSelector(authSelector);
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -19,7 +19,7 @@ const Register = () => {
     },
     onSubmit: (values, actions) => {
       dispatch(
-        register({
+        registerHandler({
           userName: values.userName,
           email: values.email,
           password: values.password,
@@ -60,7 +60,7 @@ const Register = () => {
       <div className="container">
         <div className="auth__container">
           <h1>Register</h1>
-          {errorRegister && <div className="error-login">{errorRegister}</div>}
+          {register.error && <div className="error-login">{register.error}</div>}
           <form className="auth__form" onSubmit={formik.handleSubmit}>
             <div className="input__group">
               <label htmlFor="userName">User Name</label>
@@ -123,7 +123,7 @@ const Register = () => {
               ) : null}
             </div>
             <button type="submit" disabled={!(formik.dirty && formik.isValid)}>
-              {isFetching ? 'Loading...' : 'Register'}
+              {register.loading ? 'Loading...' : 'Register'}
             </button>
           </form>
           <p className="register-link">

@@ -3,6 +3,7 @@
   padding: 1.8rem;
   padding-bottom: 1rem;
   border-radius: var(--borderRadius);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 .top {
@@ -30,6 +31,7 @@
     flex: 1;
     padding: 1.2rem 1.6rem;
     border-radius: var(--borderRadius);
+    border: 1px solid var(--borderColor);
     background-color: var(--grayColor1);
     font-size: 1.6rem;
     color: var(--textColorGray);

@@ -3,15 +3,23 @@ import jwtDecode from 'jwt-decode';
 import { refreshToken } from '../features/authSlice';
 import { store } from '../store';
 
-export const request = axios.create({
-  baseURL: 'http://isekai-api.me/api',
+export const requestPrivate = axios.create({
+  baseURL: 'https://isekai-api.me/api',
   headers: {
     'Content-Type': 'application/json',
     accept: 'application/json',
   },
 });
 
-request.interceptors.response.use(
+export const requestPublic = axios.create({
+  baseURL: 'https://isekai-api.me/api',
+  headers: {
+    'Content-Type': 'application/json',
+    accept: 'application/json',
+  },
+});
+
+requestPrivate.interceptors.response.use(
   function (response) {
     return response.data;
   },
@@ -20,18 +28,26 @@ request.interceptors.response.use(
   },
 );
 
-request.interceptors.request.use(
+requestPublic.interceptors.response.use(
+  function (response) {
+    return response.data;
+  },
+  function (error) {
+    return Promise.reject(error);
+  },
+);
+
+requestPrivate.interceptors.request.use(
   async (config) => {
     const { token } = store.getState().auth;
     let currentDate = new Date();
     if (token.accessToken) {
-      const decodedToken = {
-        exp: jwtDecode(token.accessToken),
-      };
-      if (decodedToken.exp.exp * 1000 < currentDate.getTime()) {
+      const decodedToken = jwtDecode(token.accessToken);
+      console.log(decodedToken.exp * 1000 < currentDate.getTime());
+      if (decodedToken.exp * 1000 < currentDate.getTime()) {
         await store.dispatch(refreshToken());
         if (config.headers) {
-          config.headers['authorization'] = `Bearer ${token.accessToken}`;
+          config.headers['authorization'] = `Bearer ${store.getState().auth.token.accessToken}`;
         }
       }
     }
