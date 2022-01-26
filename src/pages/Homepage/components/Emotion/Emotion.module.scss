@@ -3,6 +3,7 @@
   padding: 1.6rem;
   border-radius: var(--borderRadius);
   margin-top: 2rem;
+  border: 1px solid var(--borderColor);
 }
 
 .emotions {
@@ -20,7 +21,7 @@
     align-items: center;
     cursor: pointer;
     column-gap: 1rem;
-    padding: 1.5rem;
+    padding: 1rem 1.5rem;
     border-radius: var(--borderRadius);
     transition: all 0.3s;
 

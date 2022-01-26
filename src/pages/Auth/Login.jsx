@@ -5,14 +5,14 @@ import { AiFillFacebook } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { authSelector, login } from '../../features/authSlice';
+import { authSelector, loginHandler } from '../../features/authSlice';
 
 import './Auth.scss';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { token, isFetching, errorLogin } = useSelector(authSelector);
+  const { token, login } = useSelector(authSelector);
 
   const formik = useFormik({
     initialValues: {
@@ -21,11 +21,11 @@ const Login = () => {
     },
     onSubmit: (values, actions) => {
       dispatch(
-        login({
+        loginHandler({
           email: values.email,
           password: values.password,
           callback: () => {
-            navigate('/', {
+            navigate('/home', {
               replace: true,
             });
           },
@@ -44,7 +44,7 @@ const Login = () => {
 
   useEffect(() => {
     if (token.accessToken) {
-      navigate('/');
+      navigate('/home');
     }
   }, [token.accessToken, navigate]);
 
@@ -53,7 +53,7 @@ const Login = () => {
       <div className="container">
         <div className="auth__container">
           <h1>Login</h1>
-          {errorLogin && <div className="error-login">{errorLogin}</div>}
+          {login.error && <div className="error-login">{login.error}</div>}
           <div className="btns__provider">
             <button>
               <FcGoogle />
@@ -97,7 +97,7 @@ const Login = () => {
               ) : null}
             </div>
             <button type="submit" disabled={!(formik.dirty && formik.isValid)}>
-              {isFetching ? 'Loading...' : 'Login'}
+              {login.loading ? 'Loading...' : 'Login'}
             </button>
           </form>
           <Link to="/forgot-password" className="forgot-password ">
