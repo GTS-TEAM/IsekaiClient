@@ -22,100 +22,61 @@ export const isekaiApi = {
     });
   },
 
-  createPost: (image, description, accessToken) => {
-    return requestPrivate.post(
-      '/posts',
-      {
-        image,
-        description,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-  },
-
-  editPost: (image, description, postId, accessToken) => {
-    return requestPrivate.put(
-      `/posts/${postId}`,
-      {
-        image,
-        description,
-      },
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-  },
-
-  deletePost: (postId, accessToken) => {
-    return requestPrivate.delete(`/posts/${postId}`, {
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
+  createPost: (image, description) => {
+    return requestPrivate.post('/posts', {
+      image,
+      description,
     });
   },
 
-  getIsLiked: (postId, accessToken) => {
-    return requestPrivate.get(`/posts/${postId}/isLiked`, {
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
+  editPost: (image, description, postId) => {
+    return requestPrivate.put(`/posts/${postId}`, {
+      image,
+      description,
     });
   },
 
-  likePost: (postId, accessToken) => {
-    return requestPrivate.patch(
-      `/posts/${postId}/like`,
-      {},
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
+  deletePost: (postId) => {
+    return requestPrivate.delete(`/posts/${postId}`);
   },
 
-  getCommentsPost: (postId, accessToken) => {
-    return requestPrivate.get(`/posts/${postId}/comments`, {
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
-    });
+  getIsLiked: (postId) => {
+    return requestPrivate.get(`/posts/${postId}/isLiked`);
   },
 
-  commentPost: (postId, comment, accessToken) => {
-    return requestPrivate.post(
-      `/posts/${postId}/comments`,
-      { comment },
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
+  likePost: (postId) => {
+    return requestPrivate.patch(`/posts/${postId}/like`, {});
   },
 
-  getTimeline: (accessToken) => {
-    return requestPrivate.get('/posts/timeline', {
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
-    });
+  getCommentsPost: (postId) => {
+    return requestPrivate.get(`/posts/${postId}/comments`);
   },
 
-  getUser: (id, accessToken) => {
+  commentPost: (postId, comment) => {
+    return requestPrivate.post(`/posts/${postId}/comments`, { comment });
+  },
+
+  editComment: (commentId, comment) => {
+    return requestPrivate.patch(`/posts/comments/${commentId}`, { comment });
+  },
+
+  deleteComment: (commentId) => {
+    return requestPrivate.patch(`/posts/comments/${commentId}`, {});
+  },
+
+  getTimeline: () => {
+    return requestPrivate.get('/posts/timeline');
+  },
+
+  getUser: (id) => {
     return requestPrivate.get('/user', {
       params: {
         userId: id,
       },
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
     });
+  },
+
+  uploadImg: (arrFile) => {
+    return requestPublic.post('/upload', arrFile);
   },
 };

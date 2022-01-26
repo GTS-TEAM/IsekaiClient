@@ -19,6 +19,14 @@ export const requestPublic = axios.create({
   },
 });
 
+export const headerAuthorization = (accessToken) => {
+  return {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
+};
+
 requestPrivate.interceptors.response.use(
   function (response) {
     return response.data;
@@ -40,6 +48,7 @@ requestPublic.interceptors.response.use(
 requestPrivate.interceptors.request.use(
   async (config) => {
     const { token } = store.getState().auth;
+    config.headers['authorization'] = `Bearer ${token.accessToken}`;
     let currentDate = new Date();
     if (token.accessToken) {
       const decodedToken = jwtDecode(token.accessToken);

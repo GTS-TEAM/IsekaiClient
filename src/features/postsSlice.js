@@ -1,15 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { isekaiApi } from '../api/isekaiApi';
 
-export const createPost = createAsyncThunk('posts/createPost', async ({ image, description, callback }, thunkApi) => {
-  const { accessToken } = thunkApi.getState().auth.token;
-  await isekaiApi.createPost(image, description, accessToken);
+export const createPost = createAsyncThunk('posts/createPost', async ({ image, description, callback }) => {
+  await isekaiApi.createPost(image, description);
   callback(); // implement when create post complement
 });
 
-export const getTimeline = createAsyncThunk('post/getTimeline', async (_, thunkApi) => {
-  const { accessToken } = thunkApi.getState().auth.token;
-  const data = await isekaiApi.getTimeline(accessToken);
+export const getTimeline = createAsyncThunk('post/getTimeline', async () => {
+  const data = await isekaiApi.getTimeline();
   return data;
 });
 

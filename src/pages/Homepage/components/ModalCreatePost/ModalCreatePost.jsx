@@ -12,6 +12,8 @@ import { useDispatch } from 'react-redux';
 import { createPost } from '../../../../features/postsSlice';
 import { requestPublic } from '../../../../api/axoisClient';
 import { useOverFlowHidden } from '../../../../hooks/useOverFlowHidden';
+import { v4 as uuidv4 } from 'uuid';
+import { isekaiApi } from '../../../../api/isekaiApi';
 const ModalCreatePost = ({
   className = '',
   style,
@@ -24,21 +26,43 @@ const ModalCreatePost = ({
 }) => {
   const [postText, setPostText] = useState('');
   const [disabledBtn, setDisabledBtn] = useState(true);
-  const [previewImg, setPreviewImg] = useState(null);
+  const [previewImg, setPreviewImg] = useState([]);
   const [formDataImg, setFormDataImg] = useState([]);
+  const [uploadedImgs, setUploadedImgs] = useState([]);
   const [emotion, setEmotion] = useState(null);
 
   const { user } = useSelector(authSelector);
   const dispatch = useDispatch();
 
-  const onImageChange = async (event) => {
-    if (event.target.files && event.target.files[0]) {
-      setPreviewImg(URL.createObjectURL(event.target.files[0]));
-      const formData = new FormData();
-      formData.append('file', event.target.files[0]);
-      setFormDataImg([...formDataImg, formData]);
-    }
+  const onImageChange = async (e) => {
+    const files = Array.from(e.target.files);
+    const url = URL.createObjectURL(files[0]);
+    let formData = new FormData();
+
+    files.forEach((file) => {
+      formData.append('files', file);
+    });
+
+    setPreviewImg((prev) => {
+      const temp = [...prev];
+      temp.push({
+        id: uuidv4(),
+        url,
+      });
+      return temp;
+    });
   };
+
+  const removeImgHandler = (id) => {
+    setPreviewImg((prev) => {
+      const temp = [...prev];
+      return temp.filter((item) => {
+        return item.id !== id;
+      });
+    });
+  };
+
+  console.log(previewImg);
 
   const postTextChangeHandler = (e) => {
     setPostText(e.target.value);
@@ -67,7 +91,7 @@ const ModalCreatePost = ({
         description: postText,
         image: [imgUrl?.url || ''],
         callback: () => {
-          setPostText((prevValue) => (prevValue = ''));
+          setPostText('');
           setPreviewImg(null);
           setHaveChoosePhoto(false);
           setHaveChooseEmotion(false);
@@ -113,14 +137,30 @@ const ModalCreatePost = ({
             className={styled.input__post}
             onChange={postTextChangeHandler}
             placeholder={`${user?.username} ơi, bạn đang nghĩ gì thế?`}
+            value={postText}
           ></textarea>
         </div>
         <div className={styled.img__list}>
-          <div className={styled.img__group}>{/* <img src={photo} alt="" /> */}</div>
+          {previewImg.map((img) => {
+            return (
+              <div className={styled.img__preview} key={img}>
+                <img src={img.url} alt="" />
+                <div
+                  className={styled.close}
+                  onClick={() => {
+                    removeImgHandler(img.id);
+                    // setHaveChoosePhoto(false);
+                  }}
+                >
+                  <IoClose />
+                </div>
+              </div>
+            );
+          })}
         </div>
-        {haveChoosePhoto && !previewImg && (
+        {haveChoosePhoto && (
           <div className={styled.input__photo}>
-            <input type="file" accept="image/*" onChange={onImageChange} />
+            <input type="file" accept="image/*" onChange={onImageChange} multiple />
             <div
               className={styled.close}
               onClick={() => {
@@ -132,37 +172,16 @@ const ModalCreatePost = ({
             </div>
             <div className={styled.input__dummy}>
               <RiImageAddFill />
-              <span>Thêm ảnh</span>
+              <span>Thêm ảnh hoặc kéo và thả</span>
             </div>
           </div>
         )}
-        {previewImg && (
-          <div className={styled.img__preview}>
-            <img src={previewImg} alt="" />
-            <div
-              className={styled.close}
-              onClick={() => {
-                setPreviewImg(null);
-                setHaveChoosePhoto(false);
-              }}
-            >
-              <IoClose />
-            </div>
-          </div>
-        )}
+
         {haveChooseEmotion && <Emotion emotion={emotion} setEmotion={setEmotion} />}
       </div>
       <div className={styled.bottom}>
         <p className={styled.text}>Thêm vào bài viết</p>
         <div className={styled.actions}>
-          <div
-            className={styled.add__photo}
-            onClick={() => {
-              setHaveChoosePhoto(true);
-            }}
-          >
-            <IMG.AddPhoto style={{ fill: '#00a400' }} />
-          </div>
           <div
             className={styled.add__emotion}
             onClick={() => {

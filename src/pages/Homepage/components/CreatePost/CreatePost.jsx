@@ -23,7 +23,6 @@ const CreatePost = () => {
     <div className={styled['create-post']}>
       <div className={styled.top}>
         <div className={styled.user__img}>
-          {/* TODO: replace img user here */}
           <img src={user?.profilePicture} alt="" />
         </div>
         <div className={styled.input__dummy} onClick={openModalCreatePost}>
