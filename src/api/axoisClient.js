@@ -1,67 +1,60 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import { refreshToken } from '../features/authSlice';
+import { logout, refreshToken } from '../features/authSlice';
 import { store } from '../store';
 
-export const requestPrivate = axios.create({
-  baseURL: 'https://isekai-api.me/api',
-  headers: {
-    'Content-Type': 'application/json',
-    accept: 'application/json',
+axios.interceptors.response.use(
+  function (response) {
+    return response.data;
   },
-});
-
-export const requestPublic = axios.create({
-  baseURL: 'https://isekai-api.me/api',
-  headers: {
-    'Content-Type': 'application/json',
-    accept: 'application/json',
+  function (error) {
+    return Promise.reject(error);
   },
-});
+);
+export const setTokenToLocalStorage = (token) => {
+  localStorage.setItem('access_token', JSON.stringify(token.access_token));
+  localStorage.setItem('refresh_token', JSON.stringify(token.refresh_token));
+};
 
-export const headerAuthorization = (accessToken) => {
+export const getTokenFromLocalStorage = () => {
   return {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+    accessToken: JSON.parse(localStorage.getItem('access_token')),
+    refreshToken: JSON.parse(localStorage.getItem('refresh_token')),
   };
 };
 
-requestPrivate.interceptors.response.use(
-  function (response) {
-    return response.data;
-  },
-  function (error) {
-    return Promise.reject(error);
-  },
-);
+export const deleteTokenFromLocalStorage = () => {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+};
 
-requestPublic.interceptors.response.use(
-  function (response) {
-    return response.data;
-  },
-  function (error) {
-    return Promise.reject(error);
-  },
-);
-
-requestPrivate.interceptors.request.use(
+axios.interceptors.request.use(
   async (config) => {
-    const { token } = store.getState().auth;
-    config.headers['authorization'] = `Bearer ${token.accessToken}`;
+    if (config.url !== '/posts/timeline/{page}') console.log(config.url);
+    const token = getTokenFromLocalStorage();
     let currentDate = new Date();
-    if (token.accessToken) {
-      const decodedToken = jwtDecode(token.accessToken);
-      if (decodedToken.exp * 1000 < currentDate.getTime()) {
-        await store.dispatch(refreshToken());
-        if (config.headers) {
-          config.headers['authorization'] = `Bearer ${store.getState().auth.token.accessToken}`;
+    if (token) {
+      if (token.accessToken) {
+        config.headers['authorization'] = `Bearer ${token.accessToken}`;
+        const decodedToken = jwtDecode(token.accessToken);
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+          await store.dispatch(refreshToken());
+
+          if (config.headers) {
+            config.headers['authorization'] = `Bearer ${JSON.parse(localStorage.getItem('access_token'))}`;
+          }
         }
       }
     }
     return config;
   },
   (error) => {
+    const originalRequest = error.config;
+    if (originalRequest.url === '/auth/refresh-token') {
+      console.log('Refresh token is expired');
+      store.dispatch(logout());
+      localStorage.clear();
+    }
     return Promise.reject(error);
   },
 );

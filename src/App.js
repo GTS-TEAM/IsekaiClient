@@ -4,6 +4,7 @@ import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import { Layout, RequireAuth } from './components';
 import Homepage from './pages/Homepage/Homepage';
+import './api/axoisClient';
 function App() {
   // const { token, dispatch, error } = useContext(AuthContext);
   // axios.interceptors.request.use(function (config) {

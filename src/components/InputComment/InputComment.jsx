@@ -9,7 +9,7 @@ const InputComment = ({ onChange, onSendComment, disabledBtn, value, className =
   return (
     <div>
       <div className={`${styled.input_comment} ${className}`}>
-        <UserImg userImg={user.profilePicture} />
+        <UserImg userImg={user?.profilePicture} />
         <div className={styled.input_wrap}>
           <input type="text" onChange={onChange} value={value} onKeyDown={onKeyDown} />
           <button disabled={disabledBtn} onClick={onSendComment}>

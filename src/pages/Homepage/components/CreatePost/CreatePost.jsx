@@ -1,23 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { ModalCreatePost } from '..';
 import { Overlay } from '../../../../components';
+import {
+  closeCreatePostModal,
+  openCreatePostModal,
+  toggleHaveChooseEmotion,
+  toggleHaveChoosePhoto,
+  uiSelector,
+} from '../../../../features/uiSlice';
 import { authSelector } from '../../../../features/authSlice';
 import { IMG } from '../../../../images';
 import styled from './CreatePost.module.scss';
+import { changePostText, clearPostEmotion, clearPostImg } from '../../../../features/postsSlice';
+import { useOverFlowHidden } from '../../../../hooks/useOverFlowHidden';
 const CreatePost = () => {
   const { user } = useSelector(authSelector);
-  const [open, setOpen] = useState(false);
-  const [haveChoosePhoto, setHaveChoosePhoto] = useState(false);
-  const [haveChooseEmotion, setHaveChooseEmotion] = useState(false);
+  const ui = useSelector(uiSelector);
+  const dispatch = useDispatch();
 
-  const openModalCreatePost = () => {
-    setOpen(true);
+  const openModalCreatePostHandler = () => {
+    dispatch(openCreatePostModal('post'));
   };
 
-  const closeModalCreatePost = () => {
-    setOpen(false);
+  const closeModalCreatePostHandler = () => {
+    console.log('close');
+    dispatch(closeCreatePostModal('post'));
+    dispatch(clearPostEmotion());
+    dispatch(clearPostImg());
+    dispatch(changePostText(''));
   };
+
+  useOverFlowHidden(ui.createPostModal.isOpenPost);
 
   return (
     <div className={styled['create-post']}>
@@ -25,7 +40,7 @@ const CreatePost = () => {
         <div className={styled.user__img}>
           <img src={user?.profilePicture} alt="" />
         </div>
-        <div className={styled.input__dummy} onClick={openModalCreatePost}>
+        <div className={styled.input__dummy} onClick={openModalCreatePostHandler}>
           <p>{user?.username} ơi, bạn đang nghĩ gì thế?</p>
         </div>
       </div>
@@ -33,8 +48,8 @@ const CreatePost = () => {
         <div
           className={styled['add-photo']}
           onClick={() => {
-            setHaveChoosePhoto(true);
-            setOpen(true);
+            dispatch(toggleHaveChoosePhoto());
+            openModalCreatePostHandler();
           }}
         >
           <IMG.AddPhoto />
@@ -43,33 +58,32 @@ const CreatePost = () => {
         <div
           className={styled['add-emotion']}
           onClick={() => {
-            setHaveChooseEmotion(true);
-            setOpen(true);
+            dispatch(toggleHaveChooseEmotion());
+            openModalCreatePostHandler();
           }}
         >
           <IMG.Emotion />
           <span>Tâm trạng/Cảm xúc</span>
         </div>
       </div>
-      <ModalCreatePost
-        style={
-          open
-            ? {
-                top: '50%',
-                opacity: '1',
-                visibility: 'visible',
-                transform: 'translate(-50%, -50%)',
-              }
-            : null
-        }
-        haveChoosePhoto={haveChoosePhoto}
-        haveChooseEmotion={haveChooseEmotion}
-        setHaveChooseEmotion={setHaveChooseEmotion}
-        setHaveChoosePhoto={setHaveChoosePhoto}
-        setOpen={setOpen}
-        open={open}
-      />
-      {open && <Overlay onClose={closeModalCreatePost} />}
+
+      {ui.createPostModal.isOpenPost && <Overlay onClose={closeModalCreatePostHandler} />}
+      {ui.createPostModal.isOpenPost && (
+        <ModalCreatePost
+          style={
+            ui.createPostModal.isOpenPost
+              ? {
+                  top: '50%',
+                  opacity: '1',
+                  visibility: 'visible',
+                  transform: 'translate(-50%, -50%)',
+                }
+              : null
+          }
+          type="post"
+          onCloseModal={closeModalCreatePostHandler}
+        />
+      )}
     </div>
   );
 };

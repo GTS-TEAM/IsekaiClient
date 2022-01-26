@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import autosize from 'autosize';
 import { RiImageAddFill } from 'react-icons/ri';
 import { IoClose } from 'react-icons/io5';
@@ -6,120 +6,119 @@ import { Modal, UserImg } from '../../../../components';
 import { IMG } from '../../../../images';
 import styled from './ModalCreatePost.module.scss';
 import { Emotion } from '..';
-import { useSelector } from 'react-redux';
-import { authSelector } from '../../../../features/authSlice';
-import { useDispatch } from 'react-redux';
-import { createPost } from '../../../../features/postsSlice';
-import { requestPublic } from '../../../../api/axoisClient';
-import { useOverFlowHidden } from '../../../../hooks/useOverFlowHidden';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  addPostImg,
+  changePostText,
+  clearPostEmotion,
+  createPost,
+  editPost,
+  postsSelector,
+  removePostImg,
+} from '../../../../features/postsSlice';
 import { v4 as uuidv4 } from 'uuid';
-import { isekaiApi } from '../../../../api/isekaiApi';
-const ModalCreatePost = ({
-  className = '',
-  style,
-  haveChoosePhoto,
-  haveChooseEmotion,
-  setHaveChooseEmotion,
-  setHaveChoosePhoto,
-  setOpen,
-  open,
-}) => {
-  const [postText, setPostText] = useState('');
+import { toggleHaveChooseEmotion, toggleHaveChoosePhoto, uiSelector } from '../../../../features/uiSlice';
+import { authSelector } from '../../../../features/authSlice';
+const ModalCreatePost = ({ className = '', style, type, postId, onCloseModal }) => {
   const [disabledBtn, setDisabledBtn] = useState(true);
-  const [previewImg, setPreviewImg] = useState([]);
-  const [emotion, setEmotion] = useState(null);
   const { user } = useSelector(authSelector);
+  const ui = useSelector(uiSelector);
+  const posts = useSelector(postsSelector);
   const dispatch = useDispatch();
 
+  const allowBtn = useMemo(
+    () =>
+      posts.dataPosts.postText.trim().length === 0 && posts.dataPosts.image.length === 0 && posts.dataPosts.emotion === null,
+    [posts.dataPosts.postText, posts.dataPosts.image, posts.dataPosts.emotion],
+  );
+
   const onImageChange = async (e) => {
-    const files = Array.from(e.target.files);
-    files.forEach((file) => {
-      console.log(file);
-      const url = URL.createObjectURL(file);
-      setPreviewImg((prev) => {
-        const temp = [...prev];
-        temp.push({
-          id: uuidv4(),
-          url,
-          file: files[0],
-        });
-        return temp;
-      });
-    });
+    const { files } = e.target;
+    const url = URL.createObjectURL(files[0]);
+    dispatch(
+      addPostImg({
+        id: uuidv4(),
+        url,
+        file: files[0],
+      }),
+    );
   };
 
-  const removeImgHandler = (id) => {
-    setPreviewImg((prev) => {
-      const temp = [...prev];
-      return temp.filter((item) => {
-        return item.id !== id;
-      });
-    });
+  const removeImgHandler = (id) => () => {
+    console.log('click');
+    dispatch(removePostImg(id));
   };
 
   const postTextChangeHandler = (e) => {
-    setPostText(e.target.value);
-  };
-
-  const createPostHandler = async () => {
-    const formData = new FormData();
-
-    previewImg.forEach((item) => {
-      formData.append('files', item.file);
-    });
-
-    console.log(formData);
-
-    if (postText.trim().length === 0) {
-      setDisabledBtn(true);
-      return;
-    }
-
-    setDisabledBtn(false);
-
-    if (previewImg.length !== 0) {
-      const { urls } = await isekaiApi.uploadImg(formData);
-      dispatch(
-        createPost({
-          description: postText,
-          image: urls,
-          callback: () => {
-            setPostText('');
-            setHaveChoosePhoto(false);
-            setHaveChooseEmotion(false);
-            setEmotion(null);
-            setOpen(false);
-          },
-        }),
-      );
-    }
+    dispatch(changePostText(e.target.value));
   };
 
   useEffect(() => {
-    if (postText.trim().length === 0) {
+    if (allowBtn) {
       setDisabledBtn(true);
     } else {
       setDisabledBtn(false);
     }
-  }, [postText]);
+  }, [allowBtn]);
+
+  const editPostHandler = () => {
+    dispatch(
+      editPost({
+        description: posts.dataPosts.postText,
+        image: posts.dataPosts.image,
+        emoji: posts.dataPosts.emotion?.id,
+        postId,
+        callback: () => {
+          onCloseModal();
+        },
+      }),
+    );
+  };
+
+  const createPostHandler = async () => {
+    if (allowBtn) {
+      setDisabledBtn(true);
+      return;
+    }
+    setDisabledBtn(false);
+
+    dispatch(
+      createPost({
+        description: posts.dataPosts.postText,
+        image: posts.dataPosts.image,
+        emoji: posts.dataPosts.emotion?.id,
+        callback: () => {
+          onCloseModal();
+        },
+      }),
+    );
+  };
 
   useEffect(() => {
     autosize(document.querySelector('textarea'));
   }, []);
 
-  useOverFlowHidden(open);
+  const closeEmotionHandler = () => {
+    dispatch(toggleHaveChooseEmotion());
+    dispatch(clearPostEmotion());
+  };
 
   return (
     <Modal style={style} className={`${styled['modal-create-post']} ${className}`}>
-      <div className={styled.header}>Tạo bài viết</div>
+      <div className={styled.header}>
+        <span>Tạo bài viết</span>
+        <div className={styled.close} onClick={onCloseModal}>
+          <IoClose />
+        </div>
+      </div>
       <div className={styled.content}>
         <div className={styled.content__header}>
           <UserImg userImg={user?.profilePicture} />
           <div className={styled.info}>
             <span>{user?.username}</span>
-            {emotion && (
+            {posts.dataPosts.emotion && (
               <span>
-                đang cảm thấy {emotion?.name} <img src={emotion?.icon} alt="" />{' '}
+                đang cảm thấy {posts.dataPosts.emotion?.name} <img src={posts.dataPosts.emotion?.icon} alt="" />{' '}
               </span>
             )}
           </div>
@@ -130,21 +129,16 @@ const ModalCreatePost = ({
             className={styled.input__post}
             onChange={postTextChangeHandler}
             placeholder={`${user?.username} ơi, bạn đang nghĩ gì thế?`}
-            value={postText}
+            value={posts.dataPosts.postText}
           ></textarea>
         </div>
-        {previewImg.length !== 0 && (
+        {posts.dataPosts.image.length !== 0 && (
           <div className={styled.img__list}>
-            {previewImg.map((img) => {
+            {posts.dataPosts.image.map((img) => {
               return (
-                <div className={styled.img__preview} key={img.id}>
-                  <img src={img.url} alt="" />
-                  <div
-                    className={styled.close}
-                    onClick={() => {
-                      removeImgHandler(img.id);
-                    }}
-                  >
+                <div className={styled.img__preview} key={img.id || img}>
+                  <img src={img.url || img} alt="" />
+                  <div className={styled.close} onClick={removeImgHandler(img.id || img)}>
                     <IoClose />
                   </div>
                 </div>
@@ -152,13 +146,13 @@ const ModalCreatePost = ({
             })}
           </div>
         )}
-        {haveChoosePhoto && (
+        {ui.createPostModal.haveChoosePhoto && (
           <div className={styled.input__photo}>
             <input type="file" accept="image/*" onChange={onImageChange} />
             <div
               className={styled.close}
               onClick={() => {
-                setHaveChoosePhoto(false);
+                dispatch(toggleHaveChoosePhoto());
               }}
             >
               <IoClose />
@@ -170,22 +164,27 @@ const ModalCreatePost = ({
           </div>
         )}
 
-        {haveChooseEmotion && <Emotion emotion={emotion} setEmotion={setEmotion} />}
+        {ui.createPostModal.haveChooseEmotion && <Emotion onClose={closeEmotionHandler} />}
       </div>
       <div className={styled.bottom}>
         <p className={styled.text}>Thêm vào bài viết</p>
         <div className={styled.actions}>
           <div
-            className={styled.add__emotion}
+            className={styled.add__photo}
             onClick={() => {
-              setHaveChooseEmotion(!haveChooseEmotion);
-              setEmotion(null);
+              dispatch(toggleHaveChoosePhoto());
             }}
           >
+            <IMG.AddPhoto style={{ fill: '#00a400' }} />
+          </div>
+          <div className={styled.add__emotion} onClick={closeEmotionHandler}>
             <IMG.Emotion style={{ fill: '#f5c33b' }} />
           </div>
-          <button onClick={createPostHandler} disabled={disabledBtn}>
-            Post
+          <button
+            onClick={type === 'post' ? createPostHandler : editPostHandler}
+            disabled={disabledBtn || posts.dataPosts?.loading}
+          >
+            {posts.dataPosts.loading ? 'Loading...' : type === 'post' ? 'post' : 'edit'}
           </button>
         </div>
       </div>
@@ -193,4 +192,4 @@ const ModalCreatePost = ({
   );
 };
 
-export default ModalCreatePost;
+export default React.memo(ModalCreatePost);

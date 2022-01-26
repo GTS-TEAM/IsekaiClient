@@ -1,9 +1,30 @@
 .emotion__wrap {
   background-color: var(--grayColor1);
   padding: 1.6rem;
+  padding-top: 6.2rem;
   border-radius: var(--borderRadius);
-  margin-top: 2rem;
   border: 1px solid var(--borderColor);
+  position: relative;
+}
+
+.close {
+  cursor: pointer;
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  height: 3rem;
+  width: 3rem;
+  background-color: var(--textColorGray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+
+  svg {
+    width: 2.4rem;
+    height: 2.4rem;
+    color: var(--textColorWhite);
+  }
 }
 
 .emotions {

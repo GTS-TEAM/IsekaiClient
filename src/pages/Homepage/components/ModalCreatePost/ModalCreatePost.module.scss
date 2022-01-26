@@ -22,6 +22,30 @@
   border-bottom: 1px solid var(--borderColor);
 }
 
+.close {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--textColorGray);
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  cursor: pointer;
+
+  svg {
+    width: 2.4rem;
+    height: 2.4rem;
+    color: var(--grayColor1);
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
 .content {
   padding: 2rem;
   max-height: 40rem;
@@ -109,30 +133,6 @@
   background-color: var(--grayColor1);
   border: 1px solid var(--borderColor);
 
-  .close {
-    width: 3rem;
-    height: 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background-color: var(--textColorGray);
-    position: absolute;
-    top: 1.6rem;
-    right: 1.6rem;
-    cursor: pointer;
-
-    svg {
-      width: 2.4rem;
-      height: 2.4rem;
-      color: var(--grayColor1);
-    }
-
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-
   input {
     cursor: pointer;
     opacity: 0;
@@ -219,26 +219,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
-  .close {
-    cursor: pointer;
-    position: absolute;
-    top: 1.6rem;
-    right: 1.6rem;
-    height: 3.6rem;
-    width: 3.6rem;
-    background-color: var(--textColorGray);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-
-    svg {
-      width: 2.4rem;
-      height: 2.4rem;
-      color: var(--textColorWhite);
-    }
-  }
 
   img {
     border-radius: var(--borderRadius);

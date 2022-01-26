@@ -3,11 +3,12 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from 'redux-persist/lib/storage';
 import authSlice from './features/authSlice';
 import postsSlice from './features/postsSlice';
+import uiSlice from './features/uiSlice';
 
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['posts', 'auth'],
+  blacklist: ['posts', 'auth', 'ui'],
 };
 
 const authPersistConfig = {
@@ -19,9 +20,12 @@ const authPersistConfig = {
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authSlice),
   posts: postsSlice,
+  ui: uiSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const ignoredPathsPostImg = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => `posts.dataPosts.image.${item}.file`);
 
 export const store = configureStore({
   reducer: persistedReducer,
@@ -29,7 +33,8 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        ignoredPaths: ['payload'],
+        ignoredActionPaths: ['meta.arg.0.file', 'payload.file', 'meta.arg.callback', 'meta.arg.image.0.file'],
+        ignoredPaths: ['payload', ...ignoredPathsPostImg],
       },
       immutableCheck: false,
     }),

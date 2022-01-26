@@ -6,7 +6,7 @@ import { isekaiApi } from '../../api/isekaiApi';
 import { authSelector } from '../../features/authSlice';
 import styled from './Comments.module.scss';
 
-const Comments = ({ postId }) => {
+const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
   const { user } = useSelector(authSelector);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState('');
@@ -14,8 +14,6 @@ const Comments = ({ postId }) => {
   const [disabledButton, setDisabledButton] = useState(true);
   const [disabledButtonEdit, setDisabledButtonEdit] = useState(true);
   const [openEditComment, setOpenEditComment] = useState(null);
-
-  console.log(comments);
 
   const commentTextChangeHandler = (e) => {
     setCommentText(e.target.value);
@@ -32,9 +30,9 @@ const Comments = ({ postId }) => {
       return;
     }
 
-    const { content, created_at, id } = await isekaiApi.commentPost(postId, commentText);
-
     setDisabledButton(false);
+
+    const { content, created_at, id } = await isekaiApi.commentPost(postId, commentText);
 
     const newComment = {
       content,
@@ -42,6 +40,8 @@ const Comments = ({ postId }) => {
       id,
       user,
     };
+
+    increaseTotalCmt();
 
     setComments([newComment, ...comments]);
 
@@ -66,7 +66,6 @@ const Comments = ({ postId }) => {
     });
     setOpenEditComment(false);
     setCommentTextEdit('');
-
     await isekaiApi.editComment(commentId, commentTextEdit);
   };
 
@@ -75,6 +74,7 @@ const Comments = ({ postId }) => {
       const editComments = [...prevComments];
       return editComments.filter((item) => item.id !== commentId);
     });
+    decreaseTotalCmt();
     await isekaiApi.deleteComment(commentId);
   };
 
