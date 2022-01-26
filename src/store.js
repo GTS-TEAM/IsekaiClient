@@ -2,22 +2,23 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authSlice from './features/authSlice';
+import postsSlice from './features/postsSlice';
 
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['auth'],
+  blacklist: ['posts', 'auth'],
 };
 
 const authPersistConfig = {
   key: 'auth',
   storage: storage,
-  wishlist: ['token', 'user'],
-  blacklist: ['errorLogin', 'isFetching', 'errorRegister', 'messageRegister'],
+  blacklist: ['login', 'register'],
 };
 
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authSlice),
+  posts: postsSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -30,6 +31,7 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         ignoredPaths: ['payload'],
       },
+      immutableCheck: false,
     }),
 });
 

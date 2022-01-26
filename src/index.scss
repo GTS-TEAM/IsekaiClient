@@ -7,7 +7,7 @@
   --borderRadius: 1.6rem;
   --textColorBlack: #000;
   --textColorWhite: #fff;
-  --textColorGray: #7d8397;
+  --textColorGray: #5a5a5a;
   --mainColor: #a56ffd;
   --grayColor: #bfbfbf;
   --grayColor1: #f7f7f7;
@@ -63,43 +63,14 @@ button {
   font-family: inherit;
 }
 
+button:disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
 .container {
   width: 100%;
   margin: 0 auto;
   max-width: 1230px;
   padding: 0 1.5rem;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  row-gap: 3rem;
-  font-size: 1.6rem;
-
-  .input__group {
-    display: flex;
-    flex-direction: column;
-    row-gap: 1rem;
-
-    label {
-      font-weight: 500;
-      color: #000;
-    }
-
-    input {
-      height: 4.8rem;
-      padding: 0 1.5rem;
-      background-color: #ecf2f7;
-      border-radius: 4px;
-    }
-  }
-
-  &__btn {
-    height: 4.8rem;
-    text-align: center;
-    cursor: pointer;
-    background-color: #6c63ff;
-    border-radius: 8px;
-    color: #fff;
-  }
 }

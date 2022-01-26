@@ -4,3 +4,7 @@ export { default as Sidebar } from './Sidebar/Sidebar';
 export { default as RequireAuth } from './RequireAuth/RequireAuth';
 export { default as Layout } from './Layout/Layout';
 export { default as Modal } from './Modal/Modal';
+export { default as Post } from './Post/Post';
+export { default as UserImg } from './UserImg/UserImg';
+export { default as InputComment } from './InputComment/InputComment';
+export { default as Comments } from './Comment/Comments';

@@ -1,0 +1,52 @@
+.input_comment {
+  display: flex;
+  column-gap: 1.4rem;
+  height: 4rem;
+  width: 100%;
+  margin: 1rem 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  background-color: var(--textColorWhite);
+
+  & > div:first-child {
+    flex-shrink: 0;
+  }
+}
+
+.input_wrap {
+  display: flex;
+  width: 100%;
+  column-gap: 1.4rem;
+
+  input {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border-radius: var(--borderRadius);
+    background-color: var(--grayColor1);
+    border: 1px solid var(--borderColor);
+    padding: 0 1.6rem;
+    font-size: 1.6rem;
+    color: var(--textColorGray);
+  }
+
+  button {
+    background-color: transparent;
+    flex-shrink: 0;
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--mainColor);
+    border-radius: var(--borderRadius);
+    color: var(--textColorWhite);
+    cursor: pointer;
+
+    svg {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+}

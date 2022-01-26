@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { authApi } from '../api/authApi';
+import { isekaiApi } from '../api/isekaiApi';
 
-export const login = createAsyncThunk('auth/login', async ({ email, password, callback }, thunkApi) => {
+export const loginHandler = createAsyncThunk('auth/login', async ({ email, password, callback }, thunkApi) => {
   try {
-    const data = await authApi.login(email, password);
+    const data = await isekaiApi.login(email, password);
     callback(); // navigate to homepage
     return data;
   } catch (err) {
@@ -11,19 +11,24 @@ export const login = createAsyncThunk('auth/login', async ({ email, password, ca
   }
 });
 
-export const register = createAsyncThunk('auth/register', async ({ userName, email, password, callback }, thunkApi) => {
-  try {
-    const data = await authApi.register(email, password, userName);
-    callback(); // navigate to login page
-    return data;
-  } catch (err) {
-    return thunkApi.rejectWithValue(err.response.data);
-  }
-});
+export const registerHandler = createAsyncThunk(
+  'auth/register',
+  async ({ userName, email, password, callback }, thunkApi) => {
+    try {
+      const data = await isekaiApi.register(email, password, userName);
+      callback(); // navigate to login page
+      return data;
+    } catch (err) {
+      return thunkApi.rejectWithValue(err.response.data);
+    }
+  },
+);
 
 export const refreshToken = createAsyncThunk('auth/refreshToken', async (_, thunkApi) => {
   const { token } = thunkApi.getState().auth;
-  const data = await authApi.updateToken(token.refreshToken);
+
+  const data = await isekaiApi.updateToken(token.refreshToken);
+  console.log(data);
   return data;
 });
 
@@ -33,10 +38,15 @@ const initialState = {
     accessToken: null,
     refreshToken: null,
   },
-  isFetching: false,
-  errorLogin: null,
-  errorRegister: null,
-  messageRegister: null,
+  login: {
+    error: null,
+    loading: null,
+  },
+  register: {
+    error: null,
+    loading: null,
+    message: null,
+  },
 };
 
 const authSlice = createSlice({
@@ -54,40 +64,35 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(login.pending, (state, action) => {
-        state.isFetching = true;
-        state.errorLogin = null;
+      .addCase(loginHandler.pending, (state, action) => {
+        state.login.loading = true;
+        state.login.error = null;
       })
-      .addCase(login.fulfilled, (state, action) => {
+      .addCase(loginHandler.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.token.accessToken = action.payload.access_token;
         state.token.refreshToken = action.payload.refresh_token;
-        state.isFetching = false;
+        state.login.loading = false;
       })
-      .addCase(login.rejected, (state, action) => {
-        state.isFetching = false;
-        state.errorLogin = action.payload.message;
+      .addCase(loginHandler.rejected, (state, action) => {
+        state.login.loading = false;
+        state.login.error = action.payload.message;
       })
       .addCase(refreshToken.fulfilled, (state, action) => {
         state.token.accessToken = action.payload.access_token;
         state.token.refreshToken = action.payload.refresh_token;
       })
-      .addCase(refreshToken.rejected, (state, action) => {
-        state.user = null;
-        state.token.accessToken = null;
-        state.token.refreshToken = null;
+      .addCase(registerHandler.pending, (state) => {
+        state.register.loading = true;
+        state.register.error = null;
       })
-      .addCase(register.pending, (state) => {
-        state.isFetching = true;
-        state.errorRegister = null;
+      .addCase(registerHandler.fulfilled, (state, action) => {
+        state.register.message = action.payload.message;
+        state.register.loading = false;
       })
-      .addCase(register.fulfilled, (state, action) => {
-        state.messageRegister = action.payload.message;
-        state.isFetching = false;
-      })
-      .addCase(register.rejected, (state, action) => {
-        state.errorRegister = action.payload.message;
-        state.isFetching = false;
+      .addCase(registerHandler.rejected, (state, action) => {
+        state.register.error = action.payload.message;
+        state.register.loading = false;
       });
   },
 });
