@@ -18,6 +18,7 @@ export const deletePost = createAsyncThunk('post/deletePost', async (postId) => 
 
 export const getTimeline = createAsyncThunk('post/getTimeline', async () => {
   const data = await isekaiApi.getTimeline();
+  console.log(data);
   return data;
 });
 

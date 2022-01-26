@@ -53,5 +53,6 @@
   },
   "resolutions": {
     "styled-components": "^5"
-  }
+  },
+  "proxy": "https://isekai-api.me/api"
 }
