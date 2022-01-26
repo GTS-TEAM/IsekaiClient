@@ -10,8 +10,8 @@ import { useSelector } from 'react-redux';
 import { authSelector } from '../../../../features/authSlice';
 import { useDispatch } from 'react-redux';
 import { createPost } from '../../../../features/postsSlice';
-import { requestPublic } from '../../../../api/axoisClient';
 import { useOverFlowHidden } from '../../../../hooks/useOverFlowHidden';
+import axios from 'axios';
 const ModalCreatePost = ({
   className = '',
   style,
@@ -48,11 +48,7 @@ const ModalCreatePost = ({
     let imgUrl = null;
 
     if (formDataImg.length !== 0) {
-      imgUrl = await requestPublic.post('/upload', formDataImg, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      imgUrl = await axios.post('/upload', formDataImg);
     }
 
     if (postText.trim().length === 0) {

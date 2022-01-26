@@ -3,23 +3,7 @@ import jwtDecode from 'jwt-decode';
 import { refreshToken } from '../features/authSlice';
 import { store } from '../store';
 
-export const requestPrivate = axios.create({
-  baseURL: 'https://isekai-api.me/api',
-  headers: {
-    'Content-Type': 'application/json',
-    accept: 'application/json',
-  },
-});
-
-export const requestPublic = axios.create({
-  baseURL: 'https://isekai-api.me/api',
-  headers: {
-    'Content-Type': 'application/json',
-    accept: 'application/json',
-  },
-});
-
-requestPrivate.interceptors.response.use(
+axios.interceptors.response.use(
   function (response) {
     return response.data;
   },
@@ -28,16 +12,7 @@ requestPrivate.interceptors.response.use(
   },
 );
 
-requestPublic.interceptors.response.use(
-  function (response) {
-    return response.data;
-  },
-  function (error) {
-    return Promise.reject(error);
-  },
-);
-
-requestPrivate.interceptors.request.use(
+axios.interceptors.request.use(
   async (config) => {
     const { token } = store.getState().auth;
     let currentDate = new Date();

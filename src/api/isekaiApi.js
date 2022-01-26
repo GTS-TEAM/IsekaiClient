@@ -1,15 +1,15 @@
-import { requestPrivate, requestPublic } from './axoisClient';
+import axios from 'axios';
 
 export const isekaiApi = {
   login: (email, password) => {
-    return requestPublic.post('/auth/login', {
+    return axios.post('/auth/login', {
       email,
       password,
     });
   },
   register: (email, password, userName) => {
     console.log(userName, email);
-    return requestPublic.post('/auth/register', {
+    return axios.post('/auth/register', {
       username: userName,
       email,
       password,
@@ -17,104 +17,53 @@ export const isekaiApi = {
     });
   },
   updateToken: (refreshToken) => {
-    return requestPublic.post('/auth/refresh-token', {
+    return axios.post('/auth/refresh-token', {
       refresh_token: refreshToken,
     });
   },
 
-  createPost: (image, description, accessToken) => {
-    return requestPrivate.post(
-      '/posts',
-      {
-        image,
-        description,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-  },
-
-  editPost: (image, description, postId, accessToken) => {
-    return requestPrivate.put(
-      `/posts/${postId}`,
-      {
-        image,
-        description,
-      },
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-  },
-
-  deletePost: (postId, accessToken) => {
-    return requestPrivate.delete(`/posts/${postId}`, {
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
+  createPost: (image, description) => {
+    return axios.post('/posts', {
+      image,
+      description,
     });
   },
 
-  getIsLiked: (postId, accessToken) => {
-    return requestPrivate.get(`/posts/${postId}/isLiked`, {
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
+  editPost: (image, description, postId) => {
+    return axios.put(`/posts/${postId}`, {
+      image,
+      description,
     });
   },
 
-  likePost: (postId, accessToken) => {
-    return requestPrivate.patch(
-      `/posts/${postId}/like`,
-      {},
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
+  deletePost: (postId) => {
+    return axios.delete(`/posts/${postId}`);
   },
 
-  getCommentsPost: (postId, accessToken) => {
-    return requestPrivate.get(`/posts/${postId}/comments`, {
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
-    });
+  getIsLiked: (postId) => {
+    return axios.get(`/posts/${postId}/isLiked`);
   },
 
-  commentPost: (postId, comment, accessToken) => {
-    return requestPrivate.post(
-      `/posts/${postId}/comments`,
-      { comment },
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
+  likePost: (postId) => {
+    return axios.patch(`/posts/${postId}/like`);
   },
 
-  getTimeline: (accessToken) => {
-    return requestPrivate.get('/posts/timeline', {
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
-    });
+  getCommentsPost: (postId) => {
+    return axios.get(`/posts/${postId}/comments`);
   },
 
-  getUser: (id, accessToken) => {
-    return requestPrivate.get('/user', {
+  commentPost: (postId, comment) => {
+    return axios.post(`/posts/${postId}/comments`, { comment });
+  },
+
+  getTimeline: () => {
+    return axios.get('/posts/timeline');
+  },
+
+  getUser: (id) => {
+    return axios.get('/user', {
       params: {
         userId: id,
-      },
-      headers: {
-        authorization: `Bearer ${accessToken}`,
       },
     });
   },
