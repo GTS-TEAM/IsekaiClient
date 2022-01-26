@@ -81,24 +81,27 @@ const Post = ({ post }) => {
         )}
       </div>
       <div className={classes.content}>{post.description}</div>
-      {post.image.length === 0 ? null : (
-        <div className={classes.img}>
-          <img src={post.image} alt="" />
+      {post.image.length === 0
+        ? null
+        : post.image.map((item) => {
+            return (
+              <div className={classes.img} key={item}>
+                <img src={item} alt="" />
+              </div>
+            );
+          })}
+
+      {post.comments === 0 && post.likes === 0 ? null : (
+        <div className={classes.figures}>
+          {totalLike !== 0 && (
+            <div className={classes.total_like}>
+              <AiFillLike />
+              <span>{totalLike}</span>
+            </div>
+          )}
+          {post.comments !== 0 && <div className={classes.total_comment}>{post.comments} bình luận</div>}
         </div>
       )}
-
-      {post.comments !== 0 ||
-        (totalLike !== 0 && (
-          <div className={classes.figures}>
-            {totalLike !== 0 && (
-              <div className={classes.total_like}>
-                <AiFillLike />
-                <span>{totalLike}</span>
-              </div>
-            )}
-            {post.comments !== 0 && <div className={classes.total_comment}>{post.comments}</div>}
-          </div>
-        ))}
       <div className={classes.post__bottom}>
         <div className={classes.interacts}>
           <div className={`${classes.like} ${isLiked ? classes.liked : ''}`} onClick={likePostHandler}>

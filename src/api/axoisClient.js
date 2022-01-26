@@ -52,7 +52,6 @@ requestPrivate.interceptors.request.use(
     let currentDate = new Date();
     if (token.accessToken) {
       const decodedToken = jwtDecode(token.accessToken);
-      console.log(decodedToken.exp * 1000 < currentDate.getTime());
       if (decodedToken.exp * 1000 < currentDate.getTime()) {
         await store.dispatch(refreshToken());
         if (config.headers) {

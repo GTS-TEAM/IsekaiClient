@@ -27,29 +27,24 @@ const ModalCreatePost = ({
   const [postText, setPostText] = useState('');
   const [disabledBtn, setDisabledBtn] = useState(true);
   const [previewImg, setPreviewImg] = useState([]);
-  const [formDataImg, setFormDataImg] = useState([]);
-  const [uploadedImgs, setUploadedImgs] = useState([]);
   const [emotion, setEmotion] = useState(null);
-
   const { user } = useSelector(authSelector);
   const dispatch = useDispatch();
 
   const onImageChange = async (e) => {
     const files = Array.from(e.target.files);
-    const url = URL.createObjectURL(files[0]);
-    let formData = new FormData();
-
     files.forEach((file) => {
-      formData.append('files', file);
-    });
-
-    setPreviewImg((prev) => {
-      const temp = [...prev];
-      temp.push({
-        id: uuidv4(),
-        url,
+      console.log(file);
+      const url = URL.createObjectURL(file);
+      setPreviewImg((prev) => {
+        const temp = [...prev];
+        temp.push({
+          id: uuidv4(),
+          url,
+          file: files[0],
+        });
+        return temp;
       });
-      return temp;
     });
   };
 
@@ -62,22 +57,18 @@ const ModalCreatePost = ({
     });
   };
 
-  console.log(previewImg);
-
   const postTextChangeHandler = (e) => {
     setPostText(e.target.value);
   };
 
   const createPostHandler = async () => {
-    let imgUrl = null;
+    const formData = new FormData();
 
-    if (formDataImg.length !== 0) {
-      imgUrl = await requestPublic.post('/upload', formDataImg, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-    }
+    previewImg.forEach((item) => {
+      formData.append('files', item.file);
+    });
+
+    console.log(formData);
 
     if (postText.trim().length === 0) {
       setDisabledBtn(true);
@@ -86,20 +77,22 @@ const ModalCreatePost = ({
 
     setDisabledBtn(false);
 
-    dispatch(
-      createPost({
-        description: postText,
-        image: [imgUrl?.url || ''],
-        callback: () => {
-          setPostText('');
-          setPreviewImg(null);
-          setHaveChoosePhoto(false);
-          setHaveChooseEmotion(false);
-          setEmotion(null);
-          setOpen(false);
-        },
-      }),
-    );
+    if (previewImg.length !== 0) {
+      const { urls } = await isekaiApi.uploadImg(formData);
+      dispatch(
+        createPost({
+          description: postText,
+          image: urls,
+          callback: () => {
+            setPostText('');
+            setHaveChoosePhoto(false);
+            setHaveChooseEmotion(false);
+            setEmotion(null);
+            setOpen(false);
+          },
+        }),
+      );
+    }
   };
 
   useEffect(() => {
@@ -140,32 +133,32 @@ const ModalCreatePost = ({
             value={postText}
           ></textarea>
         </div>
-        <div className={styled.img__list}>
-          {previewImg.map((img) => {
-            return (
-              <div className={styled.img__preview} key={img}>
-                <img src={img.url} alt="" />
-                <div
-                  className={styled.close}
-                  onClick={() => {
-                    removeImgHandler(img.id);
-                    // setHaveChoosePhoto(false);
-                  }}
-                >
-                  <IoClose />
+        {previewImg.length !== 0 && (
+          <div className={styled.img__list}>
+            {previewImg.map((img) => {
+              return (
+                <div className={styled.img__preview} key={img.id}>
+                  <img src={img.url} alt="" />
+                  <div
+                    className={styled.close}
+                    onClick={() => {
+                      removeImgHandler(img.id);
+                    }}
+                  >
+                    <IoClose />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
         {haveChoosePhoto && (
           <div className={styled.input__photo}>
-            <input type="file" accept="image/*" onChange={onImageChange} multiple />
+            <input type="file" accept="image/*" onChange={onImageChange} />
             <div
               className={styled.close}
               onClick={() => {
                 setHaveChoosePhoto(false);
-                setPreviewImg(null);
               }}
             >
               <IoClose />
