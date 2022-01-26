@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { BiDotsHorizontalRounded } from 'react-icons/bi';
+// import { BiDotsHorizontalRounded } from 'react-icons/bi';
 import { AiOutlineLike, AiOutlineComment, AiOutlineShareAlt, AiFillLike } from 'react-icons/ai';
 import { Comments, UserImg } from '..';
 import classes from './Post.module.scss';
 import { isekaiApi } from '../../api/isekaiApi';
 import { authSelector } from '../../features/authSlice';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 
 const Post = ({ post }) => {
   const [isLiked, setIsLiked] = useState(post.liked);
@@ -16,15 +16,6 @@ const Post = ({ post }) => {
   const [totalLike, setTotalLike] = useState(post.likes);
   const [totalComment, setTotalComment] = useState(post.comments);
   const { user: currentUser } = useSelector(authSelector);
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const likePostHandler = async () => {
     setIsLiked(!isLiked);
