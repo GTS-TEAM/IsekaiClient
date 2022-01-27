@@ -4,8 +4,8 @@ import { BiSearch } from 'react-icons/bi';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import styled from './Header.module.scss';
 import { useSelector } from 'react-redux';
-import { authSelector } from '../../features/authSlice';
 import { UserImg } from '..';
+import { authSelector } from '../../features/authSlice';
 
 const Header = () => {
   const { user } = useSelector(authSelector);

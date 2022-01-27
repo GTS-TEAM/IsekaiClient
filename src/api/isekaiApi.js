@@ -16,23 +16,31 @@ export const isekaiApi = {
       roles: 'user',
     });
   },
-  updateToken: (refreshToken) => {
-    return axios.post('/auth/refresh-token', {
+  updateToken: async (refreshToken) => {
+    return await axios.post('/auth/refresh-token', {
       refresh_token: refreshToken,
     });
   },
 
-  createPost: (image, description) => {
-    return axios.post('/posts', {
-      image,
-      description,
+  deactivateRefreshToken: (email) => {
+    return axios.post('/auth/deactivate-refresh-token', {
+      email,
     });
   },
 
-  editPost: (image, description, postId) => {
-    return axios.put(`/posts/${postId}`, {
+  createPost: (image, description, emoji) => {
+    return axios.post('/posts', {
       image,
       description,
+      emoji,
+    });
+  },
+
+  editPost: (image, description, emoji, postId) => {
+    return axios.patch(`/posts/${postId}`, {
+      image,
+      description,
+      emoji,
     });
   },
 
@@ -45,7 +53,7 @@ export const isekaiApi = {
   },
 
   likePost: (postId) => {
-    return axios.patch(`/posts/${postId}/like`);
+    return axios.patch(`/posts/${postId}/like`, {});
   },
 
   getCommentsPost: (postId) => {
@@ -56,8 +64,21 @@ export const isekaiApi = {
     return axios.post(`/posts/${postId}/comments`, { comment });
   },
 
+  editComment: (commentId, comment) => {
+    return axios.patch(`/posts/comments/${commentId}`, { comment });
+  },
+
+  deleteComment: (commentId) => {
+    return axios.delete(`/posts/comments/${commentId}`);
+  },
+
   getTimeline: () => {
-    return axios.get('/posts/timeline');
+    const data = axios.get('/posts/timeline/{page}', {
+      params: {
+        page: 1,
+      },
+    });
+    return data;
   },
 
   getUser: (id) => {
@@ -66,5 +87,9 @@ export const isekaiApi = {
         userId: id,
       },
     });
+  },
+
+  uploadImg: (arrFile) => {
+    return axios.post('/upload', arrFile);
   },
 };

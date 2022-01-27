@@ -1,69 +1,24 @@
 import React from 'react';
-import { IMG } from '../../../../images';
+import { IoClose } from 'react-icons/io5';
 import styled from './Emotion.module.scss';
-const emotions = [
-  {
-    id: 1,
-    name: 'được yêu',
-    icon: IMG.EmojiDuocYeu,
-  },
-  {
-    id: 2,
-    name: 'hạnh phúc',
-    icon: IMG.EmojiHanhPhuc,
-  },
-  {
-    id: 3,
-    name: 'có phúc',
-    icon: IMG.EmojiCoPhuc,
-  },
-  {
-    id: 4,
-    name: 'điên',
-    icon: IMG.EmojiDien,
-  },
-  {
-    id: 5,
-    name: 'buồn',
-    icon: IMG.EmojiBuon,
-  },
-  {
-    id: 6,
-    name: 'đói',
-    icon: IMG.EmojiDoi,
-  },
-  {
-    id: 7,
-    name: 'buồn ngủ',
-    icon: IMG.EmojiBuonNgu,
-  },
-  {
-    id: 8,
-    name: 'cô đơn',
-    icon: IMG.EmojiCoDon,
-  },
-  {
-    id: 9,
-    name: 'nhớ crush',
-    icon: IMG.EmojiNhoCrush,
-  },
-  {
-    id: 10,
-    name: 'hài lòng',
-    icon: IMG.EmojiHaiLong,
-  },
-];
-
-const Emotion = ({ setEmotion, emotion }) => {
+import emotions from '../../../../utils/emotions';
+import { useDispatch, useSelector } from 'react-redux';
+import { addPostEmotion, postsSelector } from '../../../../features/postsSlice';
+const Emotion = ({ onClose }) => {
+  const post = useSelector(postsSelector);
+  const dispatch = useDispatch();
   return (
     <div className={styled.emotion__wrap}>
+      <div className={styled.close} onClick={onClose}>
+        <IoClose />
+      </div>
       <div className={styled.emotions}>
         {emotions.map((item) => (
           <div
             key={item.id}
-            className={`${styled.emotion} ${emotion?.id === item.id ? `${styled.active}` : null}`}
+            className={`${styled.emotion} ${post.dataPosts.emotion?.id === item.id ? `${styled.active}` : null}`}
             onClick={() => {
-              setEmotion(item);
+              dispatch(addPostEmotion(item));
             }}
           >
             <div className={styled.emoji}>

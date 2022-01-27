@@ -24,11 +24,19 @@
   align-items: center;
   column-gap: 1.4rem;
 
-  .user_name {
+  .user_status {
     font-size: 1.6rem;
     font-weight: 600;
     color: var(--textColorBlack);
     margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    column-gap: 0.5rem;
+
+    img {
+      width: 2.4rem;
+      height: 2.4rem;
+    }
   }
 
   .created_at {
@@ -67,8 +75,8 @@
 .figures {
   display: flex;
   align-items: center;
-  padding: 0 1.8rem 1rem 1.8rem;
-  margin-top: 1rem;
+  justify-content: space-between;
+  padding: 1rem 1.8rem 1rem 1.8rem;
 
   .total_like {
     display: flex;

@@ -1,9 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { deleteTokenFromLocalStorage, getTokenFromLocalStorage, setTokenToLocalStorage } from '../api/axoisClient';
 import { isekaiApi } from '../api/isekaiApi';
 
 export const loginHandler = createAsyncThunk('auth/login', async ({ email, password, callback }, thunkApi) => {
   try {
     const data = await isekaiApi.login(email, password);
+    setTokenToLocalStorage(data);
     callback(); // navigate to homepage
     return data;
   } catch (err) {
@@ -25,10 +27,10 @@ export const registerHandler = createAsyncThunk(
 );
 
 export const refreshToken = createAsyncThunk('auth/refreshToken', async (_, thunkApi) => {
-  const { token } = thunkApi.getState().auth;
-
+  const token = getTokenFromLocalStorage();
+  deleteTokenFromLocalStorage();
   const data = await isekaiApi.updateToken(token.refreshToken);
-  console.log(data);
+  setTokenToLocalStorage(data);
   return data;
 });
 
@@ -57,9 +59,18 @@ const authSlice = createSlice({
       state.user = null;
       state.token.accessToken = null;
       state.token.refreshToken = null;
-      state.isFetching = false;
-      state.errorLogin = null;
-      state.errorRegister = null;
+      state.login.error = null;
+      state.register.error = null;
+      state.login.loading = null;
+      state.register.loading = null;
+    },
+    saveToken: (state, action) => {
+      state.token.accessToken = action.payload.access_token;
+      state.token.refreshToken = action.payload.refresh_token;
+    },
+    removeToken: (state) => {
+      state.token.accessToken = null;
+      state.token.refreshToken = null;
     },
   },
   extraReducers: (builder) => {
@@ -97,5 +108,6 @@ const authSlice = createSlice({
   },
 });
 
+export const { logout } = authSlice.actions;
 export const authSelector = (state) => state.auth;
 export default authSlice.reducer;
