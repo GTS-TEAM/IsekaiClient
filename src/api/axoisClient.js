@@ -3,6 +3,8 @@ import jwtDecode from 'jwt-decode';
 import { logout, refreshToken } from '../features/authSlice';
 import { store } from '../store';
 
+axios.defaults.baseURL = 'https://isekai-api.me/api';
+
 axios.interceptors.response.use(
   function (response) {
     return response.data;
