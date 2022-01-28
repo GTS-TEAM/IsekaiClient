@@ -19,6 +19,8 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { toggleHaveChooseEmotion, toggleHaveChoosePhoto, uiSelector } from '../../../../features/uiSlice';
 import { authSelector } from '../../../../features/authSlice';
+import CircularProgress from '@mui/material/CircularProgress';
+
 const ModalCreatePost = ({ className = '', style, type, postId, onCloseModal }) => {
   const [disabledBtn, setDisabledBtn] = useState(true);
   const { user } = useSelector(authSelector);
@@ -184,10 +186,19 @@ const ModalCreatePost = ({ className = '', style, type, postId, onCloseModal }) 
             onClick={type === 'post' ? createPostHandler : editPostHandler}
             disabled={disabledBtn || posts.dataPosts?.loading}
           >
-            {posts.dataPosts.loading ? 'Loading...' : type === 'post' ? 'post' : 'edit'}
+            {type === 'post' ? 'post' : 'edit'}
           </button>
         </div>
       </div>
+
+      {posts.dataPosts.loading ? (
+        <React.Fragment>
+          <div className={styled.overlay}></div>
+          <div className={styled.loading}>
+            <CircularProgress size={'3.6rem'} color={'inherit'} />
+          </div>
+        </React.Fragment>
+      ) : null}
     </Modal>
   );
 };

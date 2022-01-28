@@ -3,14 +3,6 @@
   border-top: 1px solid var(--borderColor);
   position: relative;
 
-  &_list_wrap {
-    overflow-y: auto;
-    max-height: 30rem;
-    &::-webkit-scrollbar {
-      width: 0;
-    }
-  }
-
   &_list {
     display: flex;
     flex-direction: column;
@@ -24,7 +16,6 @@
     align-items: flex-start;
     column-gap: 1.4rem;
     overflow-x: hidden;
-    margin-left: 5.4rem;
 
     & > div:first-child {
       flex-shrink: 0;

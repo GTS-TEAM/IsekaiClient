@@ -25,7 +25,11 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const ignoredPathsPostImg = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => `posts.dataPosts.image.${item}.file`);
+const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+const ignoredPathsPostImg = arr.map((item) => `posts.dataPosts.image.${item}.file`);
+
+const ignoredActionPathsMeta = arr.map((item) => `meta.arg.image.${item}.file`);
 
 export const store = configureStore({
   reducer: persistedReducer,
@@ -33,7 +37,7 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        ignoredActionPaths: ['meta.arg.0.file', 'payload.file', 'meta.arg.callback', 'meta.arg.image.0.file'],
+        ignoredActionPaths: ['meta.arg.0.file', 'payload.file', 'meta.arg.callback', ...ignoredActionPathsMeta],
         ignoredPaths: ['payload', ...ignoredPathsPostImg],
       },
       immutableCheck: false,

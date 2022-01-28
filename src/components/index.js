@@ -7,4 +7,6 @@ export { default as Modal } from './Modal/Modal';
 export { default as Post } from './Post/Post';
 export { default as UserImg } from './UserImg/UserImg';
 export { default as InputComment } from './InputComment/InputComment';
-export { default as Comments } from './Comment/Comments';
+export { default as Comments } from './Comments/Comments';
+export { default as More } from './More/More';
+export { default as SlideImgPost } from './SlideImgPost/SlideImgPost';

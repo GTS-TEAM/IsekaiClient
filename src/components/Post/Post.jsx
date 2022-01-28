@@ -3,13 +3,10 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { AiOutlineLike, AiOutlineComment, AiOutlineShareAlt, AiFillLike } from 'react-icons/ai';
-import { Comments, Overlay, UserImg } from '..';
+import { Comments, More, Overlay, SlideImgPost, UserImg } from '..';
 import classes from './Post.module.scss';
 import { isekaiApi } from '../../api/isekaiApi';
 import emotions from '../../utils/emotions';
-import { BiDotsHorizontalRounded } from 'react-icons/bi';
-import { Menu, Button, MenuItem, ButtonBase } from '@mui/material';
-import styled from '@emotion/styled';
 import { authSelector } from '../../features/authSlice';
 import { useDispatch } from 'react-redux';
 import {
@@ -24,34 +21,6 @@ import { openEditPostModal, closeEditPostModal, uiSelector, setPostIdEdit } from
 import { ModalCreatePost } from '../../pages/Homepage/components';
 import { useOverFlowHidden } from '../../hooks/useOverFlowHidden';
 
-const StyledButton = styled(Button)`
-  width: 3.6rem;
-  height: 3.6rem;
-  min-width: unset;
-  padding: 0;
-  background-color: var(--grayColor1);
-  color: unset;
-  border-radius: 50%;
-  border: 1px solid var(--borderColor);
-
-  svg {
-    color: var(--textColorGray);
-    width: 2.4rem;
-    height: 2.4rem;
-  }
-`;
-
-const StyledMenu = styled(Menu)`
-  .MuiPaper-root {
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%);
-    border: 1px solid var(--borderColor);
-  }
-
-  .MuiMenuItem-root {
-    font-size: 1.3rem;
-  }
-`;
-
 const Post = ({ post }) => {
   const [isLiked, setIsLiked] = useState(post.liked);
   const [isOpenComment, setIsOpenComment] = useState(false);
@@ -65,10 +34,10 @@ const Post = ({ post }) => {
 
   const dispatch = useDispatch();
 
-  const handleClick = (event) => {
+  const clickOpenMenuHandler = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+  const clickCloseMenuHandler = () => {
     setAnchorEl(null);
   };
 
@@ -80,16 +49,16 @@ const Post = ({ post }) => {
   };
 
   const clickEditHandler = () => {
-    handleClose();
+    clickCloseMenuHandler();
     dispatch(setPostIdEdit(post.id));
     dispatch(openEditPostModal(post.id));
     dispatch(changePostText(post.description));
     dispatch(addPostFullImg(post.image));
-    dispatch(addPostEmotion(post.emoji));
+    dispatch(addPostEmotion(emotions.find((emotion) => emotion.id === post.emoji)));
   };
 
-  const clickDeleteHandler = () => {
-    handleClose();
+  const clickRemoveHandler = () => {
+    clickCloseMenuHandler();
     dispatch(deletePost(post.id));
   };
 
@@ -137,28 +106,22 @@ const Post = ({ post }) => {
           </div>
         </div>
         {post.user.id === currentUser.id && (
-          <div className={classes.actions}>
-            <StyledButton onClick={handleClick}>
-              <BiDotsHorizontalRounded />
-            </StyledButton>
-            <ButtonBase></ButtonBase>
-            <StyledMenu anchorEl={anchorEl} open={open} onClose={handleClose}>
-              <MenuItem onClick={clickEditHandler}>Chỉnh sửa</MenuItem>
-              <MenuItem onClick={clickDeleteHandler}>Xóa</MenuItem>
-            </StyledMenu>
-          </div>
+          <More
+            anchorEl={anchorEl}
+            open={open}
+            onOpenMenu={clickOpenMenuHandler}
+            onCloseMenu={clickCloseMenuHandler}
+            onClickOpenEdit={clickEditHandler}
+            onClickRemove={clickRemoveHandler}
+            height="3.6rem"
+            width="3.6rem"
+            heightIcon="2.4rem"
+            widthIcon="2.4rem"
+          />
         )}
       </div>
       <div className={classes.content}>{post.description}</div>
-      {post.image.length === 0
-        ? null
-        : post.image.map((item) => {
-            return (
-              <div className={classes.img} key={item}>
-                <img src={item} alt="" />
-              </div>
-            );
-          })}
+      {post.image.length === 0 ? null : <SlideImgPost images={post.image} />}
 
       {totalComment !== 0 || totalLike !== 0 ? (
         <div className={classes.figures}>

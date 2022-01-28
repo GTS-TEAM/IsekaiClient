@@ -17,20 +17,33 @@ export const createPost = createAsyncThunk('posts/createPost', async ({ image, d
   return data;
 });
 
-export const editPost = createAsyncThunk('post/editPost', async ({ image, description, emoji, postId, callback }) => {
-  const urls = await uploadImg(image);
-  const data = await isekaiApi.editPost(urls, description, emoji, postId);
+export const editPost = createAsyncThunk('posts/editPost', async ({ image, description, emoji, postId, callback }) => {
+  let urls = null;
+  const haveId = image.some((item) => item.id);
+  if (haveId) {
+    console.log('implement this');
+    const tempImg = [];
+    urls = await uploadImg(image);
+    for (const item of image) {
+      if (!item.hasOwnProperty('id')) {
+        tempImg.push(item);
+      }
+    }
+    urls = [...tempImg, ...urls];
+  }
+  console.log("don't 'implement this");
+  const data = await isekaiApi.editPost(urls ? urls : image, description, emoji, postId);
   callback(); // implement when edit post completed
   return data;
 });
 
-export const deletePost = createAsyncThunk('post/deletePost', async (postId) => {
+export const deletePost = createAsyncThunk('posts/deletePost', async (postId) => {
   await isekaiApi.deletePost(postId);
   return postId;
 });
 
-export const getTimeline = createAsyncThunk('post/getTimeline', async () => {
-  const data = await isekaiApi.getTimeline();
+export const getTimeline = createAsyncThunk('posts/getTimeline', async ({ page }) => {
+  const data = await isekaiApi.getTimeline(page);
   return data;
 });
 
@@ -39,6 +52,7 @@ const initialState = {
     posts: [],
     loading: false,
     error: null,
+    hasMore: false,
   },
   dataPosts: {
     loading: false,
@@ -84,6 +98,9 @@ const postsSlice = createSlice({
     clearPostEmotion: (state) => {
       state.dataPosts.emotion = null;
     },
+    unmountTimeline: (state) => {
+      state.timeline.posts = [];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -102,7 +119,12 @@ const postsSlice = createSlice({
         state.timeline.loading = true;
       })
       .addCase(getTimeline.fulfilled, (state, action) => {
-        state.timeline.posts = action.payload.sort((a, b) => {
+        if (action.payload.length === 0) {
+          state.timeline.hasMore = false;
+        } else {
+          state.timeline.hasMore = true;
+        }
+        state.timeline.posts = [...state.timeline.posts, ...action.payload].sort((a, b) => {
           return b.created_at.localeCompare(a.created_at);
         });
         state.timeline.error = false;
@@ -131,7 +153,15 @@ const postsSlice = createSlice({
   },
 });
 
-export const { addPostEmotion, clearPostEmotion, addPostImg, addPostFullImg, clearPostImg, removePostImg, changePostText } =
-  postsSlice.actions;
+export const {
+  addPostEmotion,
+  clearPostEmotion,
+  addPostImg,
+  addPostFullImg,
+  clearPostImg,
+  removePostImg,
+  changePostText,
+  unmountTimeline,
+} = postsSlice.actions;
 export const postsSelector = (state) => state.posts;
 export default postsSlice.reducer;

@@ -56,8 +56,12 @@ export const isekaiApi = {
     return axios.patch(`/posts/${postId}/like`, {});
   },
 
-  getCommentsPost: (postId) => {
-    return axios.get(`/posts/${postId}/comments`);
+  getCommentsPost: (postId, offset) => {
+    return axios.get(`/posts/${postId}/comments`, {
+      params: {
+        offset,
+      },
+    });
   },
 
   commentPost: (postId, comment) => {
@@ -72,10 +76,10 @@ export const isekaiApi = {
     return axios.delete(`/posts/comments/${commentId}`);
   },
 
-  getTimeline: () => {
+  getTimeline: (page) => {
     const data = axios.get('/posts/timeline/{page}', {
       params: {
-        page: 1,
+        page,
       },
     });
     return data;
