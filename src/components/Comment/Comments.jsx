@@ -4,7 +4,12 @@ import { useSelector } from 'react-redux';
 import { InputComment, UserImg } from '..';
 import { isekaiApi } from '../../api/isekaiApi';
 import { authSelector } from '../../features/authSlice';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { IconButton, Menu } from '@mui/material';
 import styled from './Comments.module.scss';
+import MenuItem from '@mui/material/MenuItem';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
   const { user } = useSelector(authSelector);
@@ -14,6 +19,22 @@ const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
   const [disabledButton, setDisabledButton] = useState(true);
   const [disabledButtonEdit, setDisabledButtonEdit] = useState(true);
   const [openEditComment, setOpenEditComment] = useState(null);
+
+  // EDIT COMMENT
+
+  const style = { marginRight: 10 };
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openMenu = Boolean(anchorEl);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  //
 
   const commentTextChangeHandler = (e) => {
     setCommentText(e.target.value);
@@ -94,6 +115,16 @@ const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
         disabledBtn={disabledButton}
         value={commentText}
         className={styled.input_comments}
+        onKeyDown={(e) => {
+          console.log(e.keyCode);
+          if (e.keyCode === 13) {
+            sendCommentHandler();
+            handleMenuClose();
+          }
+          if (e.keyCode === 27) {
+            setOpenEditComment(false);
+          }
+        }}
       />
       <div className={styled.comments_list_wrap}>
         <div className={styled.comments_list}>
@@ -119,6 +150,9 @@ const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
                   showText={openEditComment}
                   onKeyDown={(e) => {
                     console.log(e.keyCode);
+                    if (e.keyCode === 13) {
+                      sendEditedCommentHandler(item.id);
+                    }
                     if (e.keyCode === 27) {
                       setOpenEditComment(false);
                     }
@@ -151,6 +185,30 @@ const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
                       >
                         Xóa
                       </span>
+                      <IconButton onClick={handleMenuClick}>
+                        <MoreHorizIcon />
+                      </IconButton>
+                      <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose} autoFocus={false}>
+                        <MenuItem
+                          onClick={() => {
+                            setOpenEditComment(item.id);
+                            setCommentTextEdit(item.content);
+                            handleMenuClose();
+                          }}
+                        >
+                          <EditIcon fontSize="small" style={style} />
+                          Chỉnh sửa
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            sendDeleteCommentHandler(item.id);
+                            handleMenuClose();
+                          }}
+                        >
+                          <DeleteIcon fontSize="small" style={style} />
+                          Xóa
+                        </MenuItem>
+                      </Menu>
                     </div>
                   )}
                 </div>
