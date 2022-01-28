@@ -15,26 +15,9 @@ const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
   const { user } = useSelector(authSelector);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState('');
-  const [commentTextEdit, setCommentTextEdit] = useState('');
   const [disabledButton, setDisabledButton] = useState(true);
-  const [disabledButtonEdit, setDisabledButtonEdit] = useState(true);
+
   const [openEditComment, setOpenEditComment] = useState(null);
-
-  // EDIT COMMENT
-
-  const style = { marginRight: 10 };
-
-  const [anchorEl, setAnchorEl] = useState(null);
-  const openMenu = Boolean(anchorEl);
-
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  //
 
   const commentTextChangeHandler = (e) => {
     setCommentText(e.target.value);
@@ -69,6 +52,70 @@ const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
     setCommentText('');
   };
 
+  useEffect(() => {
+    const getCommentsPost = async () => {
+      const data = await isekaiApi.getCommentsPost(postId);
+      setComments(data.sort((a, b) => b.created_at.localeCompare(a.created_at)));
+    };
+    getCommentsPost();
+  }, [postId]);
+
+  return (
+    <div className={styled.comments}>
+      <InputComment
+        onChange={commentTextChangeHandler}
+        onSendComment={sendCommentHandler}
+        disabledBtn={disabledButton}
+        value={commentText}
+        className={styled.input_comments}
+        onKeyDown={(e) => {
+          console.log(e.keyCode);
+          if (e.keyCode === 13) {
+            sendCommentHandler();
+          }
+          if (e.keyCode === 27) {
+            setOpenEditComment(false);
+          }
+        }}
+      />
+      <div className={styled.comments_list_wrap}>
+        <div className={styled.comments_list}>
+          {comments.map((item) => (
+            <Comment
+              key={item.content}
+              openEditComment={openEditComment}
+              setOpenEditComment={setOpenEditComment}
+              item={item}
+              setComments={setComments}
+              decreaseTotalCmt={decreaseTotalCmt}
+              user={user}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Comments;
+
+function Comment({ openEditComment, setOpenEditComment, item, setComments, decreaseTotalCmt, user }) {
+  const [commentTextEdit, setCommentTextEdit] = useState('');
+  const [disabledButtonEdit, setDisabledButtonEdit] = useState(true);
+  // EDIT COMMENT
+
+  const style = { marginRight: 10 };
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openMenu = Boolean(anchorEl);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const sendEditedCommentHandler = async (commentId) => {
     console.log('clicked', commentId);
 
@@ -99,125 +146,104 @@ const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
     await isekaiApi.deleteComment(commentId);
   };
 
-  useEffect(() => {
-    const getCommentsPost = async () => {
-      const data = await isekaiApi.getCommentsPost(postId);
-      setComments(data.sort((a, b) => b.created_at.localeCompare(a.created_at)));
-    };
-    getCommentsPost();
-  }, [postId]);
-
-  return (
-    <div className={styled.comments}>
-      <InputComment
-        onChange={commentTextChangeHandler}
-        onSendComment={sendCommentHandler}
-        disabledBtn={disabledButton}
-        value={commentText}
-        className={styled.input_comments}
-        onKeyDown={(e) => {
-          console.log(e.keyCode);
-          if (e.keyCode === 13) {
-            sendCommentHandler();
-            handleMenuClose();
-          }
-          if (e.keyCode === 27) {
-            setOpenEditComment(false);
-          }
-        }}
-      />
-      <div className={styled.comments_list_wrap}>
-        <div className={styled.comments_list}>
-          {comments.length > 0 &&
-            comments.map((item) =>
-              openEditComment === item.id ? (
-                <InputComment
-                  key={item.id}
-                  value={commentTextEdit}
-                  onChange={(e) => {
-                    setCommentTextEdit(e.target.value);
-                    if (e.target.value.trim().length === 0 || e.target.value === item.content) {
-                      setDisabledButtonEdit(true);
-                      return;
-                    }
-
-                    setDisabledButtonEdit(false);
-                  }}
-                  disabledBtn={disabledButtonEdit}
-                  onSendComment={() => {
-                    sendEditedCommentHandler(item.id);
-                  }}
-                  showText={openEditComment}
-                  onKeyDown={(e) => {
-                    console.log(e.keyCode);
-                    if (e.keyCode === 13) {
-                      sendEditedCommentHandler(item.id);
-                    }
-                    if (e.keyCode === 27) {
-                      setOpenEditComment(false);
-                    }
-                  }}
-                />
-              ) : (
-                <div key={item.id} className={styled.comments_item}>
-                  <UserImg userImg={item.user.profilePicture} />
-                  <div className={styled.comments_main}>
-                    <div className={styled.info}>
-                      <span className={styled.name}>{item.user.username}</span>
-                      <span className={styled.created_at}>{moment(item.created_at, moment.defaultFormat).fromNow()}</span>
-                    </div>
-                    <p className={styled.content}>{item.content}</p>
-                  </div>
-                  {item.user.id === user.id && (
-                    <div className={styled.comments_actions}>
-                      <span
-                        onClick={() => {
-                          setOpenEditComment(item.id);
-                          setCommentTextEdit(item.content);
-                        }}
-                      >
-                        Chỉnh sửa
-                      </span>
-                      <span
-                        onClick={() => {
-                          sendDeleteCommentHandler(item.id);
-                        }}
-                      >
-                        Xóa
-                      </span>
-                      <IconButton onClick={handleMenuClick}>
-                        <MoreHorizIcon />
-                      </IconButton>
-                      <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose} autoFocus={false}>
-                        <MenuItem
-                          onClick={() => {
-                            setOpenEditComment(item.id);
-                            setCommentTextEdit(item.content);
-                            handleMenuClose();
-                          }}
-                        >
-                          <EditIcon fontSize="small" style={style} />
-                          Chỉnh sửa
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() => {
-                            sendDeleteCommentHandler(item.id);
-                            handleMenuClose();
-                          }}
-                        >
-                          <DeleteIcon fontSize="small" style={style} />
-                          Xóa
-                        </MenuItem>
-                      </Menu>
-                    </div>
-                  )}
-                </div>
-              ),
-            )}
+  //
+  return openEditComment === item.id ? (
+    <InputComment
+      key={item.id}
+      value={commentTextEdit}
+      onChange={(e) => {
+        setCommentTextEdit(e.target.value);
+        if (e.target.value.trim().length === 0 || e.target.value === item.content) {
+          setDisabledButtonEdit(true);
+          return;
+        }
+        setDisabledButtonEdit(false);
+      }}
+      disabledBtn={disabledButtonEdit}
+      onSendComment={() => {
+        sendEditedCommentHandler(item.id);
+      }}
+      showText={openEditComment}
+      onKeyDown={(e) => {
+        console.log(e.keyCode);
+        if (e.keyCode === 13) {
+          sendEditedCommentHandler(item.id);
+        }
+        if (e.keyCode === 27) {
+          setOpenEditComment(false);
+        }
+      }}
+    />
+  ) : (
+    <div key={item.id} className={styled.comments_item}>
+      <UserImg userImg={item.user.profilePicture} />
+      <div className={styled.comments_main}>
+        <div className={styled.info}>
+          <span className={styled.name}>{item.user.username}</span>
+          <span className={styled.created_at}>{moment(item.created_at, moment.defaultFormat).fromNow()}</span>
         </div>
+        <p className={styled.content}>{item.content}</p>
       </div>
+      {item.user.id === user.id && (
+        <div key={item.id} className={styled.comments_actions}>
+          <span
+            onClick={() => {
+              console.log(item.content);
+
+              setOpenEditComment(item.id);
+              setCommentTextEdit(item.content);
+            }}
+          >
+            Chỉnh sửa
+          </span>
+          <span
+            onClick={() => {
+              sendDeleteCommentHandler(item.id);
+            }}
+          >
+            Xóa
+          </span>
+          <IconButton
+            onClick={(e) => {
+              handleMenuClick(e);
+              console.log(item.content);
+            }}
+          >
+            <MoreHorizIcon />
+          </IconButton>
+          <Menu
+            key={item.content}
+            id={'simple-menu'}
+            anchorEl={anchorEl}
+            open={openMenu}
+            onClose={handleMenuClose}
+            autoFocus={false}
+          >
+            <MenuItem
+              onClick={() => {
+                console.log(item.content);
+                setOpenEditComment(item.id);
+                setCommentTextEdit(item.content);
+                handleMenuClose();
+              }}
+            >
+              <EditIcon fontSize="small" style={style} />
+              Chỉnh sửa {item.content}
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                console.log(item.content);
+
+                sendDeleteCommentHandler(item.id);
+                handleMenuClose();
+              }}
+            >
+              <DeleteIcon fontSize="small" style={style} />
+              Xóa
+            </MenuItem>
+          </Menu>
+        </div>
+      )}
     </div>
   );
-};
-
-export default Comments;
+}
