@@ -2,20 +2,21 @@ import React, { useEffect, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper';
 import { MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import { StyledSlideImgPost } from './Styles';
+import { StyledPagination, StyledSlideImgPost } from './Styles';
 import 'swiper/css';
 import { v4 as uuidv4 } from 'uuid';
+import Img from './Img';
 
 const SlideImgPost = ({ images }) => {
   const btnNextRef = useRef();
   const btnPrevRef = useRef();
+  const paginationRef = useRef();
 
   useEffect(() => {
-    const swiperPagination = document.querySelector('.swiper-pagination');
     if (images.length === 1) {
-      swiperPagination.classList.add('disable');
+      paginationRef.current.style.display = 'none';
     } else {
-      swiperPagination.classList.remove('disable');
+      paginationRef.current.style.display = 'flex';
     }
   }, [images]);
 
@@ -27,17 +28,17 @@ const SlideImgPost = ({ images }) => {
           prevEl: btnPrevRef.current ? btnPrevRef.current : undefined,
           nextEl: btnNextRef.current ? btnNextRef.current : undefined,
         }}
-        pagination={{ clickable: true }}
+        pagination={{ clickable: true, el: paginationRef.current }}
         onBeforeInit={(swiper) => {
           swiper.params.navigation.prevEl = btnPrevRef.current;
           swiper.params.navigation.nextEl = btnNextRef.current;
+          swiper.params.pagination.el = paginationRef.current;
         }}
       >
         {images.map((img) => {
           return (
             <SwiperSlide key={uuidv4()}>
-              <div className="bg-blur" style={{ backgroundImage: `url(${img})` }}></div>
-              <img src={img} alt="" />
+              <Img imgUrl={img} />
             </SwiperSlide>
           );
         })}
@@ -47,9 +48,12 @@ const SlideImgPost = ({ images }) => {
         <div ref={btnNextRef} className="btn-move next">
           <MdOutlineKeyboardArrowRight />
         </div>
+        <StyledPagination>
+          <div ref={paginationRef} className="pagination"></div>
+        </StyledPagination>
       </Swiper>
     </StyledSlideImgPost>
   );
 };
 
-export default SlideImgPost;
+export default React.memo(SlideImgPost);

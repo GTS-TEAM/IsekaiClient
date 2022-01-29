@@ -28,6 +28,7 @@ const Post = ({ post }) => {
   const [totalComment, setTotalComment] = useState(post.comments);
   const { user: currentUser } = useSelector(authSelector);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  
   const ui = useSelector(uiSelector);
 
   const open = Boolean(anchorEl);
