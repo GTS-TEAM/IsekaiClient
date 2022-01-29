@@ -48,36 +48,6 @@ export const StyledSlideImgPost = styled.div`
   }
 `;
 
-export const StyledPagination = styled.div`
-  position: absolute;
-  width: 100%;
-  bottom: 1.6rem;
-  z-index: 2;
-
-  .pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    column-gap: 0.5rem;
-  }
-
-  .swiper-pagination-bullet {
-    width: 1rem;
-    height: 1rem;
-    background-color: var(--textColorWhite);
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    border-radius: 50%;
-    border: 1px solid var(--borderColor);
-  }
-  .swiper-pagination-bullet.swiper-pagination-bullet-active {
-    background-color: var(--mainColor);
-  }
-
-  &.disable {
-    display: none;
-  }
-`;
-
 export const StyledImg = styled.div`
   width: 100%;
   height: 100%;

@@ -83,6 +83,7 @@
     align-items: center;
     column-gap: 0.3rem;
     color: var(--textColorGray);
+    position: relative;
 
     svg {
       width: 1.6rem;
@@ -91,6 +92,34 @@
 
     span {
       font-size: 1.6rem;
+      cursor: pointer;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      z-index: 10;
+      background-color: rgba($color: #000000, $alpha: 0.9);
+      padding: 1.4rem;
+      bottom: calc(100% + 1rem);
+      left: -1rem;
+      min-width: 15rem;
+      border-radius: var(--borderRadius);
+      color: var(--textColorWhite);
+
+      font-size: 1.3rem;
+
+      flex-direction: column;
+      row-gap: 0.5rem;
+    }
+
+    &:hover {
+      span {
+        text-decoration: underline;
+      }
+      .dropdown {
+        display: flex;
+      }
     }
   }
 

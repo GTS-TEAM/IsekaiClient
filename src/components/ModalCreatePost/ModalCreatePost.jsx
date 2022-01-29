@@ -1,12 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import autosize from 'autosize';
-import { RiImageAddFill } from 'react-icons/ri';
-import { IoClose } from 'react-icons/io5';
-import { Modal, UserImg } from '../../../../components';
-import { IMG } from '../../../../images';
-import styled from './ModalCreatePost.module.scss';
-import { Emotion } from '..';
-import { useSelector, useDispatch } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
+import { IMG } from 'images';
 import {
   addPostImg,
   changePostText,
@@ -15,11 +11,14 @@ import {
   editPost,
   postsSelector,
   removePostImg,
-} from '../../../../features/postsSlice';
-import { v4 as uuidv4 } from 'uuid';
-import { toggleHaveChooseEmotion, toggleHaveChoosePhoto, uiSelector } from '../../../../features/uiSlice';
-import { authSelector } from '../../../../features/authSlice';
-import CircularProgress from '@mui/material/CircularProgress';
+} from 'features/postsSlice';
+import { toggleHaveChooseEmotion, toggleHaveChoosePhoto, uiSelector } from 'features/uiSlice';
+import { authSelector } from 'features/authSlice';
+import { IoClose } from 'react-icons/io5';
+import { RiImageAddFill } from 'react-icons/ri';
+import { CircularProgress } from '@mui/material';
+import { Emotion, Modal, UserImg } from 'components';
+import styled from './ModalCreatePost.module.scss';
 
 const ModalCreatePost = ({ className = '', style, type, postId, onCloseModal }) => {
   const [disabledBtn, setDisabledBtn] = useState(true);

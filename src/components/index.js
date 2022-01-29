@@ -10,3 +10,6 @@ export { default as InputComment } from './InputComment/InputComment';
 export { default as Comments } from './Comments/Comments';
 export { default as More } from './More/More';
 export { default as SlideImgPost } from './SlideImgPost/SlideImgPost';
+export { default as CreatePost } from './CreatePost/CreatePost';
+export { default as ModalCreatePost } from './ModalCreatePost/ModalCreatePost';
+export { default as Emotion } from './Emotion/Emotion';

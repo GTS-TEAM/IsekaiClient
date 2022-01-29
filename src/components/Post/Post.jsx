@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { AiOutlineLike, AiOutlineComment, AiOutlineShareAlt, AiFillLike } from 'react-icons/ai';
-import { Comments, More, Overlay, SlideImgPost, UserImg } from '..';
+import { Comments, ModalCreatePost, More, Overlay, SlideImgPost, UserImg } from '..';
 import classes from './Post.module.scss';
 import { isekaiApi } from '../../api/isekaiApi';
 import emotions from '../../utils/emotions';
@@ -18,8 +18,8 @@ import {
   deletePost,
 } from '../../features/postsSlice';
 import { openEditPostModal, closeEditPostModal, uiSelector, setPostIdEdit } from '../../features/uiSlice';
-import { ModalCreatePost } from '../../pages/Homepage/components';
 import { useOverFlowHidden } from '../../hooks/useOverFlowHidden';
+import { Menu, MenuItem } from '@mui/material';
 
 const Post = ({ post }) => {
   const [isLiked, setIsLiked] = useState(post.liked);
@@ -27,19 +27,30 @@ const Post = ({ post }) => {
   const [totalLike, setTotalLike] = useState(post.likes);
   const [totalComment, setTotalComment] = useState(post.comments);
   const { user: currentUser } = useSelector(authSelector);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  
+  const [userLiked, setUserLiked] = useState([]);
+  const [anchorElPost, setAnchorElPost] = React.useState(null);
+  const [anchorElLike, setAnchorElLike] = React.useState(null);
+
   const ui = useSelector(uiSelector);
 
-  const open = Boolean(anchorEl);
+  const openPost = Boolean(anchorElPost);
 
   const dispatch = useDispatch();
 
+  const mouseEnterHandler = (event) => {
+    console.log('enter');
+    setAnchorElLike(event.currentTarget);
+  };
+  const mouseLeaveHandler = (event) => {
+    console.log('leave');
+    setAnchorElLike(null);
+  };
+
   const clickOpenMenuHandler = (event) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorElPost(event.currentTarget);
   };
   const clickCloseMenuHandler = () => {
-    setAnchorEl(null);
+    setAnchorElPost(null);
   };
 
   const closeModalCreatePostHandler = () => {
@@ -73,6 +84,34 @@ const Post = ({ post }) => {
 
   const likePostHandler = async () => {
     setIsLiked(!isLiked);
+    // if (isLiked) {
+    //   setUserLiked([
+    //     ...userLiked,
+    //     {
+    //       background: currentUser.background,
+    //       id: currentUser.id,
+    //       profilePicture: currentUser.profilePicture,
+    //       username: currentUser.username,
+    //     },
+    //   ]);
+    // } else {
+
+    // }
+    setUserLiked((prev) => {
+      if (isLiked) {
+        const userLikedClone = [...prev];
+        return userLikedClone.filter((item) => item.id !== currentUser.id);
+      }
+      return [
+        ...userLiked,
+        {
+          background: currentUser.background,
+          id: currentUser.id,
+          profilePicture: currentUser.profilePicture,
+          username: currentUser.username,
+        },
+      ];
+    });
     setTotalLike((totalLike) => {
       if (isLiked) {
         return totalLike - 1;
@@ -91,6 +130,14 @@ const Post = ({ post }) => {
     setTotalComment((prev) => prev - 1);
   };
 
+  useEffect(() => {
+    const getUserLiked = async () => {
+      const data = await isekaiApi.getUserLikedPost(post.id);
+      setUserLiked(data[0].likes);
+    };
+    getUserLiked();
+  }, [post.id]);
+
   return (
     <div className={classes.post}>
       <div className={classes.post__header}>
@@ -108,8 +155,8 @@ const Post = ({ post }) => {
         </div>
         {post.user.id === currentUser.id && (
           <More
-            anchorEl={anchorEl}
-            open={open}
+            anchorEl={anchorElPost}
+            open={openPost}
             onOpenMenu={clickOpenMenuHandler}
             onCloseMenu={clickCloseMenuHandler}
             onClickOpenEdit={clickEditHandler}
@@ -129,6 +176,11 @@ const Post = ({ post }) => {
           {totalLike !== 0 && (
             <div className={classes.total_like}>
               <span>{totalLike} luợt thích</span>
+              <div className={classes.dropdown}>
+                {userLiked.map((item) => (
+                  <div key={item.id}>{item.id === currentUser.id ? 'You' : item.username}</div>
+                ))}
+              </div>
             </div>
           )}
           {totalComment !== 0 && <div className={classes.total_comment}>{totalComment} bình luận</div>}

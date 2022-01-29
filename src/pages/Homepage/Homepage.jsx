@@ -1,20 +1,17 @@
 import { CircularProgress } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { getTimeline, postsSelector, unmountTimeline } from 'features/postsSlice';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { Post } from '../../components';
-import { getTimeline, postsSelector, unmountTimeline } from '../../features/postsSlice';
-import { CreatePost } from './components';
-import styled from './Homepage.module.scss';
+import { Post, CreatePost } from 'components';
 import { StyledInfiniteScroll } from './Styles';
+import styled from './Homepage.module.scss';
 
 const Homepage = () => {
   const dispatch = useDispatch();
   const { timeline } = useSelector(postsSelector);
   const [page, setPage] = useState(1);
   const location = useLocation();
-
-  console.log(location);
 
   const fetchMoreHandler = () => {
     dispatch(getTimeline({ page: page + 1 }));

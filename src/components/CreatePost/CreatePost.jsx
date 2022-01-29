@@ -1,20 +1,19 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
-import { ModalCreatePost } from '..';
-import { Overlay } from '../../../../components';
+import { useDispatch, useSelector } from 'react-redux';
+import { changePostText, clearPostEmotion, clearPostImg } from 'features/postsSlice';
 import {
   closeCreatePostModal,
   openCreatePostModal,
   toggleHaveChooseEmotion,
   toggleHaveChoosePhoto,
   uiSelector,
-} from '../../../../features/uiSlice';
-import { authSelector } from '../../../../features/authSlice';
-import { IMG } from '../../../../images';
+} from 'features/uiSlice';
+import { authSelector } from 'features/authSlice';
+import { useOverFlowHidden } from 'hooks/useOverFlowHidden';
+import { IMG } from 'images';
+import { ModalCreatePost, Overlay } from 'components';
 import styled from './CreatePost.module.scss';
-import { changePostText, clearPostEmotion, clearPostImg } from '../../../../features/postsSlice';
-import { useOverFlowHidden } from '../../../../hooks/useOverFlowHidden';
+
 const CreatePost = () => {
   const { user } = useSelector(authSelector);
   const ui = useSelector(uiSelector);

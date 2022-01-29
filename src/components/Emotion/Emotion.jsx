@@ -1,9 +1,9 @@
-import React from 'react';
+import { addPostEmotion, postsSelector } from 'features/postsSlice';
 import { IoClose } from 'react-icons/io5';
-import styled from './Emotion.module.scss';
-import emotions from '../../../../utils/emotions';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPostEmotion, postsSelector } from '../../../../features/postsSlice';
+import emotions from 'utils/emotions';
+import styled from './Emotion.module.scss';
+
 const Emotion = ({ onClose }) => {
   const post = useSelector(postsSelector);
   const dispatch = useDispatch();

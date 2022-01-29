@@ -64,6 +64,10 @@ export const isekaiApi = {
     });
   },
 
+  getUserLikedPost: (postId) => {
+    return axios.get(`/posts/${postId}/likes`);
+  },
+
   commentPost: (postId, comment) => {
     return axios.post(`/posts/${postId}/comments`, { comment });
   },
