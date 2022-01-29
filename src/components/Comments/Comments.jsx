@@ -51,7 +51,7 @@ const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
     if (data.length > 0) {
       setHasMore(true);
       setOffset(offset + 1);
-      setComments([...comments, ...data].sort((a, b) => b.created_at.localeCompare(a.created_at)));
+      setComments([...comments, ...data]);
     } else {
       setHasMore(false);
     }

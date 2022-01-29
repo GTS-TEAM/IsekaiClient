@@ -2,16 +2,25 @@
 
 :root {
   --headerHeight: 6rem;
-  --headerMainHeight: 8rem;
+  --bgColor: #f0f2f5;
   --sidebarWidth: 24rem;
   --borderRadius: 1.6rem;
   --textColorBlack: #000;
   --textColorWhite: #fff;
+  --fds-black: #000000;
+  --fds-white: #fff;
   --textColorGray: #5a5a5a;
   --mainColor: #a56ffd;
   --grayColor: #747474;
   --grayColor1: #f7f7f7;
   --borderColor: #e5e5e5;
+  --shadow-1: rgba(0, 0, 0, 0.1);
+  --shadow-2: rgba(0, 0, 0, 0.2);
+  --shadow-5: rgba(0, 0, 0, 0.5);
+  --shadow-8: rgba(0, 0, 0, 0.8);
+  --shadow-inset: rgba(255, 255, 255, 0.5);
+  --surface-background: #ffffff;
+  --boxShadow-2: 0 1px 2px var(--shadow-2);
 }
 
 *,
