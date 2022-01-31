@@ -58,16 +58,24 @@ const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
   };
 
   useEffect(() => {
+    let isActive = true; // component mounted
     const getCommentsPost = async () => {
       const data = await isekaiApi.getCommentsPost(postId, 1);
-      if (data.length > 0) {
-        setHasMore(true);
-      } else {
-        setHasMore(false);
+      if (isActive) {
+        if (data.length > 0) {
+          setHasMore(true);
+        } else {
+          setHasMore(false);
+        }
+        setComments(data.sort((a, b) => b.created_at.localeCompare(a.created_at)));
       }
-      setComments(data.sort((a, b) => b.created_at.localeCompare(a.created_at)));
     };
+
     getCommentsPost();
+
+    return () => {
+      isActive = false;
+    };
   }, [postId]);
 
   return (

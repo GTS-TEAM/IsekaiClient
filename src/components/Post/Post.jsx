@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { AiOutlineLike, AiOutlineComment, AiOutlineShareAlt, AiFillLike } from 'react-icons/ai';
-import { Comments, ModalCreatePost, More, Overlay, SlideImgPost, UserImg } from '..';
+import { Comments, ModalCreatePost, More, Overlay, SlideImgPost, UserImg, GridImg, ModalViewPost } from '..';
 import classes from './Post.module.scss';
 import { isekaiApi } from '../../api/isekaiApi';
 import emotions from '../../utils/emotions';
@@ -19,6 +19,7 @@ import {
 } from '../../features/postsSlice';
 import { openEditPostModal, closeEditPostModal, uiSelector, setPostIdEdit } from '../../features/uiSlice';
 import { useOverFlowHidden } from '../../hooks/useOverFlowHidden';
+import { useMounted } from '../../hooks/useMounted';
 import { Menu, MenuItem } from '@mui/material';
 
 const Post = ({ post }) => {
@@ -29,22 +30,13 @@ const Post = ({ post }) => {
   const { user: currentUser } = useSelector(authSelector);
   const [userLiked, setUserLiked] = useState([]);
   const [anchorElPost, setAnchorElPost] = React.useState(null);
-  const [anchorElLike, setAnchorElLike] = React.useState(null);
+  const mounted = useMounted();
 
   const ui = useSelector(uiSelector);
 
   const openPost = Boolean(anchorElPost);
 
   const dispatch = useDispatch();
-
-  const mouseEnterHandler = (event) => {
-    console.log('enter');
-    setAnchorElLike(event.currentTarget);
-  };
-  const mouseLeaveHandler = (event) => {
-    console.log('leave');
-    setAnchorElLike(null);
-  };
 
   const clickOpenMenuHandler = (event) => {
     setAnchorElPost(event.currentTarget);
@@ -84,19 +76,6 @@ const Post = ({ post }) => {
 
   const likePostHandler = async () => {
     setIsLiked(!isLiked);
-    // if (isLiked) {
-    //   setUserLiked([
-    //     ...userLiked,
-    //     {
-    //       background: currentUser.background,
-    //       id: currentUser.id,
-    //       profilePicture: currentUser.profilePicture,
-    //       username: currentUser.username,
-    //     },
-    //   ]);
-    // } else {
-
-    // }
     setUserLiked((prev) => {
       if (isLiked) {
         const userLikedClone = [...prev];
@@ -135,8 +114,10 @@ const Post = ({ post }) => {
       const data = await isekaiApi.getUserLikedPost(post.id);
       setUserLiked(data[0].likes);
     };
-    getUserLiked();
-  }, [post.id]);
+    if (mounted) {
+      getUserLiked();
+    }
+  }, [post.id, mounted]);
 
   return (
     <div className={classes.post}>
@@ -169,7 +150,17 @@ const Post = ({ post }) => {
         )}
       </div>
       <div className={classes.content}>{post.description}</div>
-      {post.image.length === 0 ? null : <SlideImgPost images={post.image} />}
+      {post.image.length === 0 ? null : (
+        <GridImg
+          post={post}
+          decreaseTotalCmt={decreaseTotalCmtHandler}
+          increaseTotalCmt={increaseTotalCmtHandler}
+          onLike={likePostHandler}
+          isLiked={isLiked}
+          totalComment={totalComment}
+          totalLike={totalLike}
+        />
+      )}
 
       {totalComment !== 0 || totalLike !== 0 ? (
         <div className={classes.figures}>
@@ -210,23 +201,11 @@ const Post = ({ post }) => {
       {isOpenComment && (
         <Comments postId={post.id} decreaseTotalCmt={decreaseTotalCmtHandler} increaseTotalCmt={increaseTotalCmtHandler} />
       )}
-      {ui.createPostModal.isOpenEdit && post.id === ui.createPostModal.idPostEdit && <Overlay />}
       {ui.createPostModal.isOpenEdit && post.id === ui.createPostModal.idPostEdit && (
-        <ModalCreatePost
-          style={
-            ui.createPostModal.isOpenEdit
-              ? {
-                  top: '50%',
-                  opacity: '1',
-                  visibility: 'visible',
-                  transform: 'translate(-50%, -50%)',
-                }
-              : null
-          }
-          type="edit"
-          postId={post.id}
-          onCloseModal={closeModalCreatePostHandler}
-        />
+        <Overlay onClose={closeModalCreatePostHandler} />
+      )}
+      {ui.createPostModal.isOpenEdit && post.id === ui.createPostModal.idPostEdit && (
+        <ModalCreatePost type="edit" postId={post.id} onCloseModal={closeModalCreatePostHandler} />
       )}
     </div>
   );

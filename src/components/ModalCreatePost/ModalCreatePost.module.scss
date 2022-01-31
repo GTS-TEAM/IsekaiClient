@@ -3,13 +3,6 @@
   border-radius: var(--borderRadius);
   width: 100%;
   max-width: 50rem;
-  transition: all 0.3s;
-  left: 50%;
-  top: 50px;
-  transform: translateX(-50%);
-  opacity: 0;
-  visibility: hidden;
-  overflow: hidden;
 }
 
 .header {

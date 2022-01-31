@@ -18,4 +18,5 @@ export const IMG = {
   EmojiCoDon: require('./emoji-codon.png'),
   EmojiNhoCrush: require('./emoji-nhocrush.png'),
   EmojiHaiLong: require('./emoji-hailong.png'),
+  BgImgCoverProfile: require('./bg-cover-profile.png'),
 };

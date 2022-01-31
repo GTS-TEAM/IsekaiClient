@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, forwardRef, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper';
 import { MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowLeft } from 'react-icons/md';
@@ -7,13 +7,21 @@ import 'swiper/css';
 import { v4 as uuidv4 } from 'uuid';
 import Img from './Img';
 
-const SlideImgPost = ({ images }) => {
+const SlideImgPost = ({ images, slideIndex }) => {
   const btnNextRef = useRef();
   const btnPrevRef = useRef();
+  const swiperRef = useRef();
+
+  useEffect(() => {
+    if (swiperRef.current) {
+      swiperRef.current.swiper.slideTo(slideIndex, 0);
+    }
+  }, [slideIndex]);
 
   return (
     <StyledSlideImgPost>
       <Swiper
+        ref={swiperRef}
         modules={[Navigation, Pagination]}
         navigation={{
           prevEl: btnPrevRef.current ? btnPrevRef.current : undefined,

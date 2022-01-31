@@ -4,9 +4,11 @@ const initialState = {
   createPostModal: {
     isOpenEdit: false,
     isOpenPost: false,
+    isOpenViewPost: false,
     idPostEdit: null,
     haveChoosePhoto: false,
     haveChooseEmotion: false,
+    idPost: null,
   },
 };
 
@@ -36,6 +38,15 @@ const uiSlice = createSlice({
       state.createPostModal.haveChooseEmotion = false;
       state.createPostModal.idPostEdit = null;
     },
+    openViewPost: (state) => {
+      state.createPostModal.isOpenViewPost = true;
+    },
+    closeViewPost: (state) => {
+      state.createPostModal.isOpenViewPost = false;
+    },
+    setPostIdView: (state, action) => {
+      state.createPostModal.idPost = action.payload;
+    },
     toggleHaveChoosePhoto: (state) => {
       state.createPostModal.haveChoosePhoto = !state.createPostModal.haveChoosePhoto;
     },
@@ -53,6 +64,9 @@ export const {
   closeEditPostModal,
   toggleHaveChooseEmotion,
   toggleHaveChoosePhoto,
+  closeViewPost,
+  openViewPost,
+  setPostIdView,
 } = uiSlice.actions;
 export const uiSelector = (state) => state.ui;
 export default uiSlice.reducer;

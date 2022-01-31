@@ -13,3 +13,8 @@ export { default as SlideImgPost } from './SlideImgPost/SlideImgPost';
 export { default as CreatePost } from './CreatePost/CreatePost';
 export { default as ModalCreatePost } from './ModalCreatePost/ModalCreatePost';
 export { default as Emotion } from './Emotion/Emotion';
+export { default as GridImg } from './GridImg/GridImg';
+export { default as UserBlockPost } from './UserBlockPost/UserBlockPost';
+export { default as ModalViewPost } from '../pages/PhotoPost/ModalViewPost';
+export { default as LiveStats } from './LiveStats/LiveStats';
+export { default as Actions } from './Actions/Actions';

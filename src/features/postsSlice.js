@@ -61,10 +61,6 @@ const initialState = {
     emotion: null,
     image: [],
   },
-  postImgs: {
-    loading: false,
-    urls: [],
-  },
 };
 
 const postsSlice = createSlice({
@@ -81,7 +77,6 @@ const postsSlice = createSlice({
       state.dataPosts.image = action.payload;
     },
     removePostImg: (state, action) => {
-      console.log(action.payload);
       state.dataPosts.image = state.dataPosts.image.filter((item) => {
         if (item.id) {
           return item.id !== action.payload;
@@ -100,6 +95,12 @@ const postsSlice = createSlice({
     },
     unmountTimeline: (state) => {
       state.timeline.posts = [];
+    },
+    toggleLike: (state, action) => {
+      // action payload : id
+      const indexPost = state.timeline.posts.findIndex((post) => post.id === action.payload);
+      const post = state.timeline.posts[indexPost];
+      state.timeline.posts[indexPost] = { ...post, likes: !post.like };
     },
   },
   extraReducers: (builder) => {

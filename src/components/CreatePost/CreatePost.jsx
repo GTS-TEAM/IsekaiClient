@@ -68,20 +68,7 @@ const CreatePost = () => {
 
       {ui.createPostModal.isOpenPost && <Overlay onClose={closeModalCreatePostHandler} />}
       {ui.createPostModal.isOpenPost && (
-        <ModalCreatePost
-          style={
-            ui.createPostModal.isOpenPost
-              ? {
-                  top: '50%',
-                  opacity: '1',
-                  visibility: 'visible',
-                  transform: 'translate(-50%, -50%)',
-                }
-              : null
-          }
-          type="post"
-          onCloseModal={closeModalCreatePostHandler}
-        />
+        <ModalCreatePost type="post" onCloseModal={closeModalCreatePostHandler} open={ui.createPostModal.isOpenPost} />
       )}
     </div>
   );

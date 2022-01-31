@@ -5,6 +5,7 @@ import Register from './pages/Auth/Register';
 import { Layout, RequireAuth } from './components';
 import Homepage from './pages/Homepage/Homepage';
 import './api/axoisClient';
+import Profile from 'pages/Profile/Profile';
 function App() {
   // const { token, dispatch, error } = useContext(AuthContext);
   // axios.interceptors.request.use(function (config) {
@@ -64,6 +65,14 @@ function App() {
               <Layout>
                 <Homepage />
               </Layout>
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/profile/:id"
+          element={
+            <RequireAuth>
+              <Profile />
             </RequireAuth>
           }
         />
