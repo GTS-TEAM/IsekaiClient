@@ -32,6 +32,10 @@ const ModalViewPost = ({
     dispatch(setPostIdView(null));
   };
 
+  useEffect(() => {
+    return () => closeViewPostHandler();
+  }, []);
+
   return createPortal(
     <StyledModalViewPost
       initial={{
