@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { InputComment } from '..';
 import { isekaiApi } from '../../api/isekaiApi';
 import { authSelector } from '../../features/authSlice';
 import styled from './Comments.module.scss';
 import Comment from './Comment';
-import { LoadMore, StyledListComments } from './Styles';
+import { Bottom, LoadMore, StyledListComments } from './Styles';
+import { increaseCmt, postsSelector } from 'features/postsSlice';
+import { Stack } from '@mui/material';
 
-const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
+const Comments = ({ postId, amountComment }) => {
   const { user } = useSelector(authSelector);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -16,6 +18,7 @@ const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
   const [openEditComment, setOpenEditComment] = useState(null);
   const [offset, setOffset] = useState(1);
   const [hasMore, setHasMore] = useState(false);
+  const dispatch = useDispatch();
 
   const commentTextChangeHandler = (e) => {
     setCommentText(e.target.value);
@@ -39,7 +42,7 @@ const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
       id,
       user,
     };
-    increaseTotalCmt();
+    dispatch(increaseCmt(postId));
     setComments([newComment, ...comments]);
     setCommentText('');
   };
@@ -96,19 +99,25 @@ const Comments = ({ postId, increaseTotalCmt, decreaseTotalCmt }) => {
         }}
       />
       <StyledListComments>
-        {comments.map((item) => (
+        {comments.map((comment) => (
           <Comment
-            key={item.id}
+            key={comment.id}
             openEditComment={openEditComment}
             setOpenEditComment={setOpenEditComment}
-            item={item}
+            comment={comment}
             setComments={setComments}
-            decreaseTotalCmt={decreaseTotalCmt}
-            user={user}
           />
         ))}
       </StyledListComments>
-      {hasMore && <LoadMore onClick={loadMoreCommentsHandler}>{loading ? 'Loading...' : 'Xem thêm bình luận'}</LoadMore>}
+
+      {hasMore && comments.length < amountComment && (
+        <Bottom>
+          <span onClick={loadMoreCommentsHandler}>{loading ? 'Loading...' : 'Xem thêm bình luận'}</span>
+          <span>
+            {comments.length}/{amountComment}
+          </span>
+        </Bottom>
+      )}
     </div>
   );
 };

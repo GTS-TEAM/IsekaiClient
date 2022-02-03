@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { getIndexItemExitById } from 'utils/getIndexItemExitById';
 import { isekaiApi } from '../api/isekaiApi';
-
 const uploadImg = async (files) => {
   const formData = new FormData();
   files.forEach((item) => {
@@ -37,6 +37,11 @@ export const editPost = createAsyncThunk('posts/editPost', async ({ image, descr
   return data;
 });
 
+export const likePost = createAsyncThunk('posts/likePost', async ({ postId }, thunkApi) => {
+  thunkApi.dispatch(toggleLike(postId));
+  await isekaiApi.likePost(postId);
+});
+
 export const deletePost = createAsyncThunk('posts/deletePost', async (postId) => {
   await isekaiApi.deletePost(postId);
   return postId;
@@ -50,6 +55,7 @@ export const getTimeline = createAsyncThunk('posts/getTimeline', async ({ page }
 const initialState = {
   timeline: {
     posts: [],
+    isOpenComment: false,
     loading: false,
     error: null,
     hasMore: false,
@@ -97,10 +103,40 @@ const postsSlice = createSlice({
       state.timeline.posts = [];
     },
     toggleLike: (state, action) => {
-      // action payload : id
-      const indexPost = state.timeline.posts.findIndex((post) => post.id === action.payload);
-      const post = state.timeline.posts[indexPost];
-      state.timeline.posts[indexPost] = { ...post, likes: !post.like };
+      // action payload : id post
+      const indexPost = state.timeline.posts.findIndex((item) => item.id === action.payload);
+      state.timeline.posts[indexPost] = {
+        ...state.timeline.posts[indexPost],
+        liked: !state.timeline.posts[indexPost].liked,
+      };
+
+      if (state.timeline.posts[indexPost].liked) {
+        state.timeline.posts[indexPost] = {
+          ...state.timeline.posts[indexPost],
+          likes: state.timeline.posts[indexPost].likes + 1,
+        };
+      } else {
+        state.timeline.posts[indexPost] = {
+          ...state.timeline.posts[indexPost],
+          likes: state.timeline.posts[indexPost].likes - 1,
+        };
+      }
+    },
+    increaseCmt: (state, action) => {
+      const indexPost = state.timeline.posts.findIndex((item) => item.id === action.payload);
+
+      state.timeline.posts[indexPost] = {
+        ...state.timeline.posts[indexPost],
+        comments: state.timeline.posts[indexPost].comments + 1,
+      };
+    },
+
+    decreaseCmt: (state, action) => {
+      const indexPost = state.timeline.posts.findIndex((item) => item.id === action.payload);
+      state.timeline.posts[indexPost] = {
+        ...state.timeline.posts[indexPost],
+        comments: state.timeline.posts[indexPost].comments - 1,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -150,7 +186,8 @@ const postsSlice = createSlice({
       .addCase(deletePost.fulfilled, (state, action) => {
         const indexPostExit = state.timeline.posts.findIndex((post) => post.id === action.payload);
         state.timeline.posts.splice(indexPostExit, 1);
-      });
+      })
+      .addCase(likePost.fulfilled, (state) => {});
   },
 });
 
@@ -163,6 +200,9 @@ export const {
   removePostImg,
   changePostText,
   unmountTimeline,
+  decreaseCmt,
+  increaseCmt,
+  toggleLike,
 } = postsSlice.actions;
 export const postsSelector = (state) => state.posts;
 export default postsSlice.reducer;

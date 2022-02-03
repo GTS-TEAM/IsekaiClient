@@ -6,6 +6,7 @@ export const StyledInfiniteScroll = styled(InfiniteScroll)`
   display: flex;
   flex-direction: column;
   row-gap: 1.8rem;
+  overflow: hidden !important;
 
   &::-webkit-scrollbar {
     width: 0;

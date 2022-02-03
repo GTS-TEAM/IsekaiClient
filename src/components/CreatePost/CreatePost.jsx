@@ -10,9 +10,10 @@ import {
 } from 'features/uiSlice';
 import { authSelector } from 'features/authSlice';
 import { useOverFlowHidden } from 'hooks/useOverFlowHidden';
+import { Avatar, Stack } from '@mui/material';
 import { IMG } from 'images';
 import { ModalCreatePost, Overlay } from 'components';
-import styled from './CreatePost.module.scss';
+import { Action, Bottom, Header, InputDummy, StyledCreatePost } from './Styles';
 
 const CreatePost = () => {
   const { user } = useSelector(authSelector);
@@ -34,43 +35,43 @@ const CreatePost = () => {
   useOverFlowHidden(ui.createPostModal.isOpenPost);
 
   return (
-    <div className={styled['create-post']}>
-      <div className={styled.top}>
-        <div className={styled.user__img}>
-          <img src={user?.profilePicture} alt="" />
-        </div>
-        <div className={styled.input__dummy} onClick={openModalCreatePostHandler}>
-          <p>{user?.username} ơi, bạn đang nghĩ gì thế?</p>
-        </div>
-      </div>
-      <div className={styled.bottom}>
-        <div
-          className={styled['add-photo']}
-          onClick={() => {
-            dispatch(toggleHaveChoosePhoto());
-            openModalCreatePostHandler();
-          }}
-        >
-          <IMG.AddPhoto />
-          <span>Ảnh</span>
-        </div>
-        <div
-          className={styled['add-emotion']}
-          onClick={() => {
-            dispatch(toggleHaveChooseEmotion());
-            openModalCreatePostHandler();
-          }}
-        >
-          <IMG.Emotion />
-          <span>Tâm trạng/Cảm xúc</span>
-        </div>
-      </div>
+    <StyledCreatePost>
+      <Header>
+        <Stack direction="row" alignItems="center" columnGap="1.6rem">
+          <Avatar src={user.profilePicture} />
+          <InputDummy onClick={openModalCreatePostHandler}>
+            <p>{user?.username} ơi, bạn đang nghĩ gì thế?</p>
+          </InputDummy>
+        </Stack>
+      </Header>
+      <Bottom>
+        <Stack direction="row" alignItems="center" columnGap="1.6rem">
+          <Action
+            onClick={() => {
+              dispatch(toggleHaveChoosePhoto());
+              openModalCreatePostHandler();
+            }}
+          >
+            <IMG.AddPhoto fill="#00a400" />
+            <span>Ảnh</span>
+          </Action>
+          <Action
+            onClick={() => {
+              dispatch(toggleHaveChooseEmotion());
+              openModalCreatePostHandler();
+            }}
+          >
+            <IMG.Emotion fill="#f5c33b" />
+            <span>Tâm trạng/Cảm xúc</span>
+          </Action>
+        </Stack>
+      </Bottom>
 
       {ui.createPostModal.isOpenPost && <Overlay onClose={closeModalCreatePostHandler} />}
       {ui.createPostModal.isOpenPost && (
         <ModalCreatePost type="post" onCloseModal={closeModalCreatePostHandler} open={ui.createPostModal.isOpenPost} />
       )}
-    </div>
+    </StyledCreatePost>
   );
 };
 

@@ -1,11 +1,10 @@
 import { Stack } from '@mui/material';
 import { Actions, Comments, LiveStats, SlideImgPost, UserBlockPost } from 'components';
 import { closeViewPost, setPostIdView } from 'features/uiSlice';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { GrFormClose } from 'react-icons/gr';
 import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 import {
   ButtonAddFriend,
   ButtonClose,
@@ -16,21 +15,18 @@ import {
   StyledModalViewPost,
 } from './Styles';
 const modal = document.querySelector('#modal');
-const ModalViewPost = ({
-  post,
-  decreaseTotalCmt,
-  increaseTotalCmt,
-  onLike,
-  isLiked,
-  totalComment,
-  totalLike,
-  slideIndex,
-}) => {
+const ModalViewPost = ({ post, slideIndex }) => {
   const dispatch = useDispatch();
-  const closeViewPostHandler = () => {
+  const closeViewPostHandler = useCallback(() => {
     dispatch(closeViewPost());
     dispatch(setPostIdView(null));
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    return () => {
+      closeViewPostHandler();
+    };
+  }, [closeViewPostHandler]);
 
   return createPortal(
     <StyledModalViewPost
@@ -64,12 +60,12 @@ const ModalViewPost = ({
           <ButtonAddFriend>Kết bạn</ButtonAddFriend>
         </Stack>
         {post.description.trim().length > 0 && <Description>{post.description}</Description>}
-        <LiveStats totalLike={totalLike} totalComment={totalComment} />
+        <LiveStats totalLike={post.likes} totalComment={post.comments} />
         <div style={{ padding: '0 1.2rem' }}>
-          <Actions onLike={onLike} isLiked={isLiked} />
+          <Actions post={post} />
         </div>
         <CommentsArea>
-          <Comments postId={post.id} decreaseTotalCmt={decreaseTotalCmt} increaseTotalCmt={increaseTotalCmt} />
+          <Comments postId={post.id} amountComment={post.comments} />
         </CommentsArea>
       </Post>
     </StyledModalViewPost>,

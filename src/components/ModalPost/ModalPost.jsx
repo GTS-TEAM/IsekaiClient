@@ -12,15 +12,30 @@ import {
   postsSelector,
   removePostImg,
 } from 'features/postsSlice';
-import { toggleHaveChooseEmotion, toggleHaveChoosePhoto, uiSelector } from 'features/uiSlice';
-import { authSelector } from 'features/authSlice';
 import { IoClose } from 'react-icons/io5';
 import { RiImageAddFill } from 'react-icons/ri';
-import { CircularProgress } from '@mui/material';
-import { Emotion, Modal, UserImg } from 'components';
-import styled from './ModalCreatePost.module.scss';
+import { CircularProgress, Stack } from '@mui/material';
+import { Emotion, UserBlockPost } from 'components';
+import { authSelector } from 'features/authSlice';
+import { toggleHaveChooseEmotion, toggleHaveChoosePhoto, uiSelector } from 'features/uiSlice';
+import {
+  Actions,
+  Body,
+  Bottom,
+  Close,
+  Header,
+  ImgPreview,
+  ImgPreviewList,
+  InputArea,
+  InputPhoto,
+  Loading,
+  Overlay,
+  StyledModalPost,
+  TextBottom,
+} from './Styles';
+import Images from 'components/ReactGridFacebook/ReactGridFacebook';
 
-const ModalCreatePost = ({ className = '', style, type, postId, onCloseModal }) => {
+const ModalPost = ({ className = '', style, type, postId, onCloseModal }) => {
   const [disabledBtn, setDisabledBtn] = useState(true);
   const { user } = useSelector(authSelector);
   const ui = useSelector(uiSelector);
@@ -46,7 +61,6 @@ const ModalCreatePost = ({ className = '', style, type, postId, onCloseModal }) 
   };
 
   const removeImgHandler = (id) => () => {
-    console.log('click');
     dispatch(removePostImg(id));
   };
 
@@ -105,80 +119,73 @@ const ModalCreatePost = ({ className = '', style, type, postId, onCloseModal }) 
   };
 
   return (
-    <Modal style={style} className={`${styled['modal-create-post']} ${className}`}>
-      <div className={styled.header}>
+    <StyledModalPost>
+      <Header>
         <span>Tạo bài viết</span>
-        <div className={styled.close} onClick={onCloseModal}>
+        <Close onClick={onCloseModal}>
           <IoClose />
-        </div>
-      </div>
-      <div className={styled.content}>
-        <div className={styled.content__header}>
-          <UserImg userImg={user?.profilePicture} />
-          <div className={styled.info}>
-            <span>{user?.username}</span>
-            {posts.dataPosts.emotion && (
-              <span>
-                đang cảm thấy {posts.dataPosts.emotion?.name} <img src={posts.dataPosts.emotion?.icon} alt="" />{' '}
-              </span>
-            )}
-          </div>
-        </div>
-        <div className={styled.input__container}>
+        </Close>
+      </Header>
+      <Body>
+        <UserBlockPost
+          userImg={user.profilePicture}
+          userId={user.id}
+          userName={user.username}
+          emoji={posts.dataPosts.emotion?.id}
+        />
+        <InputArea>
           <textarea
             name="postValue"
-            className={styled.input__post}
             onChange={postTextChangeHandler}
             placeholder={`${user?.username} ơi, bạn đang nghĩ gì thế?`}
             value={posts.dataPosts.postText}
           ></textarea>
-        </div>
+        </InputArea>
         {posts.dataPosts.image.length !== 0 && (
-          <div className={styled.img__list}>
+          <ImgPreviewList style={{ '--col': `${posts.dataPosts.image.length > 2 ? 2 : posts.dataPosts.image.length}` }}>
             {posts.dataPosts.image.map((img) => {
               return (
-                <div className={styled.img__preview} key={img.id || img}>
+                <ImgPreview key={img.id || img}>
                   <img src={img.url || img} alt="" />
-                  <div className={styled.close} onClick={removeImgHandler(img.id || img)}>
+                  <Close onClick={removeImgHandler(img.id || img)}>
                     <IoClose />
-                  </div>
-                </div>
+                  </Close>
+                </ImgPreview>
               );
             })}
-          </div>
+          </ImgPreviewList>
         )}
+
         {ui.createPostModal.haveChoosePhoto && (
-          <div className={styled.input__photo}>
+          <InputPhoto>
             <input type="file" accept="image/*" onChange={onImageChange} />
-            <div
-              className={styled.close}
+            <Close
               onClick={() => {
                 dispatch(toggleHaveChoosePhoto());
               }}
             >
               <IoClose />
-            </div>
-            <div className={styled.input__dummy}>
+            </Close>
+            <Stack justifyContent="center" alignItems="center" rowGap="1.6rem">
               <RiImageAddFill />
               <span>Thêm ảnh hoặc kéo và thả</span>
-            </div>
-          </div>
+            </Stack>
+          </InputPhoto>
         )}
-
         {ui.createPostModal.haveChooseEmotion && <Emotion onClose={closeEmotionHandler} />}
-      </div>
-      <div className={styled.bottom}>
-        <p className={styled.text}>Thêm vào bài viết</p>
-        <div className={styled.actions}>
+      </Body>
+      <Bottom>
+        <TextBottom>Thêm vào bài viết</TextBottom>
+        <Actions>
           <div
-            className={styled.add__photo}
+            className="add-photo"
             onClick={() => {
               dispatch(toggleHaveChoosePhoto());
             }}
           >
             <IMG.AddPhoto style={{ fill: '#00a400' }} />
           </div>
-          <div className={styled.add__emotion} onClick={closeEmotionHandler}>
+          <div className="add-emotion" onClick={closeEmotionHandler}>
             <IMG.Emotion style={{ fill: '#f5c33b' }} />
           </div>
           <button
@@ -187,19 +194,19 @@ const ModalCreatePost = ({ className = '', style, type, postId, onCloseModal }) 
           >
             {type === 'post' ? 'post' : 'edit'}
           </button>
-        </div>
-      </div>
+        </Actions>
+      </Bottom>
 
       {posts.dataPosts.loading ? (
         <React.Fragment>
-          <div className={styled.overlay}></div>
-          <div className={styled.loading}>
+          <Overlay />
+          <Loading>
             <CircularProgress size={'3.6rem'} color={'inherit'} />
-          </div>
+          </Loading>
         </React.Fragment>
       ) : null}
-    </Modal>
+    </StyledModalPost>
   );
 };
 
-export default React.memo(ModalCreatePost);
+export default React.memo(ModalPost);

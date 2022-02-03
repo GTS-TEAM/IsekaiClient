@@ -1,15 +1,20 @@
+import { Avatar } from '@mui/material';
+import { authSelector } from 'features/authSlice';
+import { decreaseCmt } from 'features/postsSlice';
 import moment from 'moment';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { InputComment, More, UserImg } from '..';
 import { isekaiApi } from '../../api/isekaiApi';
 import styled from './Comments.module.scss';
 
-const Comment = ({ openEditComment, setOpenEditComment, item, setComments, decreaseTotalCmt, user }) => {
+const Comment = ({ openEditComment, setOpenEditComment, comment, setComments, postId }) => {
   const [commentTextEdit, setCommentTextEdit] = useState('');
   const [disabledButtonEdit, setDisabledButtonEdit] = useState(true);
-
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
+  const dispatch = useDispatch();
+  const { user } = useSelector(authSelector);
 
   const sendEditedCommentHandler = async (commentId) => {
     if (commentTextEdit.trim().length === 0) {
@@ -35,13 +40,13 @@ const Comment = ({ openEditComment, setOpenEditComment, item, setComments, decre
       const editComments = [...prevComments];
       return editComments.filter((item) => item.id !== commentId);
     });
-    decreaseTotalCmt();
+    dispatch(decreaseCmt(postId));
     await isekaiApi.deleteComment(commentId);
   };
 
   const changeTextInputHandler = (e) => {
     setCommentTextEdit(e.target.value);
-    if (e.target.value.trim().length === 0 || e.target.value === item.content) {
+    if (e.target.value.trim().length === 0 || e.target.value === comment.content) {
       setDisabledButtonEdit(true);
       return;
     }
@@ -66,19 +71,19 @@ const Comment = ({ openEditComment, setOpenEditComment, item, setComments, decre
     handleMenuClose();
   };
 
-  return openEditComment === item.id ? (
+  return openEditComment === comment.id ? (
     <InputComment
-      key={item.id}
+      key={comment.id}
       value={commentTextEdit}
       onChange={changeTextInputHandler}
       disabledBtn={disabledButtonEdit}
       onSendComment={() => {
-        sendEditedCommentHandler(item.id);
+        sendEditedCommentHandler(comment.id);
       }}
       showText={openEditComment}
       onKeyDown={(e) => {
         if (e.keyCode === 13) {
-          sendEditedCommentHandler(item.id);
+          sendEditedCommentHandler(comment.id);
         }
         if (e.keyCode === 27) {
           setOpenEditComment(null);
@@ -86,23 +91,23 @@ const Comment = ({ openEditComment, setOpenEditComment, item, setComments, decre
       }}
     />
   ) : (
-    <div key={item.id} className={styled.comments_item}>
-      <UserImg userImg={item.user.profilePicture} />
+    <div key={comment.id} className={styled.comments_item}>
+      <Avatar src={comment.user.profilePicture} />
       <div className={styled.comments_main}>
         <div className={styled.info}>
-          <span className={styled.name}>{item.user.username}</span>
-          <span className={styled.created_at}>{moment(item.created_at, moment.defaultFormat).fromNow()}</span>
+          <span className={styled.name}>{comment.user.username}</span>
+          <span className={styled.created_at}>{moment(comment.created_at, moment.defaultFormat).fromNow()}</span>
         </div>
-        <p className={styled.content}>{item.content}</p>
+        <p className={styled.content}>{comment.content}</p>
       </div>
-      {item.user.id === user.id && (
+      {comment.user.id === user.id && (
         <More
           anchorEl={anchorEl}
           open={openMenu}
           onOpenMenu={handleMenuClick}
           onCloseMenu={handleMenuClose}
-          onClickOpenEdit={clickOpenEditHandler(item)}
-          onClickRemove={clickRemoveHandler(item)}
+          onClickOpenEdit={clickOpenEditHandler(comment)}
+          onClickRemove={clickRemoveHandler(comment)}
           width="3rem"
           height="3rem"
           heightIcon="1.6rem"

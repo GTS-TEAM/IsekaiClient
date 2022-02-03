@@ -11,7 +11,6 @@ const Homepage = () => {
   const dispatch = useDispatch();
   const { timeline } = useSelector(postsSelector);
   const [page, setPage] = useState(1);
-  const location = useLocation();
 
   const fetchMoreHandler = () => {
     dispatch(getTimeline({ page: page + 1 }));
@@ -19,8 +18,10 @@ const Homepage = () => {
   };
 
   useEffect(() => {
-    dispatch(unmountTimeline());
-  }, [location, dispatch]);
+    return () => {
+      dispatch(unmountTimeline());
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getTimeline({ page: 1 }));

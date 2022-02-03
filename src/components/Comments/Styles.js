@@ -1,4 +1,5 @@
-import styled from '@emotion/styled';
+import styled from '@emotion/styled/macro';
+import { Stack } from '@mui/material';
 
 export const StyledListComments = styled.div`
   display: flex;
@@ -8,12 +9,19 @@ export const StyledListComments = styled.div`
   margin-top: 6rem;
 `;
 
-export const LoadMore = styled.span`
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-  cursor: pointer;
+export const Bottom = styled(Stack)`
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--fds-gray-5);
 
-  &:hover {
-    text-decoration: underline;
+  span:first-child {
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;

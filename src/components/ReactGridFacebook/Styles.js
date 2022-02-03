@@ -12,6 +12,8 @@ export const Img = styled.div`
   background-repeat: no-repeat;
   cursor: pointer;
   position: relative;
+  border-radius: var(--borderRadius2);
+  overflow: hidden;
 
   &.one {
     width: 100%;

@@ -1,18 +1,25 @@
 import { Stack } from '@mui/material';
+import { likePost } from 'features/postsSlice';
 import React from 'react';
 import { AiOutlineLike, AiOutlineComment, AiOutlineShareAlt, AiFillLike } from 'react-icons/ai';
+import { useDispatch } from 'react-redux';
 import { StyledActions } from './Styles';
 
-const Actions = ({ onLike, isLiked = false }) => {
+const Actions = ({ onToggleComment, post, className }) => {
+  const dispatch = useDispatch();
+  const likePostHandler = () => {
+    dispatch(likePost({ postId: post.id }));
+  };
+
   return (
-    <StyledActions>
-      <div onClick={onLike} className="like">
+    <StyledActions className={className}>
+      <div onClick={likePostHandler} className="like">
         <Stack direction="row" alignItems="center" columnGap="1rem" justifyContent="center">
-          {isLiked ? <AiFillLike style={isLiked ? { color: 'var(--mainColor)' } : null} /> : <AiOutlineLike />}
-          <span style={isLiked ? { color: 'var(--mainColor)' } : null}>Thích</span>
+          {post.liked ? <AiFillLike style={post.liked ? { color: 'var(--mainColor)' } : null} /> : <AiOutlineLike />}
+          <span style={post.liked ? { color: 'var(--mainColor)' } : null}>Thích</span>
         </Stack>
       </div>
-      <div className="comment">
+      <div className="comment" onClick={onToggleComment}>
         <Stack direction="row" alignItems="center" columnGap="1rem" justifyContent="center">
           <AiOutlineComment />
           <span>Bình luận</span>

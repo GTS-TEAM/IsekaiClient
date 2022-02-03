@@ -81,7 +81,7 @@ export const isekaiApi = {
   },
 
   getTimeline: (page) => {
-    const data = axios.get('/posts/timeline/{page}', {
+    const data = axios.get('/posts/timeline', {
       params: {
         page,
       },

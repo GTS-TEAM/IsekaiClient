@@ -50,7 +50,7 @@ class Images extends Component {
     const overlay = images.length > countFrom && countFrom === 1 ? this.renderCountOverlay(true) : this.renderOverlay();
 
     return (
-      <Stack direction="row" gap="0.2rem" marginBottom="0.2rem">
+      <Stack direction="row" gap="0.8rem" marginBottom="0.8rem">
         <Img className="one" onClick={this.openModal.bind(this, 0)} style={{ backgroundImage: `url(${images[0]})` }}>
           {overlay}
         </Img>
@@ -66,7 +66,7 @@ class Images extends Component {
     const conditionalRender = [3, 4].includes(images.length) || (images.length > +countFrom && [3, 4].includes(+countFrom));
 
     return (
-      <Stack direction="row" gap="0.2rem" marginBottom="0.2rem">
+      <Stack direction="row" gap="0.8rem" marginBottom="0.8rem">
         <Img
           className="two"
           onClick={this.openModal.bind(this, conditionalRender ? 1 : 0)}
@@ -99,7 +99,7 @@ class Images extends Component {
         : this.renderOverlay(conditionalRender ? 3 : 4);
 
     return (
-      <Stack direction="row" gap="0.2rem" marginBottom="0.2rem">
+      <Stack direction="row" gap="0.8rem" marginBottom="0.8rem">
         <Img
           xs={6}
           md={4}

@@ -4,9 +4,10 @@
   --headerHeight: 6rem;
   --bgColor: #f0f2f5;
   --sidebarWidth: 24rem;
-  --borderRadius: 1.6rem;
-  --borderRadius1: 4px;
-  --borderRadius2: 10px;
+  --borderRadius: 4px;
+  --borderRadius1: 10px;
+  --borderRadius2: 13px;
+  --borderRadius3: 16px;
   --textColorBlack: #000;
   --textColorWhite: #fff;
   --fds-black: #000000;
@@ -19,6 +20,8 @@
   --fds-gray-5: #6c6f73;
   --fds-gray-6: #f7f7f7;
   --fds-gray-7: #757a91;
+  --fds-gray-8: #363636;
+  --fds-gray-9: #393a4f;
   --textColorGray: #5a5a5a;
   --mainColor: #a56ffd;
   --grayColor: #747474;
@@ -30,6 +33,7 @@
   --shadow-8: rgba(0, 0, 0, 0.8);
   --shadow-inset: rgba(255, 255, 255, 0.5);
   --surface-background: #ffffff;
+  --boxShadow-1: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
   --boxShadow-2: 0 1px 2px var(--shadow-2);
 }
 

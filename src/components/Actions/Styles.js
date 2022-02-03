@@ -7,7 +7,7 @@ export const StyledActions = styled(Stack)`
   --gap: 0.5rem;
   border-top: 1px solid var(--fds-gray-4);
   border-bottom: 1px solid var(--fds-gray-4);
-  padding: 0.5rem 0;
+  padding: 0.5rem 1.2rem;
   gap: var(--gap);
   margin-right: calc(-1 * var(--gap));
   flex-direction: row;
@@ -25,7 +25,7 @@ export const StyledActions = styled(Stack)`
     cursor: pointer;
     color: var(--fds-gray-5);
     padding: 1rem;
-    border-radius: var(--borderRadius1);
+    border-radius: var(--borderRadius);
     transition: all 0.3s ease;
 
     svg {
