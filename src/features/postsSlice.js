@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
 import { getIndexItemExitById } from 'utils/getIndexItemExitById';
 import { isekaiApi } from '../api/isekaiApi';
 const uploadImg = async (files) => {
@@ -38,8 +38,18 @@ export const editPost = createAsyncThunk('posts/editPost', async ({ image, descr
 });
 
 export const likePost = createAsyncThunk('posts/likePost', async ({ postId }, thunkApi) => {
-  thunkApi.dispatch(toggleLike(postId));
+  const { user } = thunkApi.getState().auth;
+  thunkApi.dispatch(
+    toggleLike({
+      postId,
+      user,
+    }),
+  );
   await isekaiApi.likePost(postId);
+  return {
+    postId,
+    user,
+  };
 });
 
 export const deletePost = createAsyncThunk('posts/deletePost', async (postId) => {
@@ -49,6 +59,11 @@ export const deletePost = createAsyncThunk('posts/deletePost', async (postId) =>
 
 export const getTimeline = createAsyncThunk('posts/getTimeline', async ({ page }) => {
   const data = await isekaiApi.getTimeline(page);
+  return data;
+});
+
+export const getUserPosts = createAsyncThunk('posts/gerUserPosts', async ({ userId, page }) => {
+  const data = await isekaiApi.getUserPosts(userId, page);
   return data;
 });
 
@@ -104,7 +119,15 @@ const postsSlice = createSlice({
     },
     toggleLike: (state, action) => {
       // action payload : id post
-      const indexPost = state.timeline.posts.findIndex((item) => item.id === action.payload);
+      const indexPost = state.timeline.posts.findIndex((item) => item.id === action.payload.postId);
+      const indexUserLikedPost = state.timeline.posts[indexPost].likes.findIndex(
+        (like) => like.id === action.payload.user.id,
+      );
+      if (state.timeline.posts[indexPost].likes[indexUserLikedPost]) {
+        state.timeline.posts[indexPost].likes.splice(indexUserLikedPost, 1);
+      } else {
+        state.timeline.posts[indexPost].likes.unshift(action.payload.user);
+      }
       state.timeline.posts[indexPost] = {
         ...state.timeline.posts[indexPost],
         liked: !state.timeline.posts[indexPost].liked,
@@ -113,12 +136,12 @@ const postsSlice = createSlice({
       if (state.timeline.posts[indexPost].liked) {
         state.timeline.posts[indexPost] = {
           ...state.timeline.posts[indexPost],
-          likes: state.timeline.posts[indexPost].likes + 1,
+          likeCount: state.timeline.posts[indexPost].likeCount + 1,
         };
       } else {
         state.timeline.posts[indexPost] = {
           ...state.timeline.posts[indexPost],
-          likes: state.timeline.posts[indexPost].likes - 1,
+          likeCount: state.timeline.posts[indexPost].likeCount - 1,
         };
       }
     },
@@ -127,15 +150,16 @@ const postsSlice = createSlice({
 
       state.timeline.posts[indexPost] = {
         ...state.timeline.posts[indexPost],
-        comments: state.timeline.posts[indexPost].comments + 1,
+        commentCount: state.timeline.posts[indexPost].commentCount + 1,
       };
     },
 
     decreaseCmt: (state, action) => {
+      console.log(action.payload);
       const indexPost = state.timeline.posts.findIndex((item) => item.id === action.payload);
       state.timeline.posts[indexPost] = {
         ...state.timeline.posts[indexPost],
-        comments: state.timeline.posts[indexPost].comments - 1,
+        commentCount: state.timeline.posts[indexPost].commentCount - 1,
       };
     },
   },
@@ -146,7 +170,10 @@ const postsSlice = createSlice({
       })
       .addCase(createPost.fulfilled, (state, action) => {
         state.dataPosts.loading = false;
-        state.timeline.posts.unshift(action.payload);
+        state.timeline.posts.unshift({
+          ...action.payload,
+          likes: [],
+        });
       })
       .addCase(createPost.rejected, (state, action) => {
         state.dataPosts.loading = false;
@@ -165,6 +192,21 @@ const postsSlice = createSlice({
           return b.created_at.localeCompare(a.created_at);
         });
         state.timeline.error = false;
+      })
+      .addCase(getUserPosts.pending, (state) => {
+        state.timeline.loading = true;
+      })
+      .addCase(getUserPosts.fulfilled, (state, action) => {
+        if (action.payload.length === 0) {
+          state.timeline.hasMore = false;
+        } else {
+          state.timeline.hasMore = true;
+        }
+        state.timeline.posts = [...state.timeline.posts, ...action.payload].sort((a, b) => {
+          return b.created_at.localeCompare(a.created_at);
+        });
+        state.timeline.error = false;
+        state.timeline.loading = false;
       })
       .addCase(getTimeline.rejected, (state, action) => {
         state.timeline.error = action.error.message;
@@ -187,7 +229,7 @@ const postsSlice = createSlice({
         const indexPostExit = state.timeline.posts.findIndex((post) => post.id === action.payload);
         state.timeline.posts.splice(indexPostExit, 1);
       })
-      .addCase(likePost.fulfilled, (state) => {});
+      .addCase(likePost.fulfilled, (state, action) => {});
   },
 });
 

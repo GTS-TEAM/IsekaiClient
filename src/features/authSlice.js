@@ -36,6 +36,7 @@ export const refreshToken = createAsyncThunk('auth/refreshToken', async (_, thun
 
 const initialState = {
   user: null,
+  loading: false,
   token: {
     accessToken: null,
     refreshToken: null,

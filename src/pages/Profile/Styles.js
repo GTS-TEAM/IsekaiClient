@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { Stack } from '@mui/material';
 
 export const StyledProfile = styled.div`
   padding: 1.8rem;
@@ -6,7 +7,7 @@ export const StyledProfile = styled.div`
 
 export const User = styled.div`
   text-align: center;
-  padding: 2rem 0;
+  padding: 1.6rem 0;
   color: var(--fds-black);
   display: flex;
   flex-direction: column;
@@ -24,4 +25,12 @@ export const User = styled.div`
   @media screen and (max-width: 1023.98px) {
     margin-top: 6rem;
   }
+`;
+
+export const Sidebar = styled.aside`
+  width: 100%;
+  max-width: 38.8rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.2rem;
 `;

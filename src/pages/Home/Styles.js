@@ -1,19 +1,13 @@
 import styled from '@emotion/styled';
-import InfiniteScroll from 'react-infinite-scroll-component';
 
-export const StyledInfiniteScroll = styled(InfiniteScroll)`
-  margin-top: 1.8rem;
-  display: flex;
-  flex-direction: column;
-  row-gap: 1.8rem;
-  overflow: hidden !important;
+export const StyledHomepage = styled.div`
+  background-color: #f0f2f5;
+  min-height: calc(100vh - var(--headerHeight));
+  padding: 1.8rem;
+`;
 
-  &::-webkit-scrollbar {
-    width: 0;
-  }
-
-  .scroll-loader {
-    margin: 0 auto;
-    color: var(--mainColor);
-  }
+export const Feed = styled.div`
+  width: 100%;
+  max-width: 60rem;
+  margin: 0 auto;
 `;

@@ -67,7 +67,7 @@ const Post = ({ post }) => {
       <Header>
         <Stack alignItems="center" direction="row" justifyContent="space-between">
           <UserBlockPost
-            userImg={post.user.profilePicture}
+            userImg={post.user.avatar}
             userId={post.user.id}
             userName={post.user.username}
             time={post.created_at}
@@ -92,10 +92,15 @@ const Post = ({ post }) => {
       <Body>
         <Description>{post.description}</Description>
         {post.image.length === 0 ? null : <GridImg post={post} />}
-        <LiveStats totalLike={post.likes} totalComment={post.comments} className="live-stats" />
+        <LiveStats
+          totalLike={post.likeCount}
+          totalComment={post.commentCount}
+          className="live-stats"
+          userLiked={post.likes}
+        />
       </Body>
       <Actions post={post} onToggleComment={toggleOpenCommentHandler} className="actions" />
-      {isOpenComment && <Comments postId={post.id} amountComment={post.comments} />}
+      {isOpenComment && <Comments postId={post.id} amountComment={post.commentCount} />}
       {ui.createPostModal.isOpenEdit && post.id === ui.createPostModal.idPostEdit && (
         <Overlay onClose={closeModalCreatePostHandler} />
       )}

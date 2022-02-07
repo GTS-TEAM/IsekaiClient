@@ -1,10 +1,11 @@
 import { Stack } from '@mui/material';
 import { Actions, Comments, LiveStats, SlideImgPost, UserBlockPost } from 'components';
+import { authSelector } from 'features/authSlice';
 import { closeViewPost, setPostIdView } from 'features/uiSlice';
 import React, { useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { GrFormClose } from 'react-icons/gr';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   ButtonAddFriend,
   ButtonClose,
@@ -17,6 +18,7 @@ import {
 const modal = document.querySelector('#modal');
 const ModalViewPost = ({ post, slideIndex }) => {
   const dispatch = useDispatch();
+  const { user } = useSelector(authSelector);
   const closeViewPostHandler = useCallback(() => {
     dispatch(closeViewPost());
     dispatch(setPostIdView(null));
@@ -52,12 +54,12 @@ const ModalViewPost = ({ post, slideIndex }) => {
       <Post>
         <Stack direction="row" alignItems="center" justifyContent="space-between" padding="1.2rem">
           <UserBlockPost
-            userImg={post.user.profilePicture.toString()}
+            userImg={post.user.avatar.toString()}
             userId={post.user.id}
             userName={post.user.username}
             time={post.created_at}
           />
-          <ButtonAddFriend>Kết bạn</ButtonAddFriend>
+          {user.id !== post.user.id && <ButtonAddFriend>Kết bạn</ButtonAddFriend>}
         </Stack>
         {post.description.trim().length > 0 && <Description>{post.description}</Description>}
         <LiveStats totalLike={post.likes} totalComment={post.comments} />

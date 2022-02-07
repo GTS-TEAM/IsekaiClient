@@ -2,10 +2,8 @@ import { CircularProgress } from '@mui/material';
 import { getTimeline, postsSelector, unmountTimeline } from 'features/postsSlice';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { Post, CreatePost } from 'components';
-import { StyledInfiniteScroll } from './Styles';
-import styled from './Homepage.module.scss';
+import { Post, CreatePost, ListPost } from 'components';
+import { Feed, StyledHomepage } from './Styles';
 
 const Homepage = () => {
   const dispatch = useDispatch();
@@ -28,27 +26,12 @@ const Homepage = () => {
   }, [dispatch]);
 
   return (
-    <div className={styled.homepage}>
-      <div className={styled.feed}>
+    <StyledHomepage>
+      <Feed>
         <CreatePost />
-        <StyledInfiniteScroll
-          style={{ overflowY: 'hidden' }}
-          dataLength={timeline.posts.length}
-          hasMore={timeline.hasMore}
-          next={fetchMoreHandler}
-          loader={<CircularProgress className="scroll-loader" color="inherit" />}
-          endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
-        >
-          {timeline.posts.map((post) => (
-            <Post post={post} key={post.id} />
-          ))}
-        </StyledInfiniteScroll>
-      </div>
-    </div>
+        <ListPost posts={timeline.posts} hasMore={timeline.hasMore} onFetchMore={fetchMoreHandler} />
+      </Feed>
+    </StyledHomepage>
   );
 };
 

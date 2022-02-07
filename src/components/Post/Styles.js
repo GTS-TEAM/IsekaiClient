@@ -5,10 +5,6 @@ export const StyledPost = styled.div`
   background-color: var(--fds-white);
   border: 1px solid var(--fds-gray-4);
   border-radius: var(--borderRadius2);
-
-  .actions {
-    border-bottom: unset;
-  }
 `;
 
 export const Header = styled.div`

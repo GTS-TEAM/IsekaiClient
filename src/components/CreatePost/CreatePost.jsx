@@ -38,7 +38,7 @@ const CreatePost = () => {
     <StyledCreatePost>
       <Header>
         <Stack direction="row" alignItems="center" columnGap="1.6rem">
-          <Avatar src={user.profilePicture} />
+          <Avatar src={user.avatar} />
           <InputDummy onClick={openModalCreatePostHandler}>
             <p>{user?.username} ơi, bạn đang nghĩ gì thế?</p>
           </InputDummy>

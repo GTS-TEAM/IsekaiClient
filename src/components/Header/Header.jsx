@@ -57,13 +57,13 @@ const Header = () => {
           </div>
           <div className={styled.user}>
             <button className={styled.user__btn} onClick={handleClickOpenDropdown}>
-              <Avatar src={user.profilePicture} sx={{ width: 40, height: 40 }} />
+              <Avatar src={user.avatar} sx={{ width: 40, height: 40 }} />
               <span className={styled.user__name}>{user.username}</span>
             </button>
             <DropdownMenu anchorEl={anchorEl} open={open} onClose={handleCloseDropdown}>
               <div className="dropdown-header">
                 <MenuItem onClick={clickGoToProfileUser}>
-                  <Avatar src={user.profilePicture} sx={{ width: 64, height: 64 }} />
+                  <Avatar src={user.avatar} sx={{ width: 64, height: 64 }} />
                   <div className="text">
                     <span className="name">{user.username}</span>
                     <span>Xem trang cá nhân của bạn</span>

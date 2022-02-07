@@ -4,11 +4,12 @@ import { decreaseCmt } from 'features/postsSlice';
 import moment from 'moment';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { InputComment, More, UserImg } from '..';
+import { InputComment, More } from '..';
 import { isekaiApi } from '../../api/isekaiApi';
 import styled from './Comments.module.scss';
 
 const Comment = ({ openEditComment, setOpenEditComment, comment, setComments, postId }) => {
+  console.log(postId);
   const [commentTextEdit, setCommentTextEdit] = useState('');
   const [disabledButtonEdit, setDisabledButtonEdit] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -92,7 +93,7 @@ const Comment = ({ openEditComment, setOpenEditComment, comment, setComments, po
     />
   ) : (
     <div key={comment.id} className={styled.comments_item}>
-      <Avatar src={comment.user.profilePicture} />
+      <Avatar src={comment.user.avatar} />
       <div className={styled.comments_main}>
         <div className={styled.info}>
           <span className={styled.name}>{comment.user.username}</span>

@@ -33,7 +33,6 @@ import {
   StyledModalPost,
   TextBottom,
 } from './Styles';
-import Images from 'components/ReactGridFacebook/ReactGridFacebook';
 
 const ModalPost = ({ className = '', style, type, postId, onCloseModal }) => {
   const [disabledBtn, setDisabledBtn] = useState(true);
@@ -127,12 +126,7 @@ const ModalPost = ({ className = '', style, type, postId, onCloseModal }) => {
         </Close>
       </Header>
       <Body>
-        <UserBlockPost
-          userImg={user.profilePicture}
-          userId={user.id}
-          userName={user.username}
-          emoji={posts.dataPosts.emotion?.id}
-        />
+        <UserBlockPost userImg={user.avatar} userId={user.id} userName={user.username} emoji={posts.dataPosts.emotion?.id} />
         <InputArea>
           <textarea
             name="postValue"

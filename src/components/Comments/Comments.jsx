@@ -5,9 +5,8 @@ import { isekaiApi } from '../../api/isekaiApi';
 import { authSelector } from '../../features/authSlice';
 import styled from './Comments.module.scss';
 import Comment from './Comment';
-import { Bottom, LoadMore, StyledListComments } from './Styles';
-import { increaseCmt, postsSelector } from 'features/postsSlice';
-import { Stack } from '@mui/material';
+import { Bottom, StyledListComments } from './Styles';
+import { increaseCmt } from 'features/postsSlice';
 
 const Comments = ({ postId, amountComment }) => {
   const { user } = useSelector(authSelector);
@@ -106,6 +105,7 @@ const Comments = ({ postId, amountComment }) => {
             setOpenEditComment={setOpenEditComment}
             comment={comment}
             setComments={setComments}
+            postId={postId}
           />
         ))}
       </StyledListComments>

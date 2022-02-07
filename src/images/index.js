@@ -1,6 +1,8 @@
 import { ReactComponent as AddPhoto } from './AddPhoto.svg';
 import { ReactComponent as Emotion } from './Emotion.svg';
-
+import UploadProfile from './upload-profile.svg';
+import ChangeProfile from './change-profile.svg';
+import AddProfile from './add-profile.svg';
 export const IMG = {
   bgHero: require('./bg-hero.jpg'),
   imgHero: require('./img-hero.png'),
@@ -19,4 +21,7 @@ export const IMG = {
   EmojiNhoCrush: require('./emoji-nhocrush.png'),
   EmojiHaiLong: require('./emoji-hailong.png'),
   BgImgCoverProfile: require('./bg-cover-profile.png'),
+  UploadProfile,
+  ChangeProfile,
+  AddProfile,
 };

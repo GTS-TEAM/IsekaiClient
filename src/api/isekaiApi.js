@@ -97,6 +97,24 @@ export const isekaiApi = {
     });
   },
 
+  getPostPhoto: (userId, type) => {
+    return axios.get(`/posts/${userId}/photos`, {
+      params: {
+        type,
+      },
+    });
+  },
+
+  getUserPosts: (userId, page) => {
+    return axios.get(`/posts/${userId}`, { params: { page } });
+  },
+
+  editInfoUser: (info) => {
+    return axios.patch('/user/info', {
+      ...info,
+    });
+  },
+
   uploadImg: (arrFile) => {
     return axios.post('/upload', arrFile);
   },
