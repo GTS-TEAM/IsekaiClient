@@ -1,8 +1,7 @@
-import { CircularProgress } from '@mui/material';
 import { getTimeline, postsSelector, unmountTimeline } from 'features/postsSlice';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Post, CreatePost, ListPost } from 'components';
+import { CreatePost, ListPost } from 'components';
 import { Feed, StyledHomepage } from './Styles';
 
 const Homepage = () => {
@@ -16,12 +15,7 @@ const Homepage = () => {
   };
 
   useEffect(() => {
-    return () => {
-      dispatch(unmountTimeline());
-    };
-  }, [dispatch]);
-
-  useEffect(() => {
+    dispatch(unmountTimeline());
     dispatch(getTimeline({ page: 1 }));
   }, [dispatch]);
 

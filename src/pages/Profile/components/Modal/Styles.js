@@ -44,6 +44,42 @@ export const CloseButton = styled.div`
 
 export const Body = styled.div`
   padding: 0 2.8rem 1.6rem 2.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  row-gap: 1.2rem;
+
+  .MuiSlider-root {
+    max-width: 35rem;
+    color: var(--mainColor);
+  }
+
+  .MuiSlider-thumb:hover {
+    box-shadow: none !important;
+  }
+
+  .MuiButton-root {
+    width: 35rem;
+    background-color: var(--mainColor);
+    height: 4rem;
+    color: var(--fds-white);
+    font-size: 1.4rem;
+    text-transform: unset;
+
+    &:hover {
+      background-color: var(--mainColor);
+    }
+  }
+
+  .MuiLoadingButton-loadingIndicator {
+    color: var(--fds-white);
+  }
+
+  .MuiCircularProgress-root {
+    width: 2.4rem !important;
+    height: 2.4rem !important;
+  }
 `;
 
 export const SelectionBox = styled.div`
@@ -112,4 +148,33 @@ export const UploadBox = styled.div`
     transition: color 0.3s;
     font-size: 1.6rem;
   }
+
+  input {
+    display: none;
+  }
+`;
+
+export const Photo = styled.div`
+  width: calc(100% / var(--col) - var(--gap));
+  height: 12rem;
+  cursor: pointer;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--borderRadius);
+  }
+
+  /* ${(p) => {}} */
+`;
+
+export const ListPhotos = styled.div`
+  width: 100%;
+  --col: 3;
+  --gap: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+  margin-right: calc(-1 * var(--gap));
 `;

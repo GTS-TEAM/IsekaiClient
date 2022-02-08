@@ -8,7 +8,6 @@ export const isekaiApi = {
     });
   },
   register: (email, password, userName) => {
-    console.log(userName, email);
     return axios.post('/auth/register', {
       username: userName,
       email,
@@ -26,6 +25,10 @@ export const isekaiApi = {
     return axios.post('/auth/deactivate-refresh-token', {
       email,
     });
+  },
+
+  getPost: (postId) => {
+    return axios.get(`/posts/${postId}`);
   },
 
   createPost: (image, description, emoji) => {
@@ -106,7 +109,7 @@ export const isekaiApi = {
   },
 
   getUserPosts: (userId, page) => {
-    return axios.get(`/posts/${userId}`, { params: { page } });
+    return axios.get(`/posts/user/${userId}`, { params: { page } });
   },
 
   editInfoUser: (info) => {

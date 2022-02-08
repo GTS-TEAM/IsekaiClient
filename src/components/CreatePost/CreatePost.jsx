@@ -25,7 +25,6 @@ const CreatePost = () => {
   };
 
   const closeModalCreatePostHandler = () => {
-    console.log('close');
     dispatch(closeCreatePostModal('post'));
     dispatch(clearPostEmotion());
     dispatch(clearPostImg());

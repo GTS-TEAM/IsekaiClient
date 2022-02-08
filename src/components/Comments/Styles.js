@@ -17,7 +17,7 @@ export const Bottom = styled(Stack)`
   font-weight: 500;
   color: var(--fds-gray-5);
 
-  span:first-child {
+  span:first-of-type {
     cursor: pointer;
 
     &:hover {

@@ -7,7 +7,7 @@ import UserLiked from './UserLiked';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { authSelector } from 'features/authSlice';
-const LiveStats = ({ totalLike, totalComment, userLiked, className, haveUserLiked = true }) => {
+const LiveStats = ({ totalLike, totalComment, userLiked, className, haveUserLiked }) => {
   const { user: currentUser } = useSelector(authSelector);
 
   return totalComment !== 0 || totalLike !== 0 ? (
@@ -52,7 +52,7 @@ const LiveStats = ({ totalLike, totalComment, userLiked, className, haveUserLike
 };
 
 LiveStats.propTypes = {
-  userLiked: PropTypes.array.isRequired,
+  userLiked: PropTypes.array,
   totalLike: PropTypes.number.isRequired,
   totalComment: PropTypes.number.isRequired,
   className: PropTypes.string,

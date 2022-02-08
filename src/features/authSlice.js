@@ -64,6 +64,7 @@ const authSlice = createSlice({
       state.register.error = null;
       state.login.loading = null;
       state.register.loading = null;
+      localStorage.clear();
     },
     saveToken: (state, action) => {
       state.token.accessToken = action.payload.access_token;
@@ -72,6 +73,12 @@ const authSlice = createSlice({
     removeToken: (state) => {
       state.token.accessToken = null;
       state.token.refreshToken = null;
+    },
+    updateAvatar: (state, action) => {
+      state.user = {
+        ...state.user,
+        avatar: action.payload,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -109,6 +116,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, updateAvatar } = authSlice.actions;
 export const authSelector = (state) => state.auth;
 export default authSlice.reducer;

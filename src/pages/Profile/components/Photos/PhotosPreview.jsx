@@ -4,7 +4,7 @@ import { HeaderPhotosPreview, ImgPreview, ImgPreviewList, StyledPhotosPreview } 
 import { Link, useNavigate } from 'react-router-dom';
 import { Typography } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
-import { v4 as uuidv4 } from 'uuid';
+import { convertResPhotos } from 'utils/convertResPhotos';
 
 const PhotosPreview = ({ userId }) => {
   const [photosPreview, setPhotosPreview] = useState([]);
@@ -13,20 +13,7 @@ const PhotosPreview = ({ userId }) => {
   useEffect(() => {
     const getPhotosPreview = async () => {
       const data = await isekaiApi.getPostPhoto(userId, 'photo');
-      const newData = [];
-
-      if (data) {
-        data.forEach((d) => {
-          d.image.forEach((img, index) => {
-            newData.push({
-              postId: d.id,
-              id: uuidv4(),
-              url: img,
-              indexImg: index,
-            });
-          });
-        });
-      }
+      const newData = convertResPhotos(data);
       setPhotosPreview(newData);
     };
 
@@ -36,7 +23,7 @@ const PhotosPreview = ({ userId }) => {
   }, [userId]);
 
   const clickImgHandler = (idPost, indexImg) => () => {
-    navigate(`/posts?id=${idPost}&index=${indexImg}`);
+    navigate(`/post?id=${idPost}&index=${indexImg}`);
   };
 
   return (

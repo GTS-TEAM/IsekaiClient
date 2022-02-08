@@ -6,52 +6,8 @@ import { Layout, RequireAuth } from './components';
 import Homepage from './pages/Home/Homepage';
 import './api/axoisClient';
 import Profile from 'pages/Profile/Profile';
+import Post from 'pages/Detail/Detail';
 function App() {
-  // const { token, dispatch, error } = useContext(AuthContext);
-  // axios.interceptors.request.use(function (config) {
-  //   const token = "Bearer " + JSON.parse(localStorage.getItem("access_token"));
-  //   console.log("?");
-  //   if (token !== "null") {
-  //     config.headers.Authorization = token;
-  //   }
-
-  //   return config;
-  // });
-  // axios.interceptors.response.use(
-  //   (response) => {
-  //     return response;
-  //   },
-  //   async (e) => {
-  //     let refreshToken = localStorage.getItem("refresh_token");
-  //     const originalRequest = e.config;
-
-  //     // da req refresh token
-  //     if (originalRequest.url === "/auth/refresh-token") {
-  //       console.log("Refresh token is expired");
-
-  //       dispatch({ type: "LOGIN_FAILURE", payload: e });
-  //       localStorage.clear();
-  //     }
-  //     // accesstoken expired check co refreshToken hay khong => req refreshtoken
-  //     if (refreshToken !== "null" && e.response.status === 401) {
-  //       refreshToken = JSON.parse(refreshToken);
-  //       let response = await axios.post("/auth/refresh-token", {
-  //         refreshToken,
-  //       });
-  //       localStorage.setItem(
-  //         "access_token",
-  //         JSON.stringify(response.data.access_token)
-  //       );
-  //       localStorage.setItem(
-  //         "refresh_token",
-  //         JSON.stringify(response.data.refresh_token)
-  //       );
-  //       return await axios(originalRequest);
-  //     }
-  //     throw e;
-  //   }
-  // );
-
   return (
     <Router>
       <Routes>
@@ -73,6 +29,14 @@ function App() {
           element={
             <RequireAuth>
               <Profile />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/post"
+          element={
+            <RequireAuth>
+              <Post />
             </RequireAuth>
           }
         />

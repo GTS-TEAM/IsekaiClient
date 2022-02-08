@@ -9,7 +9,6 @@ import { isekaiApi } from '../../api/isekaiApi';
 import styled from './Comments.module.scss';
 
 const Comment = ({ openEditComment, setOpenEditComment, comment, setComments, postId }) => {
-  console.log(postId);
   const [commentTextEdit, setCommentTextEdit] = useState('');
   const [disabledButtonEdit, setDisabledButtonEdit] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);

@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
-import { getIndexItemExitById } from 'utils/getIndexItemExitById';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { isekaiApi } from '../api/isekaiApi';
-const uploadImg = async (files) => {
+
+export const uploadImg = async (files) => {
   const formData = new FormData();
   files.forEach((item) => {
     formData.append('files', item.file);
@@ -21,7 +21,6 @@ export const editPost = createAsyncThunk('posts/editPost', async ({ image, descr
   let urls = null;
   const haveId = image.some((item) => item.id);
   if (haveId) {
-    console.log('implement this');
     const tempImg = [];
     urls = await uploadImg(image);
     for (const item of image) {
@@ -31,7 +30,6 @@ export const editPost = createAsyncThunk('posts/editPost', async ({ image, descr
     }
     urls = [...tempImg, ...urls];
   }
-  console.log("don't 'implement this");
   const data = await isekaiApi.editPost(urls ? urls : image, description, emoji, postId);
   callback(); // implement when edit post completed
   return data;
@@ -147,7 +145,6 @@ const postsSlice = createSlice({
     },
     increaseCmt: (state, action) => {
       const indexPost = state.timeline.posts.findIndex((item) => item.id === action.payload);
-
       state.timeline.posts[indexPost] = {
         ...state.timeline.posts[indexPost],
         commentCount: state.timeline.posts[indexPost].commentCount + 1,
@@ -155,7 +152,6 @@ const postsSlice = createSlice({
     },
 
     decreaseCmt: (state, action) => {
-      console.log(action.payload);
       const indexPost = state.timeline.posts.findIndex((item) => item.id === action.payload);
       state.timeline.posts[indexPost] = {
         ...state.timeline.posts[indexPost],

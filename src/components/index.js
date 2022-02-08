@@ -15,7 +15,6 @@ export { default as ModalCreatePost } from './ModalPost/ModalPost';
 export { default as Emotion } from './Emotion/Emotion';
 export { default as GridImg } from './GridImg/GridImg';
 export { default as UserBlockPost } from './UserBlockPost/UserBlockPost';
-export { default as ModalViewPost } from './ModalViewPost/ModalViewPost';
 export { default as LiveStats } from './LiveStats/LiveStats';
 export { default as Actions } from './Actions/Actions';
 export { default as ListPost } from './ListPost/ListPost';

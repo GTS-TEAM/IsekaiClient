@@ -26,6 +26,12 @@ const userSlice = createSlice({
       state.user = null;
       state.loading = false;
     },
+    updateAvatar: (state, action) => {
+      state.user = {
+        ...state.user,
+        avatar: action.payload,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -40,12 +46,16 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
+      .addCase(editUserInfo.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(editUserInfo.fulfilled, (state, action) => {
         state.user = action.payload;
+        state.loading = false;
       });
   },
 });
 
-export const { unMountUser } = userSlice.actions;
+export const { unMountUser, updateAvatar } = userSlice.actions;
 export const userSelector = (state) => state.user;
 export default userSlice.reducer;

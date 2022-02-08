@@ -18,9 +18,15 @@ const authPersistConfig = {
   blacklist: ['login', 'register'],
 };
 
+const postsPersistConfig = {
+  key: 'posts',
+  storage: storage,
+  blacklist: ['dataPosts'],
+};
+
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authSlice),
-  posts: postsSlice,
+  posts: persistReducer(postsPersistConfig, postsSlice),
   ui: uiSlice,
   user: userSlice,
 });

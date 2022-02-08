@@ -1,18 +1,13 @@
 import styled from '@emotion/styled';
 import { Button } from '@mui/material';
-import { motion } from 'framer-motion';
 
-export const StyledModalViewPost = styled(motion.div)`
+export const StyledDetail = styled.div`
   width: 100%;
   height: 100%;
-  position: fixed;
-  z-index: 110;
-  inset: 0;
   display: flex;
   max-width: 100vw;
   height: 100vh;
   background-color: var(--fds-white);
-  transition: all 0.3s;
 `;
 
 export const SlideImgPostWrap = styled.div`

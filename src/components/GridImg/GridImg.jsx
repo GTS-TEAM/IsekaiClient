@@ -1,18 +1,21 @@
-import { ModalViewPost } from 'components';
-import { openViewPost, setPostIdView, uiSelector } from 'features/uiSlice';
+import { uiSelector } from 'features/uiSlice';
 import { useOverFlowHidden } from 'hooks/useOverFlowHidden';
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 import ReactGridFacebook from '../ReactGridFacebook/ReactGridFacebook';
 const GridImg = ({ post }) => {
   const ui = useSelector(uiSelector);
-  const dispatch = useDispatch();
-  const [slideIndex, setSlideIndex] = useState(0);
+  const navigate = useNavigate();
 
   const clickImgHandler = ({ index }) => {
-    dispatch(setPostIdView(post.id));
-    dispatch(openViewPost());
-    setSlideIndex(index);
+    navigate({
+      pathname: '/post',
+      search: `?${createSearchParams({
+        id: post.id,
+        index,
+      })}`,
+    });
   };
 
   useOverFlowHidden(ui.createPostModal.isOpenViewPost);
@@ -20,9 +23,6 @@ const GridImg = ({ post }) => {
   return (
     <div>
       <ReactGridFacebook images={post.image} hideOverlay={true} onClickEach={clickImgHandler} />
-      {post.id === ui.createPostModal.idPost && ui.createPostModal.isOpenViewPost && (
-        <ModalViewPost post={post} slideIndex={slideIndex} />
-      )}
     </div>
   );
 };

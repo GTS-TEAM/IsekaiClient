@@ -10,7 +10,6 @@ import Info from './components/Info/Info';
 import { Stack } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserPosts, postsSelector, unmountTimeline } from 'features/postsSlice';
-import { authSelector } from 'features/authSlice';
 import { getUser, unMountUser, userSelector } from 'features/userSlice';
 
 const Profile = () => {
@@ -27,12 +26,12 @@ const Profile = () => {
 
   useEffect(() => {
     return () => {
-      dispatch(unmountTimeline());
       dispatch(unMountUser());
     };
   }, [dispatch]);
 
   useEffect(() => {
+    dispatch(unmountTimeline());
     dispatch(getUserPosts({ userId: id, page: 1 }));
   }, [dispatch, id]);
 
