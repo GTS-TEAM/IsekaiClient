@@ -135,12 +135,11 @@ export const User = styled.div`
   display: flex;
   align-items: center;
   background-color: transparent;
-  column-gap: 2rem;
   color: var(--textColorGray);
   cursor: pointer;
 
   span {
-    min-width: 5rem;
+    min-width: 10rem;
     display: block;
     text-align: center;
   }

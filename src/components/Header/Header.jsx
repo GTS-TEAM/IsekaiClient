@@ -92,7 +92,7 @@ const Header = () => {
           </SearchGlobal>
           <User onClick={handleClickOpenDropdown}>
             <Avatar src={user.avatar} sx={{ width: 40, height: 40 }} />
-            <span>{user.username}</span>
+            {/* <span>{user.username}</span> */}
           </User>
         </Stack>
         <DropdownMenu anchorEl={anchorEl} open={open} onClose={handleCloseDropdown}>
