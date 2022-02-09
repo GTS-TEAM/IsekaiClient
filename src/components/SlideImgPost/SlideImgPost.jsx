@@ -1,11 +1,11 @@
-import React, { useRef, forwardRef, useEffect } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import React, { useEffect, useRef } from 'react';
+import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from 'react-icons/md';
 import { Navigation, Pagination } from 'swiper';
-import { MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import { StyledSlideImgPost } from './Styles';
 import 'swiper/css';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import { v4 as uuidv4 } from 'uuid';
 import Img from './Img';
+import { StyledSlideImgPost } from './Styles';
 
 const SlideImgPost = ({ images, slideIndex }) => {
   const btnNextRef = useRef();

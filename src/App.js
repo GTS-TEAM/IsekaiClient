@@ -1,18 +1,18 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Landing from './pages/Landing/Landing';
+import Post from 'pages/Detail/Detail';
+import Profile from 'pages/Profile/Profile';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import './api/axoisClient';
+import { Layout, RequireAuth } from './components';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
-import { Layout, RequireAuth } from './components';
 import Homepage from './pages/Home/Homepage';
-import './api/axoisClient';
-import Profile from 'pages/Profile/Profile';
-import Post from 'pages/Detail/Detail';
+import Landing from './pages/Landing/Landing';
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route exact path="/login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/home"

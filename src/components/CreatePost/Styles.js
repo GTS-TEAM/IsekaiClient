@@ -18,8 +18,8 @@ export const Header = styled.div`
 export const InputDummy = styled.div`
   width: 100%;
   flex: 1;
-  padding: 1.2rem 1.6rem;
-  border-radius: var(--borderRadius2);
+  padding: 0.7rem 1.6rem;
+  border-radius: var(--borderRadius3);
   border: 1px solid var(--fds-gray-4);
   background-color: var(--grayColor1);
   font-size: 1.6rem;
