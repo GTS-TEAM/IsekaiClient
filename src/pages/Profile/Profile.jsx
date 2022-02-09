@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { isekaiApi } from '../../api/isekaiApi';
-import { useParams } from 'react-router-dom';
-import { Sidebar, StyledProfile, User } from './Styles';
-import { CreatePost, Layout, ListPost } from 'components';
-import CoverImg from './components/CoverImg/CoverImg';
-import ProfileMenu from './components/ProfileMenu/ProfileMenu';
-import PhotosPreview from './components/Photos/PhotosPreview';
-import Info from './components/Info/Info';
 import { Stack } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { CreatePost, Layout, ListPost } from 'components';
 import { getUserPosts, postsSelector, unmountTimeline } from 'features/postsSlice';
 import { getUser, unMountUser, userSelector } from 'features/userSlice';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import CoverImg from './components/CoverImg/CoverImg';
+import Info from './components/Info/Info';
+import PhotosPreview from './components/Photos/PhotosPreview';
+import ProfileMenu from './components/ProfileMenu/ProfileMenu';
+import { Sidebar, StyledProfile, User } from './Styles';
 
 const Profile = () => {
   const { id } = useParams();

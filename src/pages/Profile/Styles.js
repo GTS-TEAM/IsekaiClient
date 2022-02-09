@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { Stack } from '@mui/material';
 
 export const StyledProfile = styled.div`
   padding: 1.8rem;

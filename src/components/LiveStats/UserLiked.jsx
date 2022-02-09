@@ -1,10 +1,10 @@
-import { Avatar, Stack, Tooltip } from '@mui/material';
-import React from 'react';
-import PropTypes from 'prop-types';
-import { AvatarWrap, StyledUserLiked, UserPreview } from './Styles';
+import { Avatar, Stack } from '@mui/material';
 import { IMG } from 'images';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { AiOutlineMessage } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+import { AvatarWrap, StyledUserLiked, UserPreview } from './Styles';
 const UserLiked = ({ user }) => {
   return (
     <StyledUserLiked>

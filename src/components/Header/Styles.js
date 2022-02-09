@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { Menu, Stack } from '@mui/material';
-import { Link } from 'react-router-dom';
 
 export const StyledHeader = styled.header`
   height: var(--headerHeight);
