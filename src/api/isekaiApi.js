@@ -8,7 +8,6 @@ export const isekaiApi = {
     });
   },
   register: (email, password, userName) => {
-    console.log(userName, email);
     return axios.post('/auth/register', {
       username: userName,
       email,
@@ -26,6 +25,10 @@ export const isekaiApi = {
     return axios.post('/auth/deactivate-refresh-token', {
       email,
     });
+  },
+
+  getPost: (postId) => {
+    return axios.get(`/posts/${postId}`);
   },
 
   createPost: (image, description, emoji) => {
@@ -56,8 +59,16 @@ export const isekaiApi = {
     return axios.patch(`/posts/${postId}/like`, {});
   },
 
-  getCommentsPost: (postId) => {
-    return axios.get(`/posts/${postId}/comments`);
+  getCommentsPost: (postId, offset) => {
+    return axios.get(`/posts/${postId}/comments`, {
+      params: {
+        offset,
+      },
+    });
+  },
+
+  getUserLikedPost: (postId) => {
+    return axios.get(`/posts/${postId}/likes`);
   },
 
   commentPost: (postId, comment) => {
@@ -72,10 +83,10 @@ export const isekaiApi = {
     return axios.delete(`/posts/comments/${commentId}`);
   },
 
-  getTimeline: () => {
-    const data = axios.get('/posts/timeline/{page}', {
+  getTimeline: (page) => {
+    const data = axios.get('/posts/timeline', {
       params: {
-        page: 1,
+        page,
       },
     });
     return data;
@@ -86,6 +97,24 @@ export const isekaiApi = {
       params: {
         userId: id,
       },
+    });
+  },
+
+  getPostPhoto: (userId, type) => {
+    return axios.get(`/posts/${userId}/photos`, {
+      params: {
+        type,
+      },
+    });
+  },
+
+  getUserPosts: (userId, page) => {
+    return axios.get(`/posts/user/${userId}`, { params: { page } });
+  },
+
+  editInfoUser: (info) => {
+    return axios.patch('/user/info', {
+      ...info,
     });
   },
 

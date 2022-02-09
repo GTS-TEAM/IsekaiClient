@@ -2,6 +2,7 @@
   margin-top: var(--headerHeight);
   margin-left: var(--sidebarWidth);
   min-height: calc(100vh - var(--headerHeight));
+  background-color: #f0f2f5;
 
   @media screen and (max-width: 767px) {
     margin-left: 9.2rem;

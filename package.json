@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
+    "@mui/lab": "^5.0.0-alpha.66",
     "@mui/material": "^5.3.1",
     "@mui/styles": "^5.3.0",
     "@reduxjs/toolkit": "^1.7.1",
@@ -15,16 +16,22 @@
     "axios": "^0.25.0",
     "browser": "^0.2.6",
     "formik": "^2.2.9",
+    "framer-motion": "^6.2.3",
+    "i": "^0.3.7",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.1",
+    "prop-types": "^15.8.1",
     "react": "^17.0.2",
+    "react-avatar-editor": "^12.0.0",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "redux-persist": "^6.0.0",
-    "styled-components": "^5.3.3",
+    "swiper": "^7.4.1",
+    "use-color-thief": "^1.2.0",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
   },
@@ -57,6 +64,5 @@
   },
   "resolutions": {
     "styled-components": "^5"
-  },
-  "proxy": "https://isekai-api.me/api"
+  }
 }
