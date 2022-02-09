@@ -1,5 +1,6 @@
 import { Stack } from '@mui/material';
 import { CreatePost, Layout, ListPost } from 'components';
+import { authSelector } from 'features/authSlice';
 import { getUserPosts, postsSelector, unmountTimeline } from 'features/postsSlice';
 import { getUser, unMountUser, userSelector } from 'features/userSlice';
 import React, { useEffect, useState } from 'react';
@@ -16,6 +17,7 @@ const Profile = () => {
   const dispatch = useDispatch();
   const { timeline } = useSelector(postsSelector);
   const { user } = useSelector(userSelector);
+  const { user: currentUser } = useSelector(authSelector);
   const [page, setPage] = useState(1);
 
   const fetchMoreHandler = () => {
@@ -56,8 +58,13 @@ const Profile = () => {
               <PhotosPreview userId={id} />
             </Sidebar>
             <main style={{ flex: '1' }}>
-              <CreatePost />
-              <ListPost posts={timeline.posts} hasMore={timeline.hasMore} onFetchMore={fetchMoreHandler} />
+              {currentUser.id === user?.id && <CreatePost />}
+              <ListPost
+                posts={timeline.posts}
+                hasMore={timeline.hasMore}
+                onFetchMore={fetchMoreHandler}
+                style={currentUser.id === user?.id ? { marginTop: '1.2rem' } : { marginTop: 'unset' }}
+              />
             </main>
           </Stack>
         </div>

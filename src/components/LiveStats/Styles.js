@@ -4,7 +4,6 @@ import { Stack } from '@mui/material';
 export const StyledLiveStats = styled(Stack)`
   flex-direction: row;
   align-items: center;
-  padding: 1.2rem;
   column-gap: 1rem;
   font-size: 1.4rem;
   color: var(--fds-gray-3);
@@ -134,4 +133,12 @@ export const StyledUserLiked = styled.div`
 
 export const AvatarWrap = styled.div`
   margin-left: -0.8rem;
+
+  .MuiAvatar-root {
+    overflow: unset;
+  }
+
+  .MuiAvatar-root img {
+    border-radius: 50%;
+  }
 `;

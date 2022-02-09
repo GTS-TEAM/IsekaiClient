@@ -1,44 +1,23 @@
-import { Button, IconButton, MenuItem } from '@mui/material';
+import { Button } from '@mui/material';
+import { Overlay } from 'components';
 import { IMG } from 'images';
 import React, { useState } from 'react';
-import {
-  AiFillCamera,
-  AiOutlineStock,
-  AiOutlineInfoCircle,
-  AiOutlineUser,
-  AiOutlineFileImage,
-  AiOutlineUpload,
-} from 'react-icons/ai';
-import { BsThreeDotsVertical } from 'react-icons/bs';
+import { AiFillCamera } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
-import Avatar from '../Avatar/Avatar';
-import {
-  StyledCoverImg,
-  BgCover,
-  CoverOverLay,
-  InputImgTrigger,
-  MenuDropdown,
-  Dropdown,
-  MenuChooseChangeBgCover,
-} from './Styles';
 import { authSelector } from '../../../../features/authSlice';
-const CoverImg = ({ imgBgUrl, onChangeBgCover, userImg, userId }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [anchorElChangeBgCover, setAnchorElChangeBgCover] = useState(null);
+import Avatar from '../Avatar/Avatar';
+import Modal from '../Modal/Modal';
+import { BgCover, CoverOverLay, InputImgTrigger, StyledCoverImg } from './Styles';
+const CoverImg = ({ imgBgUrl, userImg, userId }) => {
   const { user: currentUser } = useSelector(authSelector);
-  const clickOpenChangeBgHandler = (e) => {
-    setAnchorElChangeBgCover(e.currentTarget);
+  const [openModal, setOpenModal] = useState(false);
+
+  const openModalHandler = () => {
+    setOpenModal(true);
   };
 
-  const closeChangeBgHandler = () => {
-    setAnchorElChangeBgCover(null);
-  };
-
-  const handleClickOpenDropdown = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleCloseDropdown = () => {
-    setAnchorEl(null);
+  const closeModalHandler = () => {
+    setOpenModal(false);
   };
 
   return (
@@ -48,59 +27,14 @@ const CoverImg = ({ imgBgUrl, onChangeBgCover, userImg, userId }) => {
       <Avatar userImg={userImg} userId={userId} />
       {currentUser.id === userId && (
         <InputImgTrigger>
-          <Button
-            aria-controls={Boolean(anchorElChangeBgCover) ? 'meu-chose-type' : undefined}
-            aria-haspopup="true"
-            aria-expanded={Boolean(anchorElChangeBgCover) ? 'true' : undefined}
-            onClick={clickOpenChangeBgHandler}
-          >
+          <Button onClick={openModalHandler}>
             <AiFillCamera />
             <span>Thêm ảnh bìa</span>
           </Button>
-          <MenuChooseChangeBgCover
-            onClose={closeChangeBgHandler}
-            open={Boolean(anchorElChangeBgCover)}
-            anchorEl={anchorElChangeBgCover}
-          >
-            <MenuItem>
-              <AiOutlineFileImage />
-              <span>Chọn ảnh</span>
-            </MenuItem>
-            <MenuItem>
-              <AiOutlineUpload />
-              <span>Tải lên</span>
-            </MenuItem>
-          </MenuChooseChangeBgCover>
         </InputImgTrigger>
       )}
-      <MenuDropdown>
-        <IconButton
-          onClick={handleClickOpenDropdown}
-          aria-controls={Boolean(anchorEl) ? 'menu-dropdown' : undefined}
-          aria-haspopup="true"
-          aria-expanded={Boolean(anchorEl) ? 'true' : undefined}
-        >
-          <BsThreeDotsVertical />
-        </IconButton>
-        <Dropdown open={Boolean(anchorEl)} onClose={handleCloseDropdown} anchorEl={anchorEl}>
-          <MenuItem>
-            <AiOutlineStock />
-            <span>Dòng thời gian</span>
-          </MenuItem>
-          <MenuItem>
-            <AiOutlineInfoCircle />
-            <span>Gới thiệu</span>
-          </MenuItem>
-          <MenuItem>
-            <AiOutlineUser />
-            <span>Bạn bè</span>
-          </MenuItem>
-          <MenuItem>
-            <AiOutlineFileImage />
-            <span>Ảnh</span>
-          </MenuItem>
-        </Dropdown>
-      </MenuDropdown>
+      {openModal && <Modal onClose={closeModalHandler} field="background" />}
+      {openModal && <Overlay onClose={closeModalHandler} />}
     </StyledCoverImg>
   );
 };

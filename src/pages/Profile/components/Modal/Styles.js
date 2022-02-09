@@ -165,8 +165,6 @@ export const Photo = styled.div`
     object-fit: cover;
     border-radius: var(--borderRadius);
   }
-
-  /* ${(p) => {}} */
 `;
 
 export const ListPhotos = styled.div`

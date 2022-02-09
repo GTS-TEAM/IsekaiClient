@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { AvatarGroup, Stack } from '@mui/material';
+import { authSelector } from 'features/authSlice';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { AiOutlineHeart, AiOutlineMessage } from 'react-icons/ai';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { LikerGroup, LikerText, StyledLiveStats } from './Styles';
 import UserLiked from './UserLiked';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { authSelector } from 'features/authSlice';
 const LiveStats = ({ totalLike, totalComment, userLiked, className, haveUserLiked }) => {
   const { user: currentUser } = useSelector(authSelector);
 
@@ -23,7 +23,7 @@ const LiveStats = ({ totalLike, totalComment, userLiked, className, haveUserLike
             <Stack direction="row">
               {userLiked.slice(0, 2).map((user) => (
                 <Link to={`/profile/${user.id}`} key={user.id}>
-                  {user.id === currentUser.id ? 'You' : user.username}
+                  {user.id === currentUser.id ? 'Bạn' : user.username}
                 </Link>
               ))}
             </Stack>

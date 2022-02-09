@@ -7,12 +7,13 @@ export const StyledHeader = styled.header`
   display: flex;
   align-items: center;
   font-size: 1.6rem;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  /* box-shadow: 0 0 8px 0 rgb(0 0 0 / 12%); */
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 101;
+  border-bottom: 1px solid var(--fds-gray-4);
 `;
 
 export const HeaderWrap = styled.div`
@@ -118,8 +119,8 @@ export const NavItem = styled.div`
   a.active {
     background-color: var(--mainColor);
     color: var(--fds-white);
-    box-shadow: 0 14px 26px -12px rgb(85 150 230 / 42%), 0 4px 23px 0px rgb(0 0 0 / 12%),
-      0 8px 10px -5px rgb(85 150 230 / 20%);
+    box-shadow: 0 14px 26px -12px rgb(165 111 253 / 42%), 0 4px 23px 0px rgb(0 0 0 / 12%),
+      0 8px 10px -5px rgb(165 111 253 / 20%);
     border-radius: 8px;
     overflow: hidden;
   }
@@ -154,7 +155,7 @@ export const DropdownMenu = styled(Menu)`
   .MuiPaper-root {
     width: 100%;
     max-width: 36rem;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    box-shadow: 0px 5px 43px rgb(0 0 0 / 18%);
     padding: 0.8rem;
     border-radius: var(--borderRadius3);
     margin-top: 1rem;

@@ -2,6 +2,9 @@ import styled from '@emotion/styled';
 
 export const StyledProfile = styled.div`
   padding: 1.8rem;
+  max-width: 1140px;
+  margin: 0 auto;
+  width: 100%;
 `;
 
 export const User = styled.div`
