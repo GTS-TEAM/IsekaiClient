@@ -9,7 +9,7 @@ import { isekaiApi } from 'api/isekaiApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { editUserInfo, userSelector } from 'features/userSlice';
 import { LoadingButton } from '@mui/lab';
-import { updateAvatar } from 'features/authSlice';
+import { updateAvatar, updateProfile } from 'features/authSlice';
 import { convertResPhotos } from 'utils/convertResPhotos';
 
 const variants = {
@@ -18,7 +18,7 @@ const variants = {
 };
 
 const modal = document.querySelector('#modal');
-const Modal = ({ onClose }) => {
+const Modal = ({ onClose, field = 'avatar' }) => {
   const { user } = useSelector(userSelector);
   const [step, setStep] = useState(1);
   const [type, setType] = useState(null);
@@ -62,10 +62,9 @@ const Modal = ({ onClose }) => {
     const formData = new FormData();
     formData.append('files', blob);
     const { urls } = await isekaiApi.uploadImg(formData);
-    dispatch(updateAvatar(urls[0]));
     dispatch(
       editUserInfo({
-        avatar: urls[0],
+        [field]: urls[0],
       }),
     );
     setLoading(false);
@@ -90,7 +89,7 @@ const Modal = ({ onClose }) => {
             </CloseButton>
           </Header>
           <Body>
-            <Stack direction="row" columnGap="2.5rem">
+            <Stack direction="row" columnGap="2.5rem" width="100%">
               <SelectionBox onClick={chooseOptionHandler('upload')}>
                 <img src={IMG.ChangeProfile} alt="" />
                 <span>Tải ảnh lên</span>
@@ -132,10 +131,10 @@ const Modal = ({ onClose }) => {
                     ref={setEditorRef}
                     className="avatar-editor"
                     image={img}
-                    width={250}
-                    height={250}
-                    border={50}
-                    borderRadius={9999}
+                    width={field === 'avatar' ? 250 : 600}
+                    height={field === 'avatar' ? 250 : 300}
+                    border={30}
+                    borderRadius={field === 'avatar' ? 9999 : 0}
                     color={[0, 0, 0, 0.6]} // RGBA
                     scale={valueZoom}
                     rotate={0}
@@ -155,7 +154,9 @@ const Modal = ({ onClose }) => {
         <React.Fragment>
           <Header>
             <Title>Danh sách ảnh của bạn</Title>
-            <CloseButton></CloseButton>
+            <CloseButton onClick={onClose}>
+              <GrFormClose />
+            </CloseButton>
           </Header>
           <Body>
             {!img ? (
@@ -172,10 +173,10 @@ const Modal = ({ onClose }) => {
                   ref={setEditorRef}
                   className="avatar-editor"
                   image={img}
-                  width={250}
-                  height={250}
-                  border={50}
-                  borderRadius={9999}
+                  width={field === 'avatar' ? 250 : 600}
+                  height={field === 'avatar' ? 250 : 300}
+                  border={30}
+                  borderRadius={field === 'avatar' ? 9999 : 0}
                   color={[0, 0, 0, 0.6]} // RGBA
                   scale={valueZoom}
                   rotate={0}

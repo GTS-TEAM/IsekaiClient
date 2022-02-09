@@ -1,13 +1,15 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
+import { updateProfile } from './authSlice';
 
 export const getUser = createAsyncThunk('user/getUser', async (id) => {
   const data = await isekaiApi.getUser(id);
   return data;
 });
 
-export const editUserInfo = createAsyncThunk('user/editUserInfo', async (info) => {
+export const editUserInfo = createAsyncThunk('user/editUserInfo', async (info, thunkApi) => {
   const data = await isekaiApi.editInfoUser(info);
+  thunkApi.dispatch(updateProfile(data));
   return data;
 });
 

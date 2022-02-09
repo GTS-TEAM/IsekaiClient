@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { StyledInfiniteScroll } from './Styles';
 import { CircularProgress } from '@mui/material';
 import { Post } from 'components';
-const ListPost = ({ posts, hasMore, onFetchMore }) => {
+const ListPost = ({ posts, hasMore, onFetchMore, style }) => {
   return (
     <StyledInfiniteScroll
-      style={{ overflowY: 'hidden' }}
+      style={style}
       dataLength={posts.length}
       hasMore={hasMore}
       next={onFetchMore}
@@ -28,6 +28,7 @@ ListPost.propTypes = {
   posts: PropTypes.array.isRequired,
   hasMore: PropTypes.bool.isRequired,
   onFetchMore: PropTypes.func.isRequired,
+  style: PropTypes.object,
 };
 
 export default ListPost;

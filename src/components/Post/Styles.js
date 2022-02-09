@@ -13,9 +13,12 @@ export const Header = styled.div`
 
 export const Body = styled.div`
   padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.2rem;
 
   .live-stats {
-    padding: 1.6rem 0 0 0;
+    padding-top: unset;
   }
 `;
 

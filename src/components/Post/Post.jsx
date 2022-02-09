@@ -1,9 +1,8 @@
+import { Stack } from '@mui/material';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Comments, ModalCreatePost, More, Overlay, GridImg, Actions, LiveStats, UserBlockPost } from '..';
-import emotions from '../../utils/emotions';
+import { useDispatch, useSelector } from 'react-redux';
+import { Actions, Comments, GridImg, LiveStats, ModalCreatePost, More, Overlay, UserBlockPost } from '..';
 import { authSelector } from '../../features/authSlice';
-import { useDispatch } from 'react-redux';
 import {
   addPostEmotion,
   addPostFullImg,
@@ -12,9 +11,9 @@ import {
   clearPostImg,
   deletePost,
 } from '../../features/postsSlice';
-import { openEditPostModal, closeEditPostModal, uiSelector, setPostIdEdit } from '../../features/uiSlice';
+import { closeEditPostModal, openEditPostModal, setPostIdEdit, uiSelector } from '../../features/uiSlice';
 import { useOverFlowHidden } from '../../hooks/useOverFlowHidden';
-import { Stack } from '@mui/material';
+import emotions from '../../utils/emotions';
 import { Body, Description, Header, StyledPost } from './Styles';
 
 const Post = ({ post }) => {
@@ -90,13 +89,14 @@ const Post = ({ post }) => {
         </Stack>
       </Header>
       <Body>
-        <Description>{post.description}</Description>
+        {post.description.length !== 0 && <Description>{post.description}</Description>}
         {post.image.length === 0 ? null : <GridImg post={post} />}
         <LiveStats
           totalLike={post.likeCount}
           totalComment={post.commentCount}
           className="live-stats"
           userLiked={post.likes}
+          haveUserLiked={true}
         />
       </Body>
       <Actions post={post} onToggleComment={toggleOpenCommentHandler} className="actions" />

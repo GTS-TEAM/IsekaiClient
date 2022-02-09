@@ -1,14 +1,14 @@
+import { Avatar, MenuItem, Stack } from '@mui/material';
 import React, { useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { AiOutlineHome, AiOutlineMessage } from 'react-icons/ai';
 import { BiSearch } from 'react-icons/bi';
+import { FiLogOut, FiUsers } from 'react-icons/fi';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { deleteTokenFromLocalStorage } from '../../api/axoisClient';
 import { authSelector, logout } from '../../features/authSlice';
 import { DropdownMenu, HeaderWrap, Logo, Navbar, NavItem, SearchGlobal, StyledHeader, User } from './Styles';
-import { Avatar, MenuItem, Stack } from '@mui/material';
-import { FiLogOut, FiUsers } from 'react-icons/fi';
-import { deleteTokenFromLocalStorage } from '../../api/axoisClient';
-import { AiOutlineHome, AiOutlineMessage } from 'react-icons/ai';
 const Header = () => {
   const [isFocus, setIsFocus] = useState(false);
   const { user } = useSelector(authSelector);
@@ -92,7 +92,6 @@ const Header = () => {
           </SearchGlobal>
           <User onClick={handleClickOpenDropdown}>
             <Avatar src={user.avatar} sx={{ width: 40, height: 40 }} />
-            <span>{user.username}</span>
           </User>
         </Stack>
         <DropdownMenu anchorEl={anchorEl} open={open} onClose={handleCloseDropdown}>
