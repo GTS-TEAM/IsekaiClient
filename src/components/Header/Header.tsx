@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { AiOutlineHome, AiOutlineMessage } from 'react-icons/ai';
 import { BiSearch } from 'react-icons/bi';
 import { FiLogOut, FiUsers } from 'react-icons/fi';
-import { IoNotificationsOutline } from 'react-icons/io5';
+import { IoNotificationsOutline, IoSettingsOutline } from 'react-icons/io5';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { deleteTokenFromLocalStorage } from '../../api/axoisClient';
 import { authSelector, logout } from '../../features/authSlice';
@@ -32,6 +32,10 @@ const Header = () => {
 
   const clickGoToProfileUser = () => {
     navigate(`/profile/${user?.id}`);
+  };
+
+  const clickGoToSettingHandler = () => {
+    navigate(`/setting`);
   };
 
   const focusHandler = () => {
@@ -105,11 +109,17 @@ const Header = () => {
             </MenuItem>
           </div>
           <div className="dropdown-list">
+            <MenuItem onClick={clickGoToSettingHandler}>
+              <div className="icon">
+                <IoSettingsOutline />
+              </div>
+              <span className="text-1">Cài đặt</span>
+            </MenuItem>
             <MenuItem onClick={clickLogoutHandler}>
               <div className="icon">
                 <FiLogOut />
               </div>
-              <span className="text-1">Log out</span>
+              <span className="text-1">Đăng xuất</span>
             </MenuItem>
           </div>
         </DropdownMenu>

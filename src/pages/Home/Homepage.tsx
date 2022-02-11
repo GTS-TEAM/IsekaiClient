@@ -1,4 +1,5 @@
 // import { CreatePost, ListPost } from 'components';
+import Container from 'components/Container/Container';
 import CreatePost from 'components/CreatePost/CreatePost';
 import ListPost from 'components/ListPost/ListPost';
 import { getTimeline, postsSelector, unmountTimeline } from 'features/postsSlice';
@@ -23,10 +24,12 @@ const Homepage = () => {
 
   return (
     <StyledHomepage>
-      <Feed>
-        <CreatePost />
-        <ListPost posts={timeline.posts} hasMore={timeline.hasMore} onFetchMore={fetchMoreHandler} />
-      </Feed>
+      <Container>
+        <Feed>
+          <CreatePost />
+          <ListPost posts={timeline.posts} hasMore={timeline.hasMore} onFetchMore={fetchMoreHandler} />
+        </Feed>
+      </Container>
     </StyledHomepage>
   );
 };

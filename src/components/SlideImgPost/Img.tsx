@@ -6,12 +6,16 @@ interface Props {
   imgUrl: string;
 }
 
+enum FormatString {
+  hex = 'hex',
+  rgb = 'rgb',
+}
+
 const Img: React.FC<Props> = ({ imgUrl }) => {
   const { color } = useColorThief(imgUrl, {
-    format: 'hex',
+    format: FormatString.hex,
   });
 
-  console.log(color);
   return (
     <StyledImg backgroundColor={color}>
       <div className="bg-blur"></div>
