@@ -27,11 +27,16 @@ export const registerHandler = createAsyncThunk(
 );
 
 export const refreshToken = createAsyncThunk('auth/refreshToken', async (_, thunkApi) => {
-  const token = getTokenFromLocalStorage();
-  deleteTokenFromLocalStorage();
-  const data = await isekaiApi.updateToken(token.refreshToken);
-  setTokenToLocalStorage(data);
-  return data;
+  try {
+    const token = getTokenFromLocalStorage();
+    deleteTokenFromLocalStorage();
+    const data = await isekaiApi.updateToken(token.refreshToken);
+    setTokenToLocalStorage(data);
+    return data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 });
 
 const initialState = {

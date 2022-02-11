@@ -3,13 +3,21 @@ import jwtDecode from 'jwt-decode';
 import { logout, refreshToken } from '../features/authSlice';
 import { store } from '../store';
 
-axios.defaults.baseURL = 'https://isekai-api.me/api';
+axios.defaults.baseURL = 'http://localhost:8080/api';
 
 axios.interceptors.response.use(
   function (response) {
     return response.data;
   },
-  function (error) {
+  async (error) => {
+    if (error.response.status === 401) {
+      const token = localStorage.getItem('token');
+      if (token && refreshToken) {
+        await store.dispatch(refreshToken());
+      } else {
+        store.dispatch(logout());
+      }
+    }
     return Promise.reject(error);
   },
 );
@@ -50,13 +58,17 @@ axios.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    const originalRequest = error.config;
-    if (originalRequest.url === '/auth/refresh-token') {
-      console.log('Refresh token is expired');
-      store.dispatch(logout());
-      localStorage.clear();
-    }
-    return Promise.reject(error);
-  },
+  // (error) => {
+  //   console.log('adasdsa');
+  //   const originalRequest = error.config;
+  //   if (originalRequest.status === 401) {
+  //     await store.dispatch(refreshToken());
+  //   }
+  //   if (originalRequest.url === '/auth/refresh-token' && originalRequest.status === 401) {
+  //     console.log('Refresh token is expired');
+  //     store.dispatch(logout());
+  //     localStorage.clear();
+  //   }
+  //   return Promise.reject(error);
+  // },
 );
