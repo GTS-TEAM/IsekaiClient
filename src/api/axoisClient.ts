@@ -10,8 +10,15 @@ axios.interceptors.response.use(
   function (response) {
     return response;
   },
-  function (error) {
-    return Promise.reject(error);
+  async (error) => {
+    if (error.response.status === 401) {
+      const token = localStorage.getItem('token');
+      if (token && refreshToken) {
+        await store.dispatch(refreshToken());
+      } else {
+        store.dispatch(logout());
+      }
+    }
   },
 );
 export const setTokenToLocalStorage = (token: TokenType) => {
