@@ -7,7 +7,6 @@
     flex-direction: column;
     row-gap: 1rem;
     margin-bottom: 1rem;
-    margin-top: 6rem;
   }
 
   &_item {
@@ -54,12 +53,7 @@
 }
 
 .input_comments {
-  padding: 1rem 1.8rem;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 10;
+  padding: 1rem 0;
   margin: 0;
   height: 6rem;
 }

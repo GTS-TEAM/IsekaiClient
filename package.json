@@ -12,6 +12,10 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.4.0",
+    "@types/node": "^17.0.16",
+    "@types/react": "^17.0.39",
+    "@types/react-dom": "^17.0.11",
     "autosize": "^5.0.1",
     "axios": "^0.25.0",
     "browser": "^0.2.6",
@@ -30,7 +34,8 @@
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "redux-persist": "^6.0.0",
-    "swiper": "^7.4.1",
+    "swiper": "^8.0.5",
+    "typescript": "^4.5.5",
     "use-color-thief": "^1.2.0",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
@@ -60,9 +65,13 @@
     ]
   },
   "devDependencies": {
+    "@types/autosize": "^4.0.1",
+    "@types/react-avatar-editor": "^10.3.6",
+    "@types/uuid": "^8.3.4",
     "sass": "^1.49.0"
   },
   "resolutions": {
-    "styled-components": "^5"
+    "styled-components": "^5",
+    "moment-timezone/moment": "2.29.1"
   }
 }
