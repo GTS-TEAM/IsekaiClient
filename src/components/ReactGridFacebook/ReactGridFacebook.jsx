@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { GridContainer, Img } from './Styles';
 import { Stack } from '@mui/material';
+import React, { Component } from 'react';
+import { GridContainer, Img } from './Styles';
 
 class Images extends Component {
   static defaultProps = {
@@ -181,14 +180,5 @@ class Images extends Component {
     );
   }
 }
-
-Images.propTypes = {
-  images: PropTypes.array.isRequired,
-  hideOverlay: PropTypes.bool,
-  renderOverlay: PropTypes.func,
-  overlayBackgroundColor: PropTypes.string,
-  onClickEach: PropTypes.func,
-  countFrom: PropTypes.number,
-};
 
 export default Images;
