@@ -11,13 +11,8 @@ axios.interceptors.response.use(
     return response;
   },
   async (error) => {
-    if (error.response.status === 401) {
-      const token = localStorage.getItem('token');
-      if (token && refreshToken) {
-        await store.dispatch(refreshToken());
-      } else {
-        store.dispatch(logout());
-      }
+    if (error.response.status === 401 && error.config.url === '/auth/refresh-token') {
+      store.dispatch(logout());
     }
   },
 );
