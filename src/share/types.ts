@@ -10,7 +10,7 @@ export interface User {
   created_at?: string;
 }
 
-export interface PostType {
+export interface PostItem {
   id: string;
   description: string;
   image: string[];
@@ -25,7 +25,7 @@ export interface PostType {
   comments?: any;
 }
 
-export interface CommentType {
+export interface CommentItem {
   content: string;
   created_at: string;
   updated_at: string;
@@ -33,7 +33,7 @@ export interface CommentType {
   user: User;
 }
 
-export interface TokenType {
+export interface Token {
   access_token: string | null;
   refresh_token: string | null;
 }
@@ -44,19 +44,19 @@ export interface ResLogin {
   user: User;
 }
 
-export interface ImgUploadType {
+export interface ImgUpload {
   id: string;
   url: string;
   file: File;
 }
 
-export interface Emotion {
+export interface EmotionItem {
   id: number;
   name: string;
   icon: any;
 }
 
-export interface InfoType {
+export interface InfoUser {
   username?: string;
   email?: string;
   bio?: string;

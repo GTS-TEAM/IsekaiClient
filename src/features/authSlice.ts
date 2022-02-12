@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from 'share/types';
 import { deleteTokenFromLocalStorage, getTokenFromLocalStorage, setTokenToLocalStorage } from '../api/axoisClient';
 import { isekaiApi } from '../api/isekaiApi';
-import { ResLogin, TokenType } from './../share/types';
+import { ResLogin, Token } from './../share/types';
 import { RootState } from './../store';
 
 interface parameterLogin {
@@ -11,7 +11,13 @@ interface parameterLogin {
   callback: () => any;
 }
 
-export const loginHandler = createAsyncThunk('auth/login', async (d: parameterLogin, thunkApi) => {
+export const loginHandler = createAsyncThunk<
+  ResLogin,
+  parameterLogin,
+  {
+    rejectValue: string;
+  }
+>('auth/login', async (d, thunkApi) => {
   try {
     const { data } = await isekaiApi.login(d.email, d.password);
     console.log(data);
@@ -19,7 +25,7 @@ export const loginHandler = createAsyncThunk('auth/login', async (d: parameterLo
     d.callback(); // navigate to homepage
     return data;
   } catch (err: any) {
-    return thunkApi.rejectWithValue(err.response.data);
+    return thunkApi.rejectWithValue(err.response.data.message);
   }
 });
 
@@ -27,13 +33,19 @@ interface parameterRegister extends parameterLogin {
   userName: string;
 }
 
-export const registerHandler = createAsyncThunk('auth/register', async (d: parameterRegister, thunkApi) => {
+export const registerHandler = createAsyncThunk<
+  { message: string },
+  parameterRegister,
+  {
+    rejectValue: string;
+  }
+>('auth/register', async (d, thunkApi) => {
   try {
-    const data = await isekaiApi.register(d.email, d.password, d.userName);
+    const { data } = await isekaiApi.register(d.email, d.password, d.userName);
     d.callback(); // navigate to login page
     return data;
   } catch (err: any) {
-    return thunkApi.rejectWithValue(err.response.data);
+    return thunkApi.rejectWithValue(err.response.data.message);
   }
 });
 
@@ -48,7 +60,7 @@ export const refreshToken = createAsyncThunk('auth/refreshToken', async () => {
 interface InitialState {
   user: User | null;
   loading: boolean;
-  token: TokenType;
+  token: Token;
   login: {
     error: string | null | undefined;
     loading: boolean;
@@ -109,9 +121,9 @@ const authSlice = createSlice({
       })
       .addCase(loginHandler.rejected, (state, action) => {
         state.login.loading = false;
-        state.login.error = action.error.message;
+        state.login.error = action.payload;
       })
-      .addCase(refreshToken.fulfilled, (state, action: PayloadAction<TokenType>) => {
+      .addCase(refreshToken.fulfilled, (state, action: PayloadAction<Token>) => {
         state.token.access_token = action.payload.access_token;
         state.token.refresh_token = action.payload.refresh_token;
       })
@@ -120,11 +132,11 @@ const authSlice = createSlice({
         state.register.error = null;
       })
       .addCase(registerHandler.fulfilled, (state, action) => {
-        state.register.message = action.payload.data;
+        state.register.message = action.payload.message;
         state.register.loading = false;
       })
       .addCase(registerHandler.rejected, (state, action) => {
-        state.register.error = action.error.message;
+        state.register.error = action.payload;
         state.register.loading = false;
       });
   },

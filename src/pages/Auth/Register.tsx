@@ -37,7 +37,7 @@ const Register = () => {
       email: Yup.string().email('Invalid email address.').required('You must enter your email.'),
       password: Yup.string()
         .required('You must enter your password.')
-        .min(6, 'Password is too short - should be 8 chars minimum.'),
+        .min(6, 'Password is too short - should be 6 chars minimum.'),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref('password'), null], 'Password must match')
         .required('Confirm password is require.'),

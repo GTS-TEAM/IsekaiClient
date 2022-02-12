@@ -2,6 +2,8 @@ import AddProfile from './add-profile.svg';
 import { ReactComponent as AddPhoto } from './AddPhoto.svg';
 import ChangeProfile from './change-profile.svg';
 import { ReactComponent as Emotion } from './Emotion.svg';
+import { ReactComponent as SettingSecurity } from './setting-security.svg';
+import { ReactComponent as SettingGeneral } from './setting-svg.svg';
 import UploadProfile from './upload-profile.svg';
 export const IMG = {
   bgHero: require('./bg-hero.jpg'),
@@ -24,4 +26,6 @@ export const IMG = {
   UploadProfile,
   ChangeProfile,
   AddProfile,
+  SettingGeneral,
+  SettingSecurity,
 };

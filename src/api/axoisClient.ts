@@ -2,7 +2,7 @@ import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import { logout, refreshToken } from '../features/authSlice';
 import { store } from '../store';
-import { TokenType } from './../share/types';
+import { Token } from './../share/types';
 
 axios.defaults.baseURL = 'https://isekai-api.me/api';
 
@@ -14,12 +14,12 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-export const setTokenToLocalStorage = (token: TokenType) => {
+export const setTokenToLocalStorage = (token: Token) => {
   localStorage.setItem('access_token', JSON.stringify(token.access_token));
   localStorage.setItem('refresh_token', JSON.stringify(token.refresh_token));
 };
 
-export const getTokenFromLocalStorage = (): TokenType => {
+export const getTokenFromLocalStorage = (): Token => {
   const accessToken = localStorage.getItem('access_token');
   const refreshToken = localStorage.getItem('refresh_token');
   if (accessToken && refreshToken) {
@@ -59,7 +59,9 @@ axios.interceptors.request.use(
           if (config.headers) {
             const accessToken = localStorage.getItem('access_token');
             if (accessToken) {
-              config.headers['authorization'] = `Bearer ${JSON.parse(accessToken)}`;
+              config.headers = {
+                Authorization: `Bearer ${JSON.parse(accessToken)}`,
+              };
             }
           }
         }

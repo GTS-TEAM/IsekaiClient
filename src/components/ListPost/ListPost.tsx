@@ -1,11 +1,11 @@
 import { CircularProgress } from '@mui/material';
 import Post from 'components/Post/Post';
 import React from 'react';
-import { PostType } from 'share/types';
+import { PostItem } from 'share/types';
 import { StyledInfiniteScroll } from './Styles';
 
 interface Props {
-  posts: PostType[];
+  posts: PostItem[];
   hasMore: boolean;
   onFetchMore: () => any;
   style?: React.CSSProperties;

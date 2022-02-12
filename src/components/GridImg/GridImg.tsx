@@ -3,11 +3,11 @@ import { useAppSelector } from 'hooks/hooks';
 import { useOverFlowHidden } from 'hooks/useOverFlowHidden';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PostType } from 'share/types';
+import { PostItem } from 'share/types';
 import ReactGridFacebook from '../ReactGridFacebook/ReactGridFacebook';
 
 interface Props {
-  post: PostType;
+  post: PostItem;
 }
 
 const GridImg: React.FC<Props> = ({ post }) => {

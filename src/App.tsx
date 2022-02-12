@@ -2,6 +2,7 @@ import Layout from 'components/Layout/Layout';
 import RequireAuth from 'components/RequireAuth/RequireAuth';
 import Post from 'pages/Detail/Detail';
 import Profile from 'pages/Profile/Profile';
+import SettingAccount from 'pages/SettingAccount/SettingAccount';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
@@ -37,6 +38,14 @@ function App() {
           element={
             <RequireAuth>
               <Post />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/setting"
+          element={
+            <RequireAuth>
+              <SettingAccount />
             </RequireAuth>
           }
         />

@@ -9,7 +9,7 @@ import Overlay from 'components/Overlay/Overlay';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useState } from 'react';
-import { PostType } from 'share/types';
+import { PostItem } from 'share/types';
 import { authSelector } from '../../features/authSlice';
 import {
   addPostEmotion,
@@ -26,7 +26,7 @@ import emotions from '../../utils/emotions';
 import { Body, Description, Header, StyledPost } from './Styles';
 
 interface Props {
-  post: PostType;
+  post: PostItem;
 }
 
 const Post: React.FC<Props> = ({ post }) => {

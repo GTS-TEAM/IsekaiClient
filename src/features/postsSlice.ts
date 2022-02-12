@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
-import { ImgUploadType, User } from 'share/types';
-import { Emotion, PostType } from './../share/types';
+import { EmotionItem, ImgUpload, User } from 'share/types';
+import { PostItem } from './../share/types';
 import { RootState } from './../store';
 
-export const uploadImg = async (files: ImgUploadType[]) => {
+export const uploadImg = async (files: ImgUpload[]) => {
   const formData = new FormData();
   files.forEach((item) => {
     formData.append('files', item.file);
@@ -14,7 +14,7 @@ export const uploadImg = async (files: ImgUploadType[]) => {
 };
 
 interface ParameterCreatePost {
-  image: ImgUploadType[];
+  image: ImgUpload[];
   description: string;
   emoji: any;
   callback: () => any;
@@ -88,7 +88,7 @@ export const getUserPosts = createAsyncThunk('posts/gerUserPosts', async (d: { u
 
 interface InitialState {
   timeline: {
-    posts: PostType[];
+    posts: PostItem[];
     isOpenComment: boolean;
     loading: boolean;
     error: null | string | undefined;
@@ -98,7 +98,7 @@ interface InitialState {
     loading: boolean;
     error: null | string | undefined;
     postText: string;
-    emotion: Emotion | null;
+    emotion: EmotionItem | null;
     image: any;
   };
 }
@@ -204,7 +204,7 @@ const postsSlice = createSlice({
       .addCase(createPost.pending, (state) => {
         state.dataPosts.loading = true;
       })
-      .addCase(createPost.fulfilled, (state, action: PayloadAction<PostType>) => {
+      .addCase(createPost.fulfilled, (state, action: PayloadAction<PostItem>) => {
         state.dataPosts.loading = false;
         state.timeline.posts.unshift({
           ...action.payload,
@@ -218,7 +218,7 @@ const postsSlice = createSlice({
       .addCase(getTimeline.pending, (state) => {
         state.timeline.loading = true;
       })
-      .addCase(getTimeline.fulfilled, (state, action: PayloadAction<PostType[]>) => {
+      .addCase(getTimeline.fulfilled, (state, action: PayloadAction<PostItem[]>) => {
         if (action.payload.length === 0) {
           state.timeline.hasMore = false;
         } else {
@@ -232,7 +232,7 @@ const postsSlice = createSlice({
       .addCase(getUserPosts.pending, (state) => {
         state.timeline.loading = true;
       })
-      .addCase(getUserPosts.fulfilled, (state, action: PayloadAction<PostType[]>) => {
+      .addCase(getUserPosts.fulfilled, (state, action: PayloadAction<PostItem[]>) => {
         if (action.payload.length === 0) {
           state.timeline.hasMore = false;
         } else {

@@ -15,41 +15,39 @@ SwiperCore.use([Navigation]);
 
 const SlideImgPost: React.FC<Props> = ({ images, slideIndex }) => {
   const swiperRef = React.useRef<SwiperCore>();
-  const prevButton = React.useRef<HTMLDivElement>(null);
-  const nextButton = React.useRef<HTMLDivElement>(null);
+
+  const nextSlideHandler = () => {
+    swiperRef.current?.slideNext();
+  };
+
+  const prevSlideHandler = () => {
+    swiperRef.current?.slidePrev();
+  };
 
   useEffect(() => {
     if (swiperRef.current) {
       swiperRef.current.slideTo(slideIndex, 0);
     }
-  });
+  }, [slideIndex]);
 
   return (
     <StyledSlideImgPost>
       <Swiper
+        allowTouchMove={true}
         modules={[Navigation]}
-        onBeforeInit={(swiper: SwiperCore) => {
+        onInit={(swiper: SwiperCore) => {
           swiperRef.current = swiper;
-          if (typeof swiper.params.navigation !== 'boolean') {
-            const navigation = swiper.params.navigation;
-            if (navigation) {
-              navigation.prevEl = prevButton.current;
-              navigation.nextEl = nextButton.current;
-            }
-          }
         }}
       >
-        {images.map((img) => {
-          return (
-            <SwiperSlide key={uuidv4()}>
-              <Img imgUrl={img} />
-            </SwiperSlide>
-          );
-        })}
-        <div ref={prevButton} className="btn-move btn-prev">
+        {images.map((img) => (
+          <SwiperSlide key={uuidv4()}>
+            <Img imgUrl={img} />
+          </SwiperSlide>
+        ))}
+        <div className="btn-move btn-prev" onClick={prevSlideHandler}>
           <MdOutlineKeyboardArrowLeft />
         </div>
-        <div ref={nextButton} className="btn-move btn-next">
+        <div className="btn-move btn-next" onClick={nextSlideHandler}>
           <MdOutlineKeyboardArrowRight />
         </div>
       </Swiper>
