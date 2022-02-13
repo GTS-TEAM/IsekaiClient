@@ -12,6 +12,9 @@ axios.interceptors.response.use(
   },
   async (error) => {
     if (error.response.status === 401 && error.config.url === '/auth/refresh-token') {
+      console.log('refresh token error');
+
+      deleteTokenFromLocalStorage();
       store.dispatch(logout());
     }
   },
@@ -42,42 +45,31 @@ export const deleteTokenFromLocalStorage = () => {
   localStorage.removeItem('refresh_token');
 };
 
-axios.interceptors.request.use(
-  async (config) => {
-    if (config.url !== '/posts/timeline/{page}') console.log(config.url);
-    const token = getTokenFromLocalStorage();
-    let currentDate = new Date();
-    if (token) {
-      if (token.access_token) {
-        config.headers = {
-          Authorization: `Bearer ${token.access_token}`,
-        };
-        const decodedToken: {
-          exp: number;
-        } = jwtDecode(token.access_token);
-        if (decodedToken.exp * 1000 < currentDate.getTime()) {
-          await store.dispatch(refreshToken());
+axios.interceptors.request.use(async (config) => {
+  if (config.url !== '/posts/timeline/{page}') console.log(config.url);
+  const token = getTokenFromLocalStorage();
+  let currentDate = new Date();
+  if (token) {
+    if (token.access_token) {
+      config.headers = {
+        Authorization: `Bearer ${token.access_token}`,
+      };
+      const decodedToken: {
+        exp: number;
+      } = jwtDecode(token.access_token);
+      if (decodedToken.exp * 1000 < currentDate.getTime()) {
+        await store.dispatch(refreshToken());
 
-          if (config.headers) {
-            const accessToken = localStorage.getItem('access_token');
-            if (accessToken) {
-              config.headers = {
-                Authorization: `Bearer ${JSON.parse(accessToken)}`,
-              };
-            }
+        if (config.headers) {
+          const accessToken = localStorage.getItem('access_token');
+          if (accessToken) {
+            config.headers = {
+              Authorization: `Bearer ${JSON.parse(accessToken)}`,
+            };
           }
         }
       }
     }
-    return config;
-  },
-  (error) => {
-    const originalRequest = error.config;
-    if (originalRequest.url === '/auth/refresh-token') {
-      console.log('Refresh token is expired');
-      store.dispatch(logout());
-      localStorage.clear();
-    }
-    return Promise.reject(error);
-  },
-);
+  }
+  return config;
+});
