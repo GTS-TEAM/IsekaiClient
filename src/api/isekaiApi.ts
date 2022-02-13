@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CommentType, InfoType, PostType, ResLogin, TokenType, User } from './../share/types';
+import { CommentItem, InfoUser, PostItem, ResLogin, Token, User } from './../share/types';
 
 export const isekaiApi = {
   login: (email: string, password: string) => {
@@ -9,7 +9,9 @@ export const isekaiApi = {
     });
   },
   register: (email: string, password: string, userName: string) => {
-    return axios.post('/auth/register', {
+    return axios.post<{
+      message: string;
+    }>('/auth/register', {
       username: userName,
       email,
       password,
@@ -17,7 +19,7 @@ export const isekaiApi = {
     });
   },
   updateToken: async (refreshToken: string) => {
-    return await axios.post<TokenType>('/auth/refresh-token', {
+    return await axios.post<Token>('/auth/refresh-token', {
       refresh_token: refreshToken,
     });
   },
@@ -29,11 +31,11 @@ export const isekaiApi = {
   },
 
   getPost: (postId: string) => {
-    return axios.get<PostType>(`/posts/${postId}`);
+    return axios.get<PostItem>(`/posts/${postId}`);
   },
 
   createPost: (image: string[] | [], description: string, emoji: number | null) => {
-    return axios.post<PostType>('/posts', {
+    return axios.post<PostItem>('/posts', {
       image,
       description,
       emoji,
@@ -68,7 +70,7 @@ export const isekaiApi = {
   },
 
   getCommentsPost: (postId: string, offset: number) => {
-    return axios.get<CommentType[]>(`/posts/${postId}/comments`, {
+    return axios.get<CommentItem[]>(`/posts/${postId}/comments`, {
       params: {
         offset,
       },
@@ -80,7 +82,7 @@ export const isekaiApi = {
   },
 
   commentPost: (postId: string, comment: string) => {
-    return axios.post<CommentType>(`/posts/${postId}/comments`, { comment });
+    return axios.post<CommentItem>(`/posts/${postId}/comments`, { comment });
   },
 
   editComment: (commentId: string, comment: string) => {
@@ -92,7 +94,7 @@ export const isekaiApi = {
   },
 
   getTimeline: (page: number) => {
-    const data = axios.get<PostType[]>('/posts/timeline', {
+    const data = axios.get<PostItem[]>('/posts/timeline', {
       params: {
         page,
       },
@@ -117,10 +119,10 @@ export const isekaiApi = {
   },
 
   getUserPosts: (userId: string, page: number) => {
-    return axios.get<PostType[]>(`/posts/user/${userId}`, { params: { page } });
+    return axios.get<PostItem[]>(`/posts/user/${userId}`, { params: { page } });
   },
 
-  editInfoUser: (info: InfoType) => {
+  editInfoUser: (info: InfoUser) => {
     return axios.patch<User>('/user/info', {
       ...info,
     });

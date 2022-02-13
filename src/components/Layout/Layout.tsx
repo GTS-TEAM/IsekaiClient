@@ -1,12 +1,19 @@
 import Header from 'components/Header/Header';
 import React from 'react';
-import styled from './Layout.module.scss';
+import { Main } from './Styles';
 
-const Layout: React.FC = ({ children }) => {
+interface Props {
+  sx?: React.CSSProperties;
+  className?: string;
+}
+
+const Layout: React.FC<Props> = ({ children, className, sx }) => {
   return (
     <React.Fragment>
       <Header />
-      <main className={styled.main}>{children}</main>
+      <Main className={className} style={sx}>
+        {children}
+      </Main>
     </React.Fragment>
   );
 };

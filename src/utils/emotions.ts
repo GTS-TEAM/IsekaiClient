@@ -1,7 +1,7 @@
-import { Emotion } from 'share/types';
+import { EmotionItem } from 'share/types';
 import { IMG } from '../images';
 
-const emotions: Emotion[] = [
+const emotions: EmotionItem[] = [
   {
     id: 1,
     name: 'được yêu',

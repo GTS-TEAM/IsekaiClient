@@ -7,13 +7,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isekaiApi } from '../../api/isekaiApi';
 import { authSelector } from '../../features/authSlice';
 import { decreaseCmt } from '../../features/postsSlice';
-import { CommentType } from '../../share/types';
+import { CommentItem } from '../../share/types';
 import { CommentMain, StyledComment } from './Styles';
 
 interface Props {
   onRemoveComment: (commentId: string) => void;
   onEditComment: (commentId: string) => void;
-  comment: CommentType;
+  comment: CommentItem;
   postId: string;
 }
 
@@ -63,13 +63,13 @@ const Comment: React.FC<Props> = ({ comment, postId, onRemoveComment, onEditComm
     setAnchorEl(null);
   };
 
-  const clickOpenEditHandler = (item: CommentType) => () => {
+  const clickOpenEditHandler = (item: CommentItem) => () => {
     setOpenEditComment(item.id);
     setCommentTextEdit(item.content);
     handleMenuClose();
   };
 
-  const clickRemoveHandler = (item: CommentType) => () => {
+  const clickRemoveHandler = (item: CommentItem) => () => {
     sendDeleteCommentHandler(item.id);
     handleMenuClose();
   };

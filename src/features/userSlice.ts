@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from '../api/isekaiApi';
-import { InfoType, User } from './../share/types';
+import { InfoUser, User } from './../share/types';
 import { RootState } from './../store';
 import { updateProfile } from './authSlice';
 
@@ -9,7 +9,7 @@ export const getUser = createAsyncThunk('user/getUser', async (id: string) => {
   return data;
 });
 
-export const editUserInfo = createAsyncThunk('user/editUserInfo', async (info: InfoType, { dispatch }) => {
+export const editUserInfo = createAsyncThunk('user/editUserInfo', async (info: InfoUser, { dispatch }) => {
   const { data } = await isekaiApi.editInfoUser(info);
   dispatch(updateProfile(data));
   return data;

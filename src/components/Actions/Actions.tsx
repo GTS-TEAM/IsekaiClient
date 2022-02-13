@@ -1,13 +1,13 @@
 import { Stack } from '@mui/material';
 import React from 'react';
 import { AiFillLike, AiOutlineComment, AiOutlineLike, AiOutlineShareAlt } from 'react-icons/ai';
-import { PostType } from '../../share/types';
+import { PostItem } from '../../share/types';
 import { StyledActions } from './Styles';
 
 interface ActionsProps {
   onToggleComment?: () => void;
   onLike: () => void;
-  post: PostType;
+  post: PostItem;
   className?: string;
 }
 

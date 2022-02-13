@@ -1,6 +1,6 @@
 import React, { FC, FormEvent, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { CommentType } from 'share/types';
+import { CommentItem } from 'share/types';
 import { isekaiApi } from '../../api/isekaiApi';
 import { increaseCmt } from '../../features/postsSlice';
 import Comment from './Comment';
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const Comments: FC<Props> = ({ postId, amountComment }) => {
-  const [comments, setComments] = useState<CommentType[]>([]);
+  const [comments, setComments] = useState<CommentItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [commentText, setCommentText] = useState<string>('');
   const [disabledButton, setDisabledButton] = useState<boolean>(true);
@@ -79,6 +79,10 @@ const Comments: FC<Props> = ({ postId, amountComment }) => {
     });
   };
 
+  const pressKeyboardHander = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log(e.code);
+  };
+
   useEffect(() => {
     let isActive = true; // component mounted
     const getCommentsPost = async () => {
@@ -89,7 +93,7 @@ const Comments: FC<Props> = ({ postId, amountComment }) => {
         } else {
           setHasMore(false);
         }
-        const commentsSorted: CommentType[] = data.sort((a, b) => b.created_at.localeCompare(a.created_at));
+        const commentsSorted: CommentItem[] = data.sort((a, b) => b.created_at.localeCompare(a.created_at));
         setComments(commentsSorted);
       }
     };
@@ -108,6 +112,7 @@ const Comments: FC<Props> = ({ postId, amountComment }) => {
         onSendComment={sendCommentHandler}
         disabledBtn={disabledButton}
         value={commentText}
+        onKeyDown={pressKeyboardHander}
       />
       {comments.length > 0 && (
         <StyledListComments>
