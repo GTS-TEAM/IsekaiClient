@@ -63,6 +63,7 @@ const SettingGeneral = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.email && formik.errors.email}
               errorText={formik.errors.email}
+              type="email"
             />
           </Stack>
           <InputField

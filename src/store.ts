@@ -1,4 +1,5 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import musicSlice from 'features/musicSlice';
 import userSlice from 'features/userSlice';
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -9,13 +10,13 @@ import uiSlice from './features/uiSlice';
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['posts', 'auth', 'ui', 'user'],
+  blacklist: ['posts', 'auth', 'ui', 'user', 'music'],
 };
 
 const authPersistConfig = {
   key: 'auth',
   storage: storage,
-  blacklist: ['login', 'register'],
+  blacklist: ['login', 'register', 'loading'],
 };
 
 const postsPersistConfig = {
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   posts: persistReducer(postsPersistConfig, postsSlice),
   ui: uiSlice,
   user: userSlice,
+  music: musicSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
