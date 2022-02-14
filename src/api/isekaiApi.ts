@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CommentItem, InfoUser, PostItem, ResLogin, Token, User } from './../share/types';
+import { CommentItem, InfoUser, MusicItem, PostItem, ResLogin, Token, User } from './../share/types';
 
 export const isekaiApi = {
   login: (email: string, password: string) => {
@@ -69,16 +69,16 @@ export const isekaiApi = {
     return axios.patch(`/posts/${postId}/like`, {});
   },
 
+  getUserLikedPost: (postId: string) => {
+    return axios.get(`/posts/${postId}/likes`);
+  },
+
   getCommentsPost: (postId: string, offset: number) => {
     return axios.get<CommentItem[]>(`/posts/${postId}/comments`, {
       params: {
         offset,
       },
     });
-  },
-
-  getUserLikedPost: (postId: string) => {
-    return axios.get(`/posts/${postId}/likes`);
   },
 
   commentPost: (postId: string, comment: string) => {
@@ -102,14 +102,6 @@ export const isekaiApi = {
     return data;
   },
 
-  getUser: (id: string) => {
-    return axios.get<User>('/user', {
-      params: {
-        userId: id,
-      },
-    });
-  },
-
   getPostPhoto: (userId: string, type: string) => {
     return axios.get(`/posts/${userId}/photos`, {
       params: {
@@ -122,13 +114,32 @@ export const isekaiApi = {
     return axios.get<PostItem[]>(`/posts/user/${userId}`, { params: { page } });
   },
 
+  getUser: (id: string) => {
+    return axios.get<User>('/user', {
+      params: {
+        userId: id,
+      },
+    });
+  },
+
   editInfoUser: (info: InfoUser) => {
     return axios.patch<User>('/user/info', {
       ...info,
     });
   },
 
+  changePassword: (oldPassword: string, newPassword: string) => {
+    return axios.patch<{ message: string }>('/user/password', {
+      oldPassword,
+      newPassword,
+    });
+  },
+
   uploadImg: (arrFile: FormData) => {
     return axios.post<{ urls: string[] }>('/upload', arrFile);
+  },
+
+  getListMusic: () => {
+    return axios.get<MusicItem[]>('music');
   },
 };

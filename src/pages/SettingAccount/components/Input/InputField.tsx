@@ -1,4 +1,4 @@
-import React, { FocusEvent, FormEvent, useState } from 'react';
+import React, { FocusEvent, FormEvent, HTMLInputTypeAttribute, useState } from 'react';
 import { Control, ErrorMessage, Input, InputFieldWrap, Label, StyledInputFiled } from './Styles';
 
 interface Props {
@@ -13,9 +13,22 @@ interface Props {
   placeholder?: string;
   error?: any;
   errorText?: string | undefined;
+  type?: HTMLInputTypeAttribute;
 }
 
-const InputField: React.FC<Props> = ({ onChange, onBlur, value, label, icon, id, name, placeholder, error, errorText }) => {
+const InputField: React.FC<Props> = ({
+  onChange,
+  onBlur,
+  value,
+  label,
+  icon,
+  id,
+  name,
+  placeholder,
+  error,
+  errorText,
+  type = 'text',
+}) => {
   const [isFocus, setIsFocus] = useState<boolean>(false);
 
   const focusHandler = (e: FocusEvent<HTMLInputElement>) => {
@@ -43,6 +56,7 @@ const InputField: React.FC<Props> = ({ onChange, onBlur, value, label, icon, id,
             onBlur={blurHandler}
             placeholder={placeholder}
             onFocus={focusHandler}
+            type={type}
           />
         </Control>
       </InputFieldWrap>

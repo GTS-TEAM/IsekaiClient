@@ -2,9 +2,15 @@ import AddProfile from './add-profile.svg';
 import { ReactComponent as AddPhoto } from './AddPhoto.svg';
 import ChangeProfile from './change-profile.svg';
 import { ReactComponent as Emotion } from './Emotion.svg';
+import { ReactComponent as Next } from './next.svg';
+import { ReactComponent as Pause } from './pause.svg';
+import { ReactComponent as Play } from './play.svg';
+import { ReactComponent as Prev } from './prev.svg';
 import { ReactComponent as SettingSecurity } from './setting-security.svg';
 import { ReactComponent as SettingGeneral } from './setting-svg.svg';
 import UploadProfile from './upload-profile.svg';
+import BgWeather from './weather-bg.svg';
+
 export const IMG = {
   bgHero: require('./bg-hero.jpg'),
   imgHero: require('./img-hero.png'),
@@ -28,4 +34,9 @@ export const IMG = {
   AddProfile,
   SettingGeneral,
   SettingSecurity,
+  BgWeather,
+  Play,
+  Pause,
+  Next,
+  Prev,
 };
