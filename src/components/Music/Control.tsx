@@ -1,30 +1,29 @@
 import { Box, IconButton, Slider, Stack } from '@mui/material';
-import { musicSelector, nextIndexSong } from 'features/musicSlice';
+import { musicSelector, nextSong } from 'features/musicSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { IMG } from 'images';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { BsFillVolumeDownFill, BsFillVolumeUpFill } from 'react-icons/bs';
-import { MusicItem } from 'share/types';
 import Progress from './Progress';
 import { StyledControl, VolumeWrap } from './Styles';
 
 const Control = () => {
-  const { indexCurrentSong, musics } = useAppSelector(musicSelector);
+  const { indexCurrentSong, musics, currentSong } = useAppSelector(musicSelector);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   // const [volume, setVolume] = useState<number>(1);
   const [duration, setDuration] = useState<number>(0);
   const [currentDuration, setCurrentDuration] = useState<number>(0);
-  const [currentSong, setCurrentSong] = useState<MusicItem>();
   const dispatch = useAppDispatch();
   const audioRef = useRef<any>();
 
   const togglePlayBtn = () => {
     if (isPlaying) {
       audioRef.current.pause();
+      setIsPlaying(!isPlaying);
     } else {
       audioRef.current.play();
+      setIsPlaying(!isPlaying);
     }
-    setIsPlaying(!isPlaying);
   };
 
   // const changeVolumeHandler = (event: Event, newValue: number | number[]) => {
@@ -32,14 +31,9 @@ const Control = () => {
   // };
 
   const nextSongHandler = () => {
-    dispatch(nextIndexSong());
-    setCurrentDuration(0);
-    setCurrentSong(musics[indexCurrentSong]);
+    dispatch(nextSong(currentSong?.id || ''));
+    audioRef.current.play();
   };
-
-  useEffect(() => {
-    setCurrentSong(musics[0]);
-  }, [musics]);
 
   return (
     <StyledControl>
@@ -52,7 +46,6 @@ const Control = () => {
         }}
         onEnded={() => {
           setIsPlaying(false);
-          dispatch(nextIndexSong());
         }}
         onTimeUpdate={() => setCurrentDuration(audioRef.current.currentTime)}
         src={currentSong?.url}

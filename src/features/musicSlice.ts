@@ -44,14 +44,16 @@ const musicSlice = createSlice({
   name: 'music',
   initialState,
   reducers: {
-    nextIndexSong: (state) => {
-      if (state.indexCurrentSong < state.musics.length - 1) {
-        console.log('hi');
-        state.indexCurrentSong++;
+    nextSong: (state, action: PayloadAction<string>) => {
+      let indexExit = state.musics.findIndex((music) => music.id === action.payload);
+      if (indexExit < state.musics.length - 1) {
+        indexExit++;
+        state.currentSong = state.musics[indexExit];
       } else {
-        state.indexCurrentSong = 0;
+        state.currentSong = state.musics[0];
       }
     },
+    prevSong: (state, action: PayloadAction<string>) => {},
   },
   extraReducers: (builder) => {
     builder
@@ -61,6 +63,7 @@ const musicSlice = createSlice({
       .addCase(getListMusic.fulfilled, (state, action: PayloadAction<MusicItem[]>) => {
         state.musics = action.payload;
         state.loading = false;
+        state.currentSong = action.payload[0];
       })
       .addCase(getListMusic.rejected, (state, action) => {
         state.error = action.payload;
@@ -69,6 +72,6 @@ const musicSlice = createSlice({
   },
 });
 
-export const { nextIndexSong } = musicSlice.actions;
+export const { nextSong, prevSong } = musicSlice.actions;
 export const musicSelector = (state: RootState) => state.music;
 export default musicSlice.reducer;
