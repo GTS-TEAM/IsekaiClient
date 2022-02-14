@@ -70,21 +70,6 @@ axios.interceptors.request.use(async (config) => {
         }
       }
     }
-    if (config.url === '/auth/refresh-token') {
-      if (token.refresh_token) {
-        const decodedToken: {
-          exp: number;
-        } = jwtDecode(token.refresh_token);
-        if (decodedToken.exp * 1000 < currentDate.getTime()) {
-          console.log('refresh token expired');
-          deleteTokenFromLocalStorage();
-          store.dispatch(logout());
-        }
-      } else {
-        deleteTokenFromLocalStorage();
-        store.dispatch(logout());
-      }
-    }
   }
   return config;
 });
