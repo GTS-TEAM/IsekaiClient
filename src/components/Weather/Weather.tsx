@@ -1,0 +1,141 @@
+import { IconButton, MenuItem, Stack } from '@mui/material';
+import { openWeatherApi } from 'api/openWeatherApi';
+import { IMG } from 'images';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { AiOutlineReload } from 'react-icons/ai';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { IoLocationOutline } from 'react-icons/io5';
+import { DefaultLocation, nameLocationRes, WeatherRes } from 'share/types';
+import { capitalizeFirstLetter } from 'utils/capitalizeFirstLetter';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  Body,
+  CurrentDay,
+  DayForecast,
+  Detail,
+  Forecasts,
+  Header,
+  Loading,
+  Location,
+  StyledMenu,
+  StyledWeather,
+  Temperature,
+} from './Styles';
+
+const days = ['T.2', 'T.3', 'T.4', 'T.5', 'T.6', 'T.7', 'CN'];
+
+const Weather = () => {
+  const [weather, setWeather] = useState<WeatherRes>();
+  const [nameLocation, setNameLocation] = useState<nameLocationRes>();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [latitude, setLatitude] = useState<number>(DefaultLocation.lat);
+  const [longitude, setLongitude] = useState<number>(DefaultLocation.lon);
+  const [loading, setLoading] = useState<boolean>(false);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const getDataWeather = async (lat: number, lon: number) => {
+    setLoading(true);
+    const { data: dataWeather } = await openWeatherApi.oneCall(lat, lon);
+    const { data: dataNameLocation } = await openWeatherApi.getNameLocation(lat, lon);
+    setLoading(false);
+    setNameLocation(dataNameLocation[0]);
+    setWeather(dataWeather);
+  };
+
+  const clickToChangeLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(({ coords }) => {
+        setLatitude(coords.latitude);
+        setLongitude(coords.longitude);
+        localStorage.setItem('latitude', coords.latitude.toString());
+        localStorage.setItem('longitude', coords.longitude.toString());
+      });
+    } else {
+      alert('Geolocation is not supported by this browser.');
+    }
+    handleClose();
+  };
+
+  const clickToRefreshWeather = () => {
+    console.log('hi');
+    getDataWeather(latitude, longitude);
+    handleClose();
+  };
+
+  useEffect(() => {
+    getDataWeather(latitude, longitude);
+  }, [latitude, longitude]);
+
+  return (
+    <StyledWeather style={{ backgroundImage: `url('${IMG.BgWeather}')` }}>
+      <Header>
+        <IconButton onClick={handleClick}>
+          <BsThreeDotsVertical />
+        </IconButton>
+        <StyledMenu anchorEl={anchorEl} open={open} onClose={handleClose}>
+          <MenuItem onClick={clickToChangeLocation}>
+            <IoLocationOutline />
+            <Stack>
+              <span className="main-text">Vị trí của bạn</span>
+              <span className="desc">Thay đổi để hiển thị thời tiết ở nơi bạn ở.</span>
+            </Stack>
+          </MenuItem>
+          <MenuItem onClick={clickToRefreshWeather}>
+            <AiOutlineReload />
+            <Stack>
+              <span className="main-text">Làm mới</span>
+              <span className="desc">Cập nhật thời tiết mới nhất.</span>
+            </Stack>
+          </MenuItem>
+        </StyledMenu>
+      </Header>
+      {loading ? (
+        <Loading>Loading...</Loading>
+      ) : (
+        <Body>
+          <Temperature>
+            <span>{weather && Math.round(weather.current.temp)}</span>
+          </Temperature>
+          <Detail>
+            <div className="icon">
+              <img src={`https://openweathermap.org/img/wn/${weather?.current.weather[0].icon}@2x.png`} alt="" />
+            </div>
+            <div className="status">{weather && capitalizeFirstLetter(weather.current.weather[0].description)}</div>
+            <Stack flexDirection="row" alignItems="center" columnGap="1.6rem">
+              <div className="real-feel">Cảm giác như: {weather && Math.round(weather?.current.feels_like)}°</div>
+              <div className="humidity">Độ ẩm: {weather?.current.humidity}%</div>
+            </Stack>
+            <Forecasts>
+              {weather &&
+                weather.daily.map((item) => (
+                  <DayForecast key={uuidv4()}>
+                    <div className="day-of-week">{days[new Date(item.dt * 1000).getDay()]}</div>
+                    <img src={`https://openweathermap.org/img/wn/${item.weather[0].icon}.png`} alt="" />
+                    <div className="temp">{Math.round(item.temp.day)}°</div>
+                  </DayForecast>
+                ))}
+            </Forecasts>
+            <CurrentDay>{moment(new Date()).format('LLL')}</CurrentDay>
+            <Location>
+              <IoLocationOutline />
+              <span>
+                {nameLocation?.local_names.vi}, {nameLocation?.country}
+              </span>
+            </Location>
+          </Detail>
+        </Body>
+      )}
+    </StyledWeather>
+  );
+};
+
+export default React.memo(Weather);
