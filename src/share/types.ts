@@ -8,9 +8,9 @@ export interface User {
   online: boolean;
   bio: string | null;
   created_at?: string;
-  phone: null | string;
-  date: null | string;
-  address: null | string;
+  phone?: string;
+  date?: string;
+  address?: string;
 }
 
 export interface PostItem {
@@ -65,6 +65,9 @@ export interface InfoUser {
   bio?: string;
   avatar?: string;
   background?: string;
+  address?: string;
+  phone?: string;
+  date?: string | Date;
 }
 
 export interface WeatherRes {
@@ -122,7 +125,12 @@ export interface WeatherRes {
   }[];
 }
 
-export interface nameLocationRes {
+export interface CurrentWeather extends WeatherRes {
+  locationName: string;
+  country: string;
+}
+
+export interface NameLocationRes {
   country: string;
   lat: number;
   lon: number;

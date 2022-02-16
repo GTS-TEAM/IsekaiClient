@@ -44,16 +44,27 @@ const musicSlice = createSlice({
   name: 'music',
   initialState,
   reducers: {
-    nextSong: (state, action: PayloadAction<string>) => {
-      let indexExit = state.musics.findIndex((music) => music.id === action.payload);
-      if (indexExit < state.musics.length - 1) {
+    skipSong: (state, action: PayloadAction<{ id: string; forward: boolean }>) => {
+      let indexExit = state.musics.findIndex((music) => music.id === action.payload.id);
+      if (action.payload.forward) {
         indexExit++;
-        state.currentSong = state.musics[indexExit];
+        if (indexExit > state.musics.length - 1) {
+          state.currentSong = state.musics[0];
+        } else {
+          state.currentSong = state.musics[indexExit];
+        }
       } else {
-        state.currentSong = state.musics[0];
+        indexExit--;
+        if (indexExit < 0) {
+          state.currentSong = state.musics[state.musics.length - 1];
+        } else {
+          state.currentSong = state.musics[indexExit];
+        }
       }
     },
-    prevSong: (state, action: PayloadAction<string>) => {},
+    setCurrentSong: (state, action: PayloadAction<MusicItem>) => {
+      state.currentSong = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -72,6 +83,6 @@ const musicSlice = createSlice({
   },
 });
 
-export const { nextSong, prevSong } = musicSlice.actions;
+export const { skipSong, setCurrentSong } = musicSlice.actions;
 export const musicSelector = (state: RootState) => state.music;
 export default musicSlice.reducer;

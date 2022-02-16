@@ -10,9 +10,7 @@ import { authSelector } from 'features/authSlice';
 import { useAppSelector } from 'hooks/hooks';
 import React, { useEffect, useState } from 'react';
 import { GrFormClose } from 'react-icons/gr';
-import { useDispatch } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { likePost } from '../../features/postsSlice';
 import {
   ButtonAddFriend,
   ButtonClose,
@@ -26,7 +24,6 @@ import {
 const ModalViewPost = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { user } = useAppSelector(authSelector);
   const [post, setPost] = useState<any>({});
   const [loading, setLoading] = useState(false);
@@ -53,8 +50,6 @@ const ModalViewPost = () => {
           liked: !post.liked,
         };
       });
-
-      dispatch(likePost(post.id));
     }
   };
 

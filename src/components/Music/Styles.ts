@@ -1,5 +1,6 @@
-import { keyframes } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
+import { Button } from '@mui/material';
 
 const infiniteText = keyframes`
  
@@ -81,7 +82,7 @@ export const ListSong = styled.ul`
   display: flex;
   flex-direction: column;
   row-gap: 1.2rem;
-  max-height: 20rem;
+  max-height: 20.5rem;
   overflow-y: auto;
 
   &::-webkit-scrollbar {
@@ -89,11 +90,27 @@ export const ListSong = styled.ul`
   }
 `;
 
-export const Song = styled.div`
+interface PropsSong {
+  active: boolean;
+}
+
+export const Song = styled.div<PropsSong>`
   background-color: var(--fds-gray-6);
   padding: 1.2rem;
   border-radius: var(--borderRadius1);
   cursor: pointer;
+
+  ${(p) =>
+    p.active
+      ? css`
+          background-color: var(--mainColor);
+
+          .song-name,
+          .song-author {
+            color: var(--fds-white) !important;
+          }
+        `
+      : css``}
 
   .song-name {
     color: var(--fds-gray-9);
@@ -181,5 +198,18 @@ export const VolumeWrap = styled.div`
     width: 3.6rem;
     height: 3.6rem;
     color: var(--fds-white);
+  }
+`;
+
+export const ButtonUpload = styled(Button)`
+  background-color: var(--mainColor);
+  height: 4rem;
+  color: var(--fds-white);
+  font-size: 1.4rem;
+  text-transform: capitalize;
+  border-radius: var(--borderRadius1);
+
+  &:hover {
+    background-color: var(--mainColor);
   }
 `;

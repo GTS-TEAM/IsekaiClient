@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import musicSlice from 'features/musicSlice';
 import userSlice from 'features/userSlice';
+import weatherSlice from 'features/weatherSlice';
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authSlice from './features/authSlice';
@@ -10,13 +11,19 @@ import uiSlice from './features/uiSlice';
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['posts', 'auth', 'ui', 'user', 'music'],
+  blacklist: ['posts', 'auth', 'ui', 'user', 'music', 'weather'],
 };
 
 const authPersistConfig = {
   key: 'auth',
   storage: storage,
   blacklist: ['login', 'register', 'loading'],
+};
+
+const weatherPersistConfig = {
+  key: 'weather',
+  storage: storage,
+  blacklist: ['loading', 'currentWeather', 'error'],
 };
 
 const postsPersistConfig = {
@@ -31,6 +38,7 @@ const rootReducer = combineReducers({
   ui: uiSlice,
   user: userSlice,
   music: musicSlice,
+  weather: persistReducer(weatherPersistConfig, weatherSlice),
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
