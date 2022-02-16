@@ -142,4 +142,12 @@ export const isekaiApi = {
   getListMusic: () => {
     return axios.get<MusicItem[]>('music');
   },
+
+  globalSearch: (q: string) => {
+    return axios.get<User[]>('search', {
+      params: {
+        q,
+      },
+    });
+  },
 };

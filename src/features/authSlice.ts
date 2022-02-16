@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from 'share/types';
-import { deleteTokenFromLocalStorage, getTokenFromLocalStorage, setTokenToLocalStorage } from '../api/axoisClient';
+import { getTokenFromLocalStorage, setTokenToLocalStorage } from '../api/axoisClient';
 import { isekaiApi } from '../api/isekaiApi';
 import { ResLogin, Token } from './../share/types';
 import { RootState } from './../store';
@@ -52,7 +52,6 @@ export const registerHandler = createAsyncThunk<
 export const refreshToken = createAsyncThunk('auth/refreshToken', async () => {
   try {
     const token = getTokenFromLocalStorage();
-    deleteTokenFromLocalStorage();
     const { data } = await isekaiApi.updateToken(token.refresh_token || '');
     setTokenToLocalStorage({ access_token: data.access_token, refresh_token: data.refresh_token });
     return data;

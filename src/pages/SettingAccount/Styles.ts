@@ -31,6 +31,9 @@ export const FormWrap = styled(Stack)`
     font-size: 1.4rem;
     line-height: 1.5;
   }
+  .date-picker {
+    font-size: 1rem;
+  }
 `;
 
 export const Illustration = styled.div`

@@ -1,25 +1,25 @@
 import { Stack } from '@mui/material';
-import { getListMusic, musicSelector } from 'features/musicSlice';
+import { musicSelector, setCurrentSong } from 'features/musicSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { useEffect } from 'react';
+import { MusicItem } from 'share/types';
 import Control from './Control';
 import Header from './Header';
 import { ListSong, Song, StyledMusic } from './Styles';
-// ((http(s):\/\/))((youtu.be\/))[\S]+ input upload youtube
+import UploadMusic from './UploadMusic';
 const Music = () => {
   const dispatch = useAppDispatch();
-  const { musics } = useAppSelector(musicSelector);
+  const { musics, currentSong } = useAppSelector(musicSelector);
 
-  useEffect(() => {
-    dispatch(getListMusic());
-  }, [dispatch]);
+  const selectCurrentSong = (music: MusicItem) => () => {
+    dispatch(setCurrentSong(music));
+  };
 
   return (
     <StyledMusic>
       <Header />
       <ListSong>
         {musics.map((item) => (
-          <Song key={item.id}>
+          <Song key={item.id} onClick={selectCurrentSong(item)} active={currentSong?.id === item.id}>
             <Stack rowGap="0.8rem">
               <div className="song-name">
                 <h3>{item.name}</h3>
@@ -31,6 +31,7 @@ const Music = () => {
         ))}
       </ListSong>
       <Control />
+      <UploadMusic />
     </StyledMusic>
   );
 };
