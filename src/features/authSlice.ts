@@ -52,7 +52,6 @@ export const registerHandler = createAsyncThunk<
 export const refreshToken = createAsyncThunk('auth/refreshToken', async () => {
   try {
     const token = getTokenFromLocalStorage();
-    deleteTokenFromLocalStorage();
     const { data } = await isekaiApi.updateToken(token.refresh_token || '');
     setTokenToLocalStorage({ access_token: data.access_token, refresh_token: data.refresh_token });
     return data;

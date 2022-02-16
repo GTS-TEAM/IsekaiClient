@@ -1,7 +1,6 @@
 import { Stack } from '@mui/material';
-import { getListMusic, musicSelector, setCurrentSong } from 'features/musicSlice';
+import { musicSelector, setCurrentSong } from 'features/musicSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { useEffect } from 'react';
 import { MusicItem } from 'share/types';
 import Control from './Control';
 import Header from './Header';
@@ -14,10 +13,6 @@ const Music = () => {
   const selectCurrentSong = (music: MusicItem) => () => {
     dispatch(setCurrentSong(music));
   };
-
-  useEffect(() => {
-    dispatch(getListMusic());
-  }, [dispatch]);
 
   return (
     <StyledMusic>
