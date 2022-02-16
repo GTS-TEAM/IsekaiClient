@@ -1,16 +1,15 @@
 import { Avatar, MenuItem, Stack } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { useState } from 'react';
+import React from 'react';
 import { AiOutlineHome, AiOutlineMessage } from 'react-icons/ai';
-import { BiSearch } from 'react-icons/bi';
 import { FiLogOut, FiUsers } from 'react-icons/fi';
 import { IoNotificationsOutline, IoSettingsOutline } from 'react-icons/io5';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { deleteTokenFromLocalStorage } from '../../api/axoisClient';
 import { authSelector, logout } from '../../features/authSlice';
-import { DropdownMenu, HeaderWrap, Logo, Navbar, NavItem, SearchGlobal, StyledHeader, User } from './Styles';
+import GlobalSearch from './GlobalSearch';
+import { DropdownMenu, HeaderWrap, Logo, Navbar, NavItem, StyledHeader, User } from './Styles';
 const Header = () => {
-  const [isFocus, setIsFocus] = useState(false);
   const { user } = useAppSelector(authSelector);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -36,14 +35,6 @@ const Header = () => {
 
   const clickGoToSettingHandler = () => {
     navigate(`/setting`);
-  };
-
-  const focusHandler = () => {
-    setIsFocus(true);
-  };
-
-  const blurHandler = () => {
-    setIsFocus(false);
   };
 
   return (
@@ -80,20 +71,7 @@ const Header = () => {
           </Navbar>
         </Stack>
         <Stack direction="row" alignItems="center" columnGap="1.2rem">
-          <SearchGlobal
-            style={
-              isFocus
-                ? {
-                    background: 'var(--fds-white)',
-                    boxShadow: ' -1px 3px 10px 0 rgb(0 0 0 / 6%) !important',
-                    borderColor: ' #e3e3e3',
-                  }
-                : undefined
-            }
-          >
-            <BiSearch />
-            <input type="text" placeholder="Search" onFocus={focusHandler} onBlur={blurHandler} />
-          </SearchGlobal>
+          <GlobalSearch />
           <User onClick={handleClickOpenDropdown}>
             <Avatar src={user?.avatar} sx={{ width: 40, height: 40 }} />
           </User>

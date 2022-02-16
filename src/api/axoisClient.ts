@@ -10,13 +10,14 @@ axios.interceptors.response.use(
   function (response) {
     return response;
   },
-  async (error) => {
+  function (error) {
     if (error.response.status === 401 && error.config.url === '/auth/refresh-token') {
       console.log('refresh token error');
 
       deleteTokenFromLocalStorage();
       store.dispatch(logout());
     }
+    throw error;
   },
 );
 export const setTokenToLocalStorage = (token: Token) => {
@@ -57,7 +58,6 @@ axios.interceptors.request.use(async (config) => {
       const decodedToken: {
         exp: number;
       } = jwtDecode(token.access_token);
-      console.log(token.access_token);
       if (decodedToken.exp * 1000 < currentDate.getTime()) {
         await store.dispatch(refreshToken());
         console.log(decodedToken.exp);

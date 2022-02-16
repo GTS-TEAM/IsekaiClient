@@ -1,5 +1,6 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Menu, Stack } from '@mui/material';
+import { Button, Menu, MenuItem, Stack } from '@mui/material';
 
 export const StyledHeader = styled.header`
   height: var(--headerHeight);
@@ -58,9 +59,17 @@ export const Logo = styled.div`
   }
 `;
 
-export const SearchGlobal = styled.div`
+interface SearchGlobal {
+  isFocus: boolean;
+}
+
+export const StyledGlobalSearch = styled.div`
+  position: relative;
+`;
+
+export const SearchWrap = styled.div<SearchGlobal>`
   width: 100%;
-  max-width: 32rem;
+  min-width: 40rem;
   padding: 0 1.5rem;
   height: 4rem;
   display: flex;
@@ -72,6 +81,16 @@ export const SearchGlobal = styled.div`
   border-color: var(--fds-gray-6);
   justify-self: center;
   transition: all 0.3s;
+  position: relative;
+
+  ${(p) =>
+    p.isFocus
+      ? css`
+          background: var(--fds-white);
+          box-shadow: -1px 3px 10px 0 rgb(0 0 0 / 6%) !important;
+          border-color: #e3e3e3;
+        `
+      : null}
 
   input {
     background-color: transparent;
@@ -90,6 +109,55 @@ export const SearchGlobal = styled.div`
     width: 2.4rem;
     height: 2.4rem;
   }
+`;
+
+export const SearchDropdown = styled.div`
+  position: absolute;
+  background-color: var(--fds-white);
+  width: 100%;
+  padding: 1.2rem;
+  border-radius: var(--borderRadius3);
+  box-shadow: 0px 5px 43px rgb(0 0 0 / 18%);
+  margin-top: 1rem;
+
+  .text-error {
+    text-align: center;
+    padding: 1.2rem;
+    font-size: 1.4rem;
+    color: var(--fds-gray-8);
+  }
+`;
+
+export const SearchResultWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+`;
+
+export const ButtonSearch = styled(Button)`
+  height: 100%;
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  width: 8rem;
+  background-color: var(--mainColor);
+  color: var(--fds-white);
+  font-size: 1.4rem;
+  text-transform: unset;
+  border-radius: 0 var(--borderRadius3) var(--borderRadius3) 0;
+
+  &:hover {
+    background-color: var(--mainColor);
+  }
+`;
+
+export const ResultItem = styled(MenuItem)`
+  display: flex;
+  column-gap: 1.6rem;
+  align-items: center;
+  cursor: pointer;
+  padding: 1.2rem;
+  border-radius: var(--borderRadius3);
 `;
 
 export const Navbar = styled(Stack)`
@@ -137,6 +205,7 @@ export const User = styled.div`
   background-color: transparent;
   color: var(--textColorGray);
   cursor: pointer;
+  flex-shrink: 0;
 
   span {
     min-width: 10rem;

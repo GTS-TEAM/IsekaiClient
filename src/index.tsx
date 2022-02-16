@@ -1,3 +1,5 @@
+import { LocalizationProvider } from '@mui/lab';
+import DateAdapter from '@mui/lab/AdapterMoment';
 import { StyledEngineProvider } from '@mui/material';
 import moment from 'moment';
 import localization from 'moment/locale/vi';
@@ -14,7 +16,9 @@ ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <StyledEngineProvider injectFirst>
-        <App />
+        <LocalizationProvider dateAdapter={DateAdapter}>
+          <App />
+        </LocalizationProvider>
       </StyledEngineProvider>
     </PersistGate>
   </Provider>,

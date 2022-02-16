@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { nameLocationRes, WeatherRes } from 'share/types';
+import { NameLocationRes, WeatherRes } from 'share/types';
 
 const openWeatherClient = axios.create({
   baseURL: 'https://api.openweathermap.org',
@@ -21,7 +21,7 @@ export const openWeatherApi = {
     });
   },
   getNameLocation: (lat: number, lon: number) => {
-    return openWeatherClient.get<nameLocationRes[]>('/geo/1.0/reverse', {
+    return openWeatherClient.get<NameLocationRes[]>('/geo/1.0/reverse', {
       params: {
         lat,
         lon,

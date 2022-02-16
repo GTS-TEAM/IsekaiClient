@@ -10,7 +10,7 @@ export const StyledHomepage = styled.div`
   }
 
   .w-25 {
-    width: 30%;
+    width: 25%;
     height: 100%;
   }
 `;

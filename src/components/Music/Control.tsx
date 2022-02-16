@@ -1,45 +1,68 @@
-import { Box, IconButton, Slider, Stack } from '@mui/material';
-import { musicSelector, nextIndexSong } from 'features/musicSlice';
+import { Avatar, Box, IconButton, Slider, Stack } from '@mui/material';
+import { musicSelector, skipSong } from 'features/musicSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { IMG } from 'images';
 import React, { useEffect, useRef, useState } from 'react';
-import { BsFillVolumeDownFill, BsFillVolumeUpFill } from 'react-icons/bs';
-import { MusicItem } from 'share/types';
+import { BsFillVolumeDownFill, BsFillVolumeMuteFill, BsFillVolumeUpFill } from 'react-icons/bs';
 import Progress from './Progress';
 import { StyledControl, VolumeWrap } from './Styles';
 
 const Control = () => {
-  const { indexCurrentSong, musics } = useAppSelector(musicSelector);
+  const { currentSong, isRepeatOnlyOne, isRepeatAll } = useAppSelector(musicSelector);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  // const [volume, setVolume] = useState<number>(1);
+  const [volume, setVolume] = useState<number>(1);
   const [duration, setDuration] = useState<number>(0);
   const [currentDuration, setCurrentDuration] = useState<number>(0);
-  const [currentSong, setCurrentSong] = useState<MusicItem>();
   const dispatch = useAppDispatch();
   const audioRef = useRef<any>();
 
   const togglePlayBtn = () => {
     if (isPlaying) {
       audioRef.current.pause();
+      setIsPlaying(!isPlaying);
     } else {
       audioRef.current.play();
+      setIsPlaying(!isPlaying);
     }
-    setIsPlaying(!isPlaying);
   };
 
-  // const changeVolumeHandler = (event: Event, newValue: number | number[]) => {
-  //   // setVolume(newValue as number);
-  // };
+  const changeVolumeHandler = (event: Event, newValue: number | number[]) => {
+    setVolume(newValue as number);
+    audioRef.current.volume = newValue as number;
+  };
 
   const nextSongHandler = () => {
-    dispatch(nextIndexSong());
-    setCurrentDuration(0);
-    setCurrentSong(musics[indexCurrentSong]);
+    if (currentSong) {
+      dispatch(skipSong({ id: currentSong.id, forward: true }));
+      setIsPlaying(true);
+    }
+  };
+
+  const prevSongHandler = () => {
+    if (currentSong) {
+      dispatch(skipSong({ id: currentSong.id, forward: false }));
+      setIsPlaying(true);
+    }
+    audioRef.current.play();
+  };
+
+  const endSongHandler = () => {
+    if (isRepeatOnlyOne) {
+      setIsPlaying(true);
+    } else if (isRepeatAll) {
+      nextSongHandler();
+    } else {
+      setIsPlaying(false);
+    }
   };
 
   useEffect(() => {
-    setCurrentSong(musics[0]);
-  }, [musics]);
+    if (isPlaying) {
+      audioRef.current.play();
+    } else {
+      audioRef.current.pause();
+    }
+  });
 
   return (
     <StyledControl>
@@ -50,10 +73,7 @@ const Control = () => {
         onLoadedMetadata={() => {
           setDuration(audioRef.current.duration);
         }}
-        onEnded={() => {
-          setIsPlaying(false);
-          dispatch(nextIndexSong());
-        }}
+        onEnded={endSongHandler}
         onTimeUpdate={() => setCurrentDuration(audioRef.current.currentTime)}
         src={currentSong?.url}
       ></audio>
@@ -61,14 +81,14 @@ const Control = () => {
         sx={{
           display: 'flex',
           columnGap: '1.2rem',
-          '& img ': {
+          '& .MuiAvatar-root ': {
             width: '10rem',
             height: '10rem',
             borderRadius: 'var(--borderRadius1)',
           },
         }}
       >
-        <img src={currentSong?.uploader.avatar} alt="" />
+        <Avatar src={currentSong?.uploader.avatar} alt="" />
         <Box
           sx={{
             display: 'flex',
@@ -107,7 +127,7 @@ const Control = () => {
           },
         }}
       >
-        <IconButton>
+        <IconButton onClick={prevSongHandler}>
           <IMG.Prev className="prev" />
         </IconButton>
         <IconButton onClick={togglePlayBtn}>
@@ -118,8 +138,8 @@ const Control = () => {
         </IconButton>
       </Stack>
       <VolumeWrap>
-        <BsFillVolumeDownFill />
-        <Slider />
+        {volume ? <BsFillVolumeDownFill /> : <BsFillVolumeMuteFill />}
+        <Slider min={0} max={1} step={0.1} value={volume} onChange={changeVolumeHandler} />
         <BsFillVolumeUpFill />
       </VolumeWrap>
     </StyledControl>
