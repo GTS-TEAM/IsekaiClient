@@ -6,7 +6,7 @@ import ListPost from 'components/ListPost/ListPost';
 import Music from 'components/Music/Music';
 import Weather from 'components/Weather/Weather';
 import { getTimeline, postsSelector, unmountTimeline } from 'features/postsSlice';
-import { Dispatch, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListMusic } from '../../features/musicSlice';
 import { Feed, StyledHomepage } from './Styles';

@@ -125,6 +125,7 @@ export const SearchDropdown = styled.div`
     padding: 1.2rem;
     font-size: 1.4rem;
     color: var(--fds-gray-8);
+    font-weight: 500;
   }
 `;
 
@@ -158,6 +159,9 @@ export const ResultItem = styled(MenuItem)`
   cursor: pointer;
   padding: 1.2rem;
   border-radius: var(--borderRadius3);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--fds-gray-8);
 `;
 
 export const Navbar = styled(Stack)`

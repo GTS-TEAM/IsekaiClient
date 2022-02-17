@@ -26,4 +26,5 @@ export const Description = styled.p`
   font-size: 1.4rem;
   color: var(--fds-gray-7);
   line-height: 1.5;
+  word-break: break-all;
 `;

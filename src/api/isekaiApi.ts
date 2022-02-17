@@ -139,6 +139,16 @@ export const isekaiApi = {
     return axios.post<{ urls: string[] }>('/upload', arrFile);
   },
 
+  uploadSongFile: (arrFile: FormData) => {
+    return axios.post('/music/file', arrFile);
+  },
+
+  uploadSongUrl: (url: string) => {
+    return axios.post('/music/youtube', {
+      url,
+    });
+  },
+
   getListMusic: () => {
     return axios.get<MusicItem[]>('music');
   },

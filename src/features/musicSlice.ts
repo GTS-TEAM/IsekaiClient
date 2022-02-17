@@ -18,6 +18,8 @@ export const getListMusic = createAsyncThunk<
   }
 });
 
+export const uploadMusic = createAsyncThunk('music/upload', async () => {});
+
 interface InitialState {
   musics: MusicItem[];
   loading: boolean;
@@ -65,6 +67,9 @@ const musicSlice = createSlice({
     setCurrentSong: (state, action: PayloadAction<MusicItem>) => {
       state.currentSong = action.payload;
     },
+    uploadSong: (state, action) => {
+      state.musics.push(action.payload);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -83,6 +88,6 @@ const musicSlice = createSlice({
   },
 });
 
-export const { skipSong, setCurrentSong } = musicSlice.actions;
+export const { skipSong, setCurrentSong, uploadSong } = musicSlice.actions;
 export const musicSelector = (state: RootState) => state.music;
 export default musicSlice.reducer;

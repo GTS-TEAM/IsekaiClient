@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from 'share/types';
-import { deleteTokenFromLocalStorage, getTokenFromLocalStorage, setTokenToLocalStorage } from '../api/axoisClient';
+import { getTokenFromLocalStorage, setTokenToLocalStorage } from '../api/axoisClient';
 import { isekaiApi } from '../api/isekaiApi';
 import { ResLogin, Token } from './../share/types';
 import { RootState } from './../store';
