@@ -7,6 +7,7 @@ export const StyledHomepage = styled.div`
 
   .homepage-container {
     display: flex;
+    column-gap: 1.8rem;
   }
 
   .w-25 {

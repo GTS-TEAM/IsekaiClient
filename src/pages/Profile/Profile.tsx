@@ -50,7 +50,7 @@ const Profile = () => {
 
   return (
     <Layout>
-      <StyledProfile>
+      <StyledProfile className="layout">
         <div>
           <CoverImg imgBgUrl={user?.background || ''} userId={user?.id || ''} />
           <ProfileMenu />

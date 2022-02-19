@@ -35,7 +35,7 @@ const Homepage = () => {
   }, [dispatch]);
 
   return (
-    <StyledHomepage>
+    <StyledHomepage className="layout">
       <Container className="homepage-container">
         <Stack
           className="w-25"

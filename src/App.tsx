@@ -1,5 +1,6 @@
 import Layout from 'components/Layout/Layout';
 import RequireAuth from 'components/RequireAuth/RequireAuth';
+import Chat from 'pages/Chat/Chat';
 import Post from 'pages/Detail/Detail';
 import Profile from 'pages/Profile/Profile';
 import SettingAccount from 'pages/SettingAccount/SettingAccount';
@@ -46,6 +47,14 @@ function App() {
           element={
             <RequireAuth>
               <SettingAccount />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/message"
+          element={
+            <RequireAuth>
+              <Chat />
             </RequireAuth>
           }
         />

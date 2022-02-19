@@ -78,5 +78,6 @@ export const CommentMain = styled.div`
     max-width: 30rem;
     white-space: normal;
     word-break: break-all;
+    white-space: pre-line;
   }
 `;
