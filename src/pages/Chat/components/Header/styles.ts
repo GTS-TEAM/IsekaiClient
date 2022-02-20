@@ -9,6 +9,7 @@ export const StyledHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0 1.6rem;
+  border-bottom: 1px solid var(--fds-gray-4);
 `;
 
 export const RecipientBox = styled(Box)`

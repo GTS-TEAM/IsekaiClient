@@ -8,4 +8,11 @@ export const StyledChat = styled.div`
 
 export const ChatBody = styled.div`
   background-color: #f0f0f0;
+  display: flex;
+
+  & > .MuiBox-root {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
 `;

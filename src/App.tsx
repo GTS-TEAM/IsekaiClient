@@ -1,14 +1,14 @@
 import Layout from 'components/Layout/Layout';
-import RequireAuth from 'components/RequireAuth/RequireAuth';
-import Chat from 'pages/Chat/Chat';
+import RequireAuth from 'components/RequireAuth';
+import Chat from 'pages/Chat';
 import Post from 'pages/Detail/Detail';
 import Profile from 'pages/Profile/Profile';
-import SettingAccount from 'pages/SettingAccount/SettingAccount';
+import SettingAccount from 'pages/SettingAccount';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
-import Homepage from './pages/Home/Homepage';
-import Landing from './pages/Landing/Landing';
+import Homepage from './pages/Home';
+import Landing from './pages/Landing';
 function App() {
   return (
     <Router>

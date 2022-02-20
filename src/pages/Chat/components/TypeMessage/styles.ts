@@ -9,6 +9,7 @@ export const StyledTypeMessage = styled.div`
   height: 6rem;
   padding: 0 1.6rem;
   background-color: var(--fds-white);
+  border-top: 1px solid var(--fds-gray-4);
 `;
 
 export const InputMessage = styled.div`

@@ -13,7 +13,7 @@ export const StyledMessage = styled.div<StyledMessageProps>`
   background-color: var(--mainColor);
   color: var(--fds-white);
   position: relative;
-  max-width: 50rem;
+  max-width: 60rem;
   line-height: 1.5;
 
   &::before {

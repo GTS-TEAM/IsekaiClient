@@ -84,7 +84,6 @@ const SettingGeneral = () => {
             <DatePicker
               className="date-picker"
               onChange={(newValue) => {
-                console.log(moment(newValue).format('lll'));
                 formik.setFieldValue('date', moment(newValue).toISOString());
               }}
               value={formik.values.date}

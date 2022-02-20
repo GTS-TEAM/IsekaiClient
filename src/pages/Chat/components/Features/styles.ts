@@ -2,10 +2,9 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled/macro';
 import { fadeIn } from 'utils/keyframeStyle';
 
-interface StyledFeaturesProps {
+export const StyledFeatures = styled.div<{
   left: boolean;
-}
-export const StyledFeatures = styled.div<StyledFeaturesProps>`
+}>`
   display: flex;
   align-items: center;
   column-gap: 1.2rem;
