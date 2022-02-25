@@ -1,19 +1,29 @@
 import { Box, CircularProgress, ClickAwayListener } from '@mui/material';
+import { authSelector } from 'features/authSlice';
+import { chatSelector, submitMessage } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { Suspense, useRef, useState } from 'react';
 import { AiOutlineGif, AiOutlinePlus, AiOutlineSend } from 'react-icons/ai';
 import { BiSticker } from 'react-icons/bi';
 import { FiFile } from 'react-icons/fi';
 import { MdOutlineEmojiEmotions } from 'react-icons/md';
+import { ConversationType } from 'share/types';
 import { ButtonOpenMore, ButtonSend, InputEmoji, InputMessage, StyledTypeMessage } from './styles';
 
 const EmojiPicker = React.lazy(() => import('../EmojiPicker'));
 
-const TypeMessage = () => {
+const TypeMessage: React.FC<{
+  conversationId: string;
+  type?: string;
+}> = ({ conversationId, type = 'private' }) => {
   const [textMessage, setTextMessage] = useState<string>('');
   const [isShowEmojiPicker, setIsShowEmojiPicker] = useState(false);
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
+  const { currentConversation, conversations } = useAppSelector(chatSelector);
   const inputTextRef = useRef<HTMLInputElement | null>(null);
+  const dispatch = useAppDispatch();
+  const { user: currentUser } = useAppSelector(authSelector);
 
   const changeTextMessageEmoji = (value: string) => {
     // two line get position of cursor
@@ -26,6 +36,20 @@ const TypeMessage = () => {
       textMessageSplitted.splice(start, end - start, value); // insert emoji at between start and end
       setTextMessage(textMessageSplitted.join(''));
     }
+  };
+
+  const sendMessageHandler = () => {
+    if (textMessage.trim().length === 0) {
+      return;
+    } else {
+      if (currentConversation?.type === ConversationType.GROUP) {
+        dispatch(submitMessage({ message: textMessage, conversationId: conversationId }));
+      } else {
+        const receiver = currentConversation.members.find((member: any) => member.id !== conversationId);
+        dispatch(submitMessage({ message: textMessage, receiverId: receiver?.id }));
+      }
+    }
+    setTextMessage('');
   };
 
   return (
@@ -85,6 +109,12 @@ const TypeMessage = () => {
           onChange={(e) => {
             setTextMessage(e.target.value);
           }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.stopPropagation();
+              sendMessageHandler();
+            }
+          }}
         />
         <InputEmoji
           onClick={() => {
@@ -103,11 +133,13 @@ const TypeMessage = () => {
           />
         </Suspense>
       </InputMessage>
-      <ButtonSend>
+      <ButtonSend onClick={sendMessageHandler}>
         <AiOutlineSend />
       </ButtonSend>
     </StyledTypeMessage>
   );
 };
 
-export default TypeMessage;
+TypeMessage.defaultProps = { type: 'private' };
+
+export default React.memo(TypeMessage);

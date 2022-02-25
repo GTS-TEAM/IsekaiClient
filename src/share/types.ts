@@ -204,11 +204,6 @@ export interface NameLocationRes {
   };
 }
 
-export enum DefaultLocation {
-  lon = Number(localStorage.getItem('longitude')) || 105.8412,
-  lat = Number(localStorage.getItem('latitude')) || 21.0245,
-}
-
 export interface MusicItem {
   id: string;
   name: string;
@@ -217,4 +212,63 @@ export interface MusicItem {
   url: string;
   create_at: string;
   uploader: User;
+}
+
+export enum ConversationType {
+  PRIVATE = 'private',
+  GROUP = 'group',
+}
+
+export enum ChatEvent {
+  MESSAGE = 'message',
+  CREATEGROUP = 'create-group',
+}
+
+export interface Member {
+  id: string;
+  updated_at: string;
+  username: string;
+  roles: string;
+  avatar: string;
+  background: null | string;
+  bio: string | null;
+  phone: string | null;
+  date: string | null;
+  address: string | null;
+  last_activity: string | null;
+}
+
+export interface MessageItem {
+  content: string;
+  id: string;
+  type: string;
+  created_at: string;
+  updated_at: string;
+  conversation: {
+    id: string;
+    type: string;
+    last_message: string;
+    members: Member[];
+  };
+  sender: Member | null;
+}
+
+export interface ConversationItem {
+  id: string;
+  members: Member[];
+  type: string;
+  last_message: string | null;
+  avatar: string | null;
+  name: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export enum MessageType {
+  TEXT = 'text',
+  IMAGE = 'image',
+  VIDEO = 'video',
+  AUDIO = 'audio',
+  FILE = 'file',
+  SYSTEM = 'system',
 }

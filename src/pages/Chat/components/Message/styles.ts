@@ -1,11 +1,12 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled/macro';
+import { MessageType } from 'share/types';
 
-interface StyledMessageProps {
+export const StyledMessage = styled.div<{
   timeCreated: number | string | null;
-}
-
-export const StyledMessage = styled.div<StyledMessageProps>`
+  maxWidtH?: string;
+  type: string;
+}>`
   font-size: 1.4rem;
   font-weight: 500;
   border-radius: var(--borderRadius);
@@ -13,7 +14,7 @@ export const StyledMessage = styled.div<StyledMessageProps>`
   background-color: var(--mainColor);
   color: var(--fds-white);
   position: relative;
-  max-width: 60rem;
+  max-width: ${(p) => (p.maxWidtH ? p.maxWidtH : '60rem')};
   line-height: 1.5;
 
   &::before {
@@ -43,10 +44,26 @@ export const StyledMessage = styled.div<StyledMessageProps>`
     opacity: 1;
     visibility: visible;
   }
+  ${(p) =>
+    p.type === MessageType.SYSTEM
+      ? css`
+          background-color: unset;
+          color: var(--fds-gray-3);
+          margin-left: 0 !important;
+          padding: unset;
+          &::after {
+            display: none;
+          }
+          &::before {
+            display: none;
+          }
+        `
+      : undefined}
 `;
 
 interface MessageStyledProps {
-  left: boolean;
+  left?: boolean;
+  type?: string;
 }
 export const MessageWrapStyled = styled.div<MessageStyledProps>`
   display: flex;
@@ -103,4 +120,15 @@ export const MessageWrapStyled = styled.div<MessageStyledProps>`
             }
           }
         `}
+
+        ${(p) =>
+    p.type === MessageType.SYSTEM
+      ? css`
+          justify-content: center;
+          .features,
+          .MuiAvatar-root {
+            display: none;
+          }
+        `
+      : undefined}
 `;

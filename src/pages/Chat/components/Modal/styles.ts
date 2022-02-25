@@ -67,6 +67,7 @@ export const ModalBody = styled.div`
     border: 1px solid #dbdbdb;
     border-radius: var(--borderRadius2);
     margin: 0 5rem;
+    position: relative;
 
     .icon {
       width: 3.6rem;
@@ -97,6 +98,40 @@ export const ModalBody = styled.div`
     color: var(--fds-gray-1);
     line-height: 1.5;
     margin: 0 5rem;
+  }
+`;
+
+export const ListSearch = styled.div`
+  position: absolute;
+  width: 100%;
+  height: auto;
+  background-color: var(--fds-white);
+  z-index: 100;
+  top: calc(100% + 1.2rem);
+  overflow-y: auto;
+  padding: 1.2rem;
+  border-radius: var(--borderRadius2);
+  box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.2rem;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+
+  .MuiFormControlLabel-root {
+    display: flex;
+    align-items: center;
+    column-gap: 1.2rem;
+    cursor: pointer;
+    margin: 0;
+
+    .MuiBox-root {
+      display: flex;
+      align-items: center;
+      column-gap: 1.2rem;
+    }
   }
 `;
 

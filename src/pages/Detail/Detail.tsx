@@ -1,5 +1,4 @@
 import { CircularProgress, Stack } from '@mui/material';
-import { isekaiApi } from 'api/isekaiApi';
 import Actions from 'components/Actions/Actions';
 import Comments from 'components/Comments/Comments';
 import LiveStats from 'components/LiveStats/LiveStats';
@@ -7,8 +6,9 @@ import Overlay from 'components/Overlay/Overlay';
 import SlideImgPost from 'components/SlideImgPost/SlideImgPost';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { authSelector } from 'features/authSlice';
-import { useAppSelector } from 'hooks/hooks';
-import React, { useEffect, useState } from 'react';
+import { getSinglePost, likePost, postsSelector } from 'features/postsSlice';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import React, { useEffect } from 'react';
 import { GrFormClose } from 'react-icons/gr';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -25,44 +25,24 @@ const ModalViewPost = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAppSelector(authSelector);
-  const [post, setPost] = useState<any>({});
-  const [loading, setLoading] = useState(false);
-  const postId = searchParams.get('id');
+  const {
+    timeline: { posts, loading },
+  } = useAppSelector(postsSelector);
+  const postId = searchParams.get('id') as string;
   const slideIndex = searchParams.get('index');
+  const dispatch = useAppDispatch();
 
   const closeViewPostHandler = () => {
     navigate(-1);
   };
 
   const likePostHandler = () => {
-    if (post) {
-      setPost((post: any) => {
-        if (post.liked) {
-          return {
-            ...post,
-            likeCount: post.likeCount - 1,
-            liked: !post.liked,
-          };
-        }
-        return {
-          ...post,
-          likeCount: post.likeCount + 1,
-          liked: !post.liked,
-        };
-      });
-    }
+    dispatch(likePost(postId));
   };
 
   useEffect(() => {
-    const getPost = async () => {
-      setLoading(true);
-      const { data } = await isekaiApi.getPost(postId || '');
-      setPost(data);
-      setLoading(false);
-    };
-
-    getPost();
-  }, [postId]);
+    dispatch(getSinglePost(postId as string));
+  }, [postId, dispatch]);
 
   if (loading) {
     return (
@@ -81,27 +61,27 @@ const ModalViewPost = () => {
         <GrFormClose />
       </ButtonClose>
       <SlideImgPostWrap>
-        <SlideImgPost images={post.image || []} slideIndex={slideIndex ? +slideIndex : 0} />
+        <SlideImgPost images={posts[0].image || []} slideIndex={slideIndex ? +slideIndex : 0} />
       </SlideImgPostWrap>
       <Post>
         <PostHeader>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <UserBlockPost
-              userImg={post.user?.avatar.toString()}
-              userId={post.user?.id}
-              userName={post.user?.username}
-              time={post.created_at}
+              userImg={posts[0].user?.avatar.toString()}
+              userId={posts[0].user?.id}
+              userName={posts[0].user?.username}
+              time={posts[0].created_at}
             />
-            {user?.id !== post.user?.id && <ButtonAddFriend>Kết bạn</ButtonAddFriend>}
+            {user?.id !== posts[0].user?.id && <ButtonAddFriend>Kết bạn</ButtonAddFriend>}
           </Stack>
-          {post.description?.trim().length > 0 && <Description>{post.description}</Description>}
-          <LiveStats totalLike={post.likeCount || 0} totalComment={post.commentCount || 0} haveUserLiked={false} />
+          {posts[0].description?.trim().length > 0 && <Description>{posts[0].description}</Description>}
+          <LiveStats totalLike={posts[0].likeCount || 0} totalComment={posts[0].commentCount || 0} haveUserLiked={false} />
         </PostHeader>
         <div style={{ padding: '0 1.2rem' }}>
-          <Actions post={post} onLike={likePostHandler} />
+          <Actions post={posts[0]} onLike={likePostHandler} />
         </div>
         <CommentsArea>
-          <Comments postId={postId ? postId : ''} amountComment={post.comments} />
+          <Comments postId={postId ? postId : ''} amountComment={posts[0].comments} />
         </CommentsArea>
       </Post>
     </StyledDetail>

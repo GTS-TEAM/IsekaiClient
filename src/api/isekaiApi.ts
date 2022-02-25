@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CommentItem, InfoUser, MusicItem, PostItem, ResLogin, Token, User } from './../share/types';
+import { CommentItem, InfoUser, MessageItem, MusicItem, PostItem, ResLogin, Token, User } from './../share/types';
 
 export const isekaiApi = {
   login: (email: string, password: string) => {
@@ -159,5 +159,29 @@ export const isekaiApi = {
         q,
       },
     });
+  },
+
+  getAllMessage: (conversation_id: string, offset: number) => {
+    return axios.get<MessageItem[]>(`conversations/message/${conversation_id}`, {
+      params: {
+        offset: offset,
+        limit: 10,
+      },
+    });
+  },
+  getAllConversation: (limit: number, offset: number) => {
+    return axios.get('conversations', {
+      params: {
+        limit,
+        offset,
+      },
+    });
+  },
+  getConversationByReceiverId: (receiverId: string) => {
+    return axios.get(`conversations/${receiverId}`);
+  },
+
+  getConversationByConversationId: (conversationId: string) => {
+    return axios.get(`conversations/${conversationId}`);
   },
 };

@@ -5,13 +5,14 @@ import weatherSlice from 'features/weatherSlice';
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authSlice from './features/authSlice';
+import chatSlice, { chatMiddleware } from './features/chatSlice';
 import postsSlice from './features/postsSlice';
 import uiSlice from './features/uiSlice';
 
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['posts', 'auth', 'ui', 'user', 'music', 'weather'],
+  blacklist: ['posts', 'auth', 'ui', 'user', 'music', 'weather', 'chat'],
 };
 
 const authPersistConfig = {
@@ -26,19 +27,14 @@ const weatherPersistConfig = {
   blacklist: ['loading', 'currentWeather', 'error'],
 };
 
-const postsPersistConfig = {
-  key: 'posts',
-  storage: storage,
-  blacklist: ['dataPosts'],
-};
-
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authSlice),
-  posts: persistReducer(postsPersistConfig, postsSlice),
+  posts: postsSlice,
   ui: uiSlice,
   user: userSlice,
   music: musicSlice,
   weather: persistReducer(weatherPersistConfig, weatherSlice),
+  chat: chatSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -59,7 +55,7 @@ export const store = configureStore({
         ignoredPaths: ['payload', ...ignoredPathsPostImg],
       },
       immutableCheck: false,
-    }),
+    }).concat([chatMiddleware]),
 });
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

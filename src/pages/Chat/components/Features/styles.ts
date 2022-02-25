@@ -3,7 +3,7 @@ import styled from '@emotion/styled/macro';
 import { fadeIn } from 'utils/keyframeStyle';
 
 export const StyledFeatures = styled.div<{
-  left: boolean;
+  left?: boolean;
 }>`
   display: flex;
   align-items: center;
@@ -20,7 +20,7 @@ export const StyledFeatures = styled.div<{
         `};
 `;
 
-export const ListEmotionReaction = styled.div<{ left: boolean }>`
+export const ListEmotionReaction = styled.div<{ left?: boolean }>`
   display: flex;
   align-items: center;
   column-gap: 0.5rem;

@@ -15,6 +15,7 @@ const Homepage = () => {
   const dispatch = useDispatch();
   const { timeline } = useSelector(postsSelector);
   const [page, setPage] = useState(1);
+
   const fetchMoreHandler = () => {
     dispatch(getTimeline(page + 1));
     setPage(page + 1);

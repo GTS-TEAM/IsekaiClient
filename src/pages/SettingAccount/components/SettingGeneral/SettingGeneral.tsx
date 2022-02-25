@@ -43,10 +43,13 @@ const SettingGeneral = () => {
       username: Yup.string().required('Bạn không được để trống thông tin này.'),
       email: Yup.string().email('Email không hợp lệ').required('Bạn không được để trống thông tin này.'),
       date: Yup.date()
+        .nullable()
         .typeError('Ngày không hợp lệ.')
         .max(new Date(), 'Bạn không thể sinh ở trong tương lai.')
         .min(new Date(1900), 'Bạn đã vượt quá giới hạn tuổi cho phép.'),
-      numberPhone: Yup.string().matches(/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/, 'Số điện thoại không hợp lệ.'),
+      numberPhone: Yup.string()
+        .nullable()
+        .matches(/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/, 'Số điện thoại không hợp lệ.'),
     }),
   });
 
@@ -55,7 +58,7 @@ const SettingGeneral = () => {
       <Title>Cài đặt chung</Title>
       <FormWrap>
         <form onSubmit={formik.handleSubmit}>
-          <Stack sx={{ flexDirection: 'row', gap: '2.4rem' }}>
+          <Stack sx={{ flexDirection: 'row', gap: '2.4rem', alignItems: 'flex-start' }}>
             <InputField
               label="Tên"
               id="username"
@@ -80,7 +83,7 @@ const SettingGeneral = () => {
               type="email"
             />
           </Stack>
-          <Stack sx={{ flexDirection: 'row', gap: '2.4rem' }}>
+          <Stack sx={{ flexDirection: 'row', gap: '2.4rem', alignItems: 'flex-start' }}>
             <DatePicker
               className="date-picker"
               onChange={(newValue) => {

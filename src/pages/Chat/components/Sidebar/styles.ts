@@ -75,10 +75,11 @@ export const SidebarItem = styled.div`
     height: 5.6rem;
   }
 
-  .MuiBox-root {
+  & > .MuiBox-root {
     display: flex;
     flex-direction: column;
     row-gap: 0.5rem;
+    flex: 1;
   }
 
   h3 {

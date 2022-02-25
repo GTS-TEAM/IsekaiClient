@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ListEmotionReaction, StyledFeatures } from './styles';
 
 interface Props {
-  left: boolean;
+  left?: boolean;
 }
 
 const LIST_EMOTION_REACTION = [

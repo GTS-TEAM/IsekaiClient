@@ -11,54 +11,57 @@ import Homepage from './pages/Home';
 import Landing from './pages/Landing';
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route
-          path="/home"
-          element={
-            <RequireAuth>
-              <Layout>
-                <Homepage />
-              </Layout>
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/profile/:id"
-          element={
-            <RequireAuth>
-              <Profile />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/post"
-          element={
-            <RequireAuth>
-              <Post />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/setting"
-          element={
-            <RequireAuth>
-              <SettingAccount />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/message"
-          element={
-            <RequireAuth>
-              <Chat />
-            </RequireAuth>
-          }
-        />
-        {/* 
+    <>
+      {/* <PopupChat /> */}
+      <Router>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/home"
+            element={
+              <RequireAuth>
+                <Layout>
+                  <Homepage />
+                </Layout>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/profile/:id"
+            element={
+              <RequireAuth>
+                <Profile />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/post"
+            element={
+              <RequireAuth>
+                <Post />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/setting"
+            element={
+              <RequireAuth>
+                <SettingAccount />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/message/*"
+            element={
+              <RequireAuth>
+                <Chat />
+              </RequireAuth>
+            }
+          />
+
+          {/* 
         <Route path="/login/identify">
           {token.access_token ? <Redirect to="/" /> : <BasicCard />}
         </Route>
@@ -77,8 +80,9 @@ function App() {
         <Route path="/signup/validate">
           <BasicCard />
         </Route> */}
-      </Routes>
-    </Router>
+        </Routes>
+      </Router>
+    </>
   );
 }
 
