@@ -8,7 +8,9 @@ import { AiOutlineGif, AiOutlinePlus, AiOutlineSend } from 'react-icons/ai';
 import { BiSticker } from 'react-icons/bi';
 import { FiFile } from 'react-icons/fi';
 import { MdOutlineEmojiEmotions } from 'react-icons/md';
-import { ConversationType } from 'share/types';
+import { ConversationType, User } from 'share/types';
+import { getReceiver } from 'utils/getReceiver';
+import Gif from '../Gif';
 import { ButtonOpenMore, ButtonSend, InputEmoji, InputMessage, StyledTypeMessage } from './styles';
 
 const EmojiPicker = React.lazy(() => import('../EmojiPicker'));
@@ -20,10 +22,11 @@ const TypeMessage: React.FC<{
   const [textMessage, setTextMessage] = useState<string>('');
   const [isShowEmojiPicker, setIsShowEmojiPicker] = useState(false);
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
-  const { currentConversation, conversations } = useAppSelector(chatSelector);
+  const { currentConversation } = useAppSelector(chatSelector);
   const inputTextRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useAppDispatch();
   const { user: currentUser } = useAppSelector(authSelector);
+  const [isShowGif, setIsShowGif] = useState<boolean>(false);
 
   const changeTextMessageEmoji = (value: string) => {
     // two line get position of cursor
@@ -43,9 +46,9 @@ const TypeMessage: React.FC<{
       return;
     } else {
       if (currentConversation?.type === ConversationType.GROUP) {
-        dispatch(submitMessage({ message: textMessage, conversationId: conversationId }));
+        dispatch(submitMessage({ message: textMessage, conversationId: currentConversation.id }));
       } else {
-        const receiver = currentConversation.members.find((member: any) => member.id !== conversationId);
+        const receiver = getReceiver(currentConversation, currentUser as User);
         dispatch(submitMessage({ message: textMessage, receiverId: receiver?.id }));
       }
     }
@@ -63,6 +66,9 @@ const TypeMessage: React.FC<{
           onClick={() => {
             setIsShowDropdown(!isShowDropdown);
           }}
+          sx={{
+            backgroundColor: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
+          }}
         >
           <AiOutlinePlus />
         </ButtonOpenMore>
@@ -74,7 +80,12 @@ const TypeMessage: React.FC<{
           >
             <DropdownMenu left="0" bottom="calc(100% + 1.2rem)">
               <DropdownContent>
-                <DropdownItem>
+                <DropdownItem
+                  onClick={() => {
+                    setIsShowGif(true);
+                    setIsShowDropdown(false);
+                  }}
+                >
                   <AiOutlineGif />
                   <Box>
                     <h3>GIF</h3>
@@ -120,6 +131,11 @@ const TypeMessage: React.FC<{
           onClick={() => {
             setIsShowEmojiPicker(!isShowEmojiPicker);
           }}
+          sx={{
+            svg: {
+              color: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
+            },
+          }}
         >
           <MdOutlineEmojiEmotions />
         </InputEmoji>
@@ -133,9 +149,17 @@ const TypeMessage: React.FC<{
           />
         </Suspense>
       </InputMessage>
-      <ButtonSend onClick={sendMessageHandler}>
+      <ButtonSend
+        onClick={sendMessageHandler}
+        sx={{
+          svg: {
+            color: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
+          },
+        }}
+      >
         <AiOutlineSend />
       </ButtonSend>
+      <Gif isShow={isShowGif} setIsShow={setIsShowGif} />
     </StyledTypeMessage>
   );
 };

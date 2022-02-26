@@ -87,15 +87,4 @@ export const SidebarItem = styled.div`
     font-weight: 500;
     color: var(--fds-gray-7);
   }
-
-  span {
-    color: var(--fds-gray-3);
-    font-size: 1.4rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    line-clamp: 1;
-    -webkit-box-orient: vertical;
-  }
 `;

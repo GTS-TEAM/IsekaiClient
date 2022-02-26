@@ -1,6 +1,6 @@
 import { chatSelector, getAllMessage, unmountChat } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { MessageItem } from 'share/types';
 import Message from '../Message';
@@ -11,14 +11,19 @@ const ChatMain: FC<{
   maxWidthMessage?: string;
   conversationId: string;
 }> = ({ heightChatMain, maxWidthMessage, conversationId }) => {
-  const { messages, hasMore } = useAppSelector(chatSelector);
+  const { messages, hasMore, currentConversation } = useAppSelector(chatSelector);
   const [offset, setOffset] = useState<number>(0);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(unmountChat());
     dispatch(getAllMessage({ conversation_id: conversationId, offset: 0 }));
   }, [conversationId, dispatch]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   return (
     <StyledChatMain id="scrollableDiv" height={heightChatMain}>
@@ -49,8 +54,20 @@ const ChatMain: FC<{
         // }
       >
         {messages.map((mess: MessageItem) => (
-          <Message key={mess.id} message={mess} maxWidth={maxWidthMessage} type={mess.type} />
+          <Message
+            key={mess.id}
+            message={mess}
+            maxWidth={maxWidthMessage}
+            type={mess.type}
+            theme={currentConversation?.theme}
+          />
         ))}
+        <div
+          style={{
+            display: 'none',
+          }}
+          ref={messagesEndRef}
+        ></div>
       </InfiniteScroll>
     </StyledChatMain>
   );

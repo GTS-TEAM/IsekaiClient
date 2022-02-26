@@ -20,7 +20,6 @@ export const loginHandler = createAsyncThunk<
 >('auth/login', async (d, thunkApi) => {
   try {
     const { data } = await isekaiApi.login(d.email, d.password);
-    console.log(data);
     setTokenToLocalStorage({ access_token: data.access_token, refresh_token: data.refresh_token });
     d.callback(); // navigate to homepage
     return data;

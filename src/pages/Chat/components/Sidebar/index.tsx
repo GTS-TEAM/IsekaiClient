@@ -5,15 +5,19 @@ import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineUserAdd } from 'react-icons/ai';
-import { useNavigate } from 'react-router-dom';
-import Modal from '../Modal';
+import { useNavigate, useParams } from 'react-router-dom';
+import { MessageType, User } from 'share/types';
+import { convertNameConversation } from 'utils/convertNameConversation';
+import { getReceiver } from 'utils/getReceiver';
+import Modal from '../ModalCreateConversation';
 import { ButtonNewConversation, SidebarHeader, SidebarItem, SidebarMenu, StyledSidebar } from './styles';
 const Sidebar: React.FC<{}> = () => {
   const { user: currentUser } = useAppSelector(authSelector);
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { conversations } = useAppSelector(chatSelector);
+  const { conversations, currentConversation } = useAppSelector(chatSelector);
+  const { id } = useParams();
 
   const closeModalHandler = () => {
     setIsShowModal(false);
@@ -38,7 +42,8 @@ const Sidebar: React.FC<{}> = () => {
         </SidebarHeader>
         <SidebarMenu>
           {conversations.map((conversation) => {
-            const receiver = conversation.members.find((user) => user.id !== currentUser?.id);
+            const receiver = getReceiver(conversation, currentUser as User);
+            // const last_message= conversation.last_message?.type===MessageType.GIF?
             return (
               <SidebarItem
                 key={conversation.id}
@@ -46,31 +51,65 @@ const Sidebar: React.FC<{}> = () => {
                   navigate(`/message/${conversation.id}`);
                   dispatch(selectConversation(conversation));
                 }}
+                style={{
+                  backgroundColor: (id as string) === conversation.id ? 'red' : undefined,
+                }}
               >
                 <Avatar src={receiver?.avatar as string} />
                 <Box>
-                  <h3>{conversation.type === 'private' ? receiver?.username : 'Group'}</h3>
+                  <h3>{convertNameConversation(conversation, currentUser as User)}</h3>
                   <Box
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
+                      color: 'var(--fds-gray-3)',
 
                       span: {
                         fontSize: '1.2rem',
                       },
 
-                      'span:not(:last-child)::after': {
-                        content: '"•"',
-                        padding: '0 0.5rem',
+                      div: {
+                        width: '0.4rem',
+                        height: '0.4rem',
+                        backgroundColor: 'var(--fds-gray-3)',
+                        borderRadius: '50%',
+                        margin: '0 0.5rem',
+                        flexShrink: '0',
                       },
 
-                      'span:first-child': {
+                      'span:first-of-type': {
                         maxWidth: '19rem;',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        '-webkit-line-clamp': '1',
+                        ' line-clamp': '1',
+                        ' -webkit-box-orient': 'vertical',
+                      },
+                      'span:last-of-type': {
+                        flexShrink: '0',
                       },
                     }}
                   >
-                    <span>{conversation.last_message}</span>
-                    <span> {moment(conversation.updated_at, moment.defaultFormat).fromNow()}</span>
+                    {conversation.last_message && (
+                      <>
+                        <span>
+                          {conversation.last_message?.type === MessageType.GIF
+                            ? `${conversation.last_message.sender?.username} đã gởi 1 tệp Gif`
+                            : conversation.last_message?.type === MessageType.AUDIO
+                            ? `${conversation.last_message.sender?.username} đã gởi 1 tệp Audio`
+                            : conversation.last_message?.type === MessageType.FILE
+                            ? `${conversation.last_message.sender?.username} đã gởi 1 File`
+                            : conversation.last_message?.type === MessageType.IMAGE
+                            ? `${conversation.last_message.sender?.username} đã gởi 1 hình ảnh`
+                            : conversation.last_message?.type === MessageType.TEXT
+                            ? `${conversation.last_message.sender?.username}: ${conversation.last_message.content}`
+                            : conversation.last_message.content}
+                        </span>
+                        <div></div>
+                        <span> {moment(conversation.last_message?.updated_at, moment.defaultFormat).fromNow()}</span>
+                      </>
+                    )}
                   </Box>
                 </Box>
               </SidebarItem>

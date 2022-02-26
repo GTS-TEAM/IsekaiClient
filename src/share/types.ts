@@ -247,8 +247,17 @@ export interface MessageItem {
   conversation: {
     id: string;
     type: string;
-    last_message: string;
+    name: string | null;
+    last_message: {
+      content: string;
+      created_at: string;
+      updated_at: string;
+      id: string;
+      type: string;
+      sender: Member;
+    } | null;
     members: Member[];
+    theme: string | null;
   };
   sender: Member | null;
 }
@@ -257,11 +266,19 @@ export interface ConversationItem {
   id: string;
   members: Member[];
   type: string;
-  last_message: string | null;
+  last_message: {
+    content: string;
+    created_at: string;
+    updated_at: string;
+    id: string;
+    type: string;
+    sender: Member | null;
+  } | null;
   avatar: string | null;
   name: string | null;
   created_at: string;
   updated_at: string;
+  theme: string | null;
 }
 
 export enum MessageType {
@@ -271,4 +288,5 @@ export enum MessageType {
   AUDIO = 'audio',
   FILE = 'file',
   SYSTEM = 'system',
+  GIF = 'gif',
 }

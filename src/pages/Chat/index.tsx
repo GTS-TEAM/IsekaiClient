@@ -43,7 +43,7 @@ const Chat = () => {
             }}
           >
             <Routes>
-              <Route path="/message" element={<p>Vui lòng chọn cuộc trò chuyện</p>} />
+              <Route path="" element={<p>Vui lòng chọn cuộc trò chuyện</p>} />
               <Route path=":id" element={<ChatView />} />
             </Routes>
           </Box>

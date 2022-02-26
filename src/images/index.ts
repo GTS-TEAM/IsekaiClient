@@ -1,6 +1,6 @@
 import AddProfile from './add-profile.svg';
 import { ReactComponent as AddPhoto } from './AddPhoto.svg';
-import Bubbles from './bubbles.svg';
+import { ReactComponent as Bubbles } from './bubbles.svg';
 import ChangeProfile from './change-profile.svg';
 import { ReactComponent as Emotion } from './Emotion.svg';
 import { ReactComponent as Next } from './next.svg';

@@ -6,18 +6,19 @@ export const StyledMessage = styled.div<{
   timeCreated: number | string | null;
   maxWidtH?: string;
   type: string;
+  themeStyle: string | null;
 }>`
   font-size: 1.4rem;
   font-weight: 500;
-  border-radius: var(--borderRadius);
-  padding: 1.2rem;
-  background-color: var(--mainColor);
+  border-radius: var(--borderRadius3);
+  padding: 1rem 1.2rem;
+  background-color: ${(p) => (p.themeStyle ? p.themeStyle : 'var(--mainColor)')};
   color: var(--fds-white);
   position: relative;
   max-width: ${(p) => (p.maxWidtH ? p.maxWidtH : '60rem')};
   line-height: 1.5;
 
-  &::before {
+  /* &::before {
     content: '';
     background-color: inherit;
     position: absolute;
@@ -25,7 +26,7 @@ export const StyledMessage = styled.div<{
     width: 1rem;
     height: 1rem;
     top: 50%;
-  }
+  } */
 
   &::after {
     content: '${(p) => p.timeCreated}';
@@ -81,6 +82,12 @@ export const MessageWrapStyled = styled.div<MessageStyledProps>`
     visibility: visible;
   }
 
+  .MuiAvatar-root {
+    align-self: flex-end;
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+
   ${(p) =>
     p.left
       ? css`
@@ -109,7 +116,6 @@ export const MessageWrapStyled = styled.div<MessageStyledProps>`
         `
       : css`
           ${StyledMessage} {
-            margin-right: 1rem;
             &::before {
               transform: translateY(-50%) rotate(0);
               left: calc(100% - 0.5px);
@@ -128,6 +134,16 @@ export const MessageWrapStyled = styled.div<MessageStyledProps>`
           .features,
           .MuiAvatar-root {
             display: none;
+          }
+        `
+      : undefined}
+      
+  ${(p) =>
+    p.type === MessageType.GIF
+      ? css`
+          img {
+            border-radius: var(--borderRadius3);
+            max-width: 30rem;
           }
         `
       : undefined}

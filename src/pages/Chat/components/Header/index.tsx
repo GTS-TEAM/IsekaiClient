@@ -1,15 +1,20 @@
 import { Avatar, ClickAwayListener } from '@mui/material';
 import { Box } from '@mui/system';
+import { authSelector } from 'features/authSlice';
 import { chatSelector } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppSelector } from 'hooks/hooks';
 import React, { useState } from 'react';
-import { AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineEdit } from 'react-icons/ai';
 import { BiFileBlank } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
 import { MdOutlineColorLens, MdOutlineRemoveCircleOutline } from 'react-icons/md';
-import { ConversationType } from 'share/types';
+import { ConversationType, User } from 'share/types';
+import { convertNameConversation } from 'utils/convertNameConversation';
+import { getReceiver } from 'utils/getReceiver';
+import ModalChangeNameConversation from '../ModalChangeNameConversation';
+import ModalChangeTheme from '../ModalChangeTheme';
 import { RecipientBox, StyledButtonIcon, StyledHeader } from './styles';
 
 const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => any; conservationId: string }> = ({
@@ -19,7 +24,10 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
   conservationId,
 }) => {
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
+  const [isShowModalChangeTheme, setIsShowModalChangeTheme] = useState<boolean>(false);
+  const [isShowModalChangeName, setIsShowModalChangeName] = useState<boolean>(false);
   const { currentConversation } = useAppSelector(chatSelector);
+  const { user: currentUser } = useAppSelector(authSelector);
 
   return (
     <StyledHeader borderRadius={borderRadius}>
@@ -37,20 +45,11 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
           src={
             currentConversation?.type === ConversationType.GROUP
               ? currentConversation?.avatar
-              : currentConversation?.members[0]?.avatar
+              : getReceiver(currentConversation, currentUser as User)?.avatar
           }
         />
         <Box>
-          <h3>
-            {currentConversation?.type === ConversationType.GROUP
-              ? `${currentConversation.members
-                  .slice(0, 2)
-                  .map((member: any) => member.username)
-                  .join(', ')} ${
-                  currentConversation.members.length - 2 > 0 ? `và ${currentConversation.members.length - 2} người khác` : ''
-                }`
-              : currentConversation?.members[0]?.username}
-          </h3>
+          <h3>{convertNameConversation(currentConversation, currentUser as User)}</h3>
           <span>Hoạt Động 10 phút trước</span>
         </Box>
       </RecipientBox>
@@ -89,6 +88,18 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
                   <span>Xem tất cả tệp bạn đã gởi</span>
                 </Box>
               </DropdownItem>
+              <DropdownItem
+                onClick={() => {
+                  setIsShowDropdown(false);
+                  setIsShowModalChangeName(true);
+                }}
+              >
+                <AiOutlineEdit />
+                <Box>
+                  <h3>Chỉnh sửa</h3>
+                  <span>Chỉnh sửa tên cuộc trò chyện</span>
+                </Box>
+              </DropdownItem>
               <DropdownItem>
                 <MdOutlineRemoveCircleOutline />
                 <Box>
@@ -96,14 +107,12 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
                   <span>Xóa cuộc trò chuyện</span>
                 </Box>
               </DropdownItem>
-              <DropdownItem>
-                <AiOutlineUser />
-                <Box>
-                  <h3>Trang cá nhân</h3>
-                  <span>Chuyển tới trang cá nhân của Minh Nguyên</span>
-                </Box>
-              </DropdownItem>
-              <DropdownItem>
+              <DropdownItem
+                onClick={() => {
+                  setIsShowDropdown(false);
+                  setIsShowModalChangeTheme(true);
+                }}
+              >
                 <MdOutlineColorLens />
                 <Box>
                   <h3>Tùy chỉnh</h3>
@@ -114,6 +123,18 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
           </DropdownMenu>
         </ClickAwayListener>
       )}
+      <ModalChangeTheme
+        onClose={() => {
+          setIsShowModalChangeTheme(false);
+        }}
+        isShow={isShowModalChangeTheme}
+      />
+      <ModalChangeNameConversation
+        isShow={isShowModalChangeName}
+        onClose={() => {
+          setIsShowModalChangeName(false);
+        }}
+      />
     </StyledHeader>
   );
 };

@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice, Middleware, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
-import { ChatEvent, ConversationItem, MessageItem } from 'share/types';
+import { ChatEvent, ConversationItem, MessageItem, MessageType } from 'share/types';
 import { io, Socket } from 'socket.io-client';
 import { RootState } from 'store';
+import { v4 as uuidv4 } from 'uuid';
 
 const END_POINT = 'wss://isekai-api.me';
 
@@ -60,17 +61,36 @@ const chatSlice = createSlice({
       state.isEstablishingConnection = true;
     },
     receiveMessage: (state, action: PayloadAction<MessageItem>) => {
-      state.messages.unshift(action.payload);
-      state.currentConversation = action.payload.conversation;
-      const conversationExitIndex = state.conversations.findIndex(
+      const newConversation = {
+        ...action.payload.conversation,
+        members: action.payload.conversation.members || state.currentConversation.members,
+      };
+      state.messages.unshift({
+        ...action.payload,
+        conversation: {
+          ...newConversation,
+        },
+      });
+      state.currentConversation = newConversation;
+
+      const conversationExistIndex = state.conversations.findIndex(
         (conversation) => conversation.id === action.payload.conversation.id,
       );
 
-      if (state.conversations[conversationExitIndex]) {
-        state.conversations[conversationExitIndex] = {
-          ...state.conversations[conversationExitIndex],
+      if (state.conversations[conversationExistIndex]) {
+        state.conversations[conversationExistIndex] = {
+          ...state.conversations[conversationExistIndex],
           updated_at: action.payload.updated_at,
-          last_message: action.payload.content,
+          last_message: {
+            content: action.payload.content,
+            updated_at: action.payload.updated_at,
+            created_at: action.payload.created_at,
+            id: uuidv4(),
+            type: action.payload.type,
+            sender: action.payload.sender,
+          },
+          theme: action.payload.conversation.theme,
+          name: action.payload.conversation.name,
         };
       } else {
         state.conversations.push({
@@ -78,23 +98,30 @@ const chatSlice = createSlice({
           created_at: action.payload.created_at,
           avatar: null,
           name: null,
-          members: action.payload.conversation.members,
+          members: action.payload.conversation.members || state.currentConversation?.members,
           id: action.payload.conversation.id,
           type: action.payload.conversation.type,
           last_message: action.payload.conversation.last_message,
+          theme: action.payload.conversation.theme,
         });
       }
 
-      state.conversations.sort((a, b) => b.created_at.localeCompare(a.created_at));
+      state.conversations.sort((a, b) => b.updated_at.localeCompare(a.updated_at));
     },
-    submitMessage: (state, action: PayloadAction<{ message: string; receiverId?: string; conversationId?: string }>) => {
+    submitMessage: (
+      state,
+      action: PayloadAction<{ message: string; receiverId?: string; conversationId?: string; type?: MessageType }>,
+    ) => {
       return;
     },
     createGroup: (state, action: PayloadAction<string[]>) => {
       return;
     },
     addConversation: (state, action: PayloadAction<ConversationItem>) => {
-      state.conversations.unshift(action.payload);
+      const conversationExistIndex = state.conversations.findIndex((conversation) => conversation.id === action.payload.id);
+      if (!state.conversations[conversationExistIndex]) {
+        state.conversations.unshift(action.payload);
+      }
     },
     unmountChat: (state) => {
       state.messages = [];
@@ -102,6 +129,19 @@ const chatSlice = createSlice({
     },
     selectConversation: (state, action) => {
       state.currentConversation = action.payload;
+    },
+    updateConversation: (
+      state,
+      action: PayloadAction<{
+        conversationId: string;
+        fields: {
+          name?: string;
+          avatar?: string;
+          theme?: string;
+        };
+      }>,
+    ) => {
+      console.log(action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -139,6 +179,7 @@ export const {
   createGroup,
   selectConversation,
   addConversation,
+  updateConversation,
 } = chatSlice.actions;
 export const chatSelector = (state: RootState) => state.chat;
 
@@ -177,6 +218,15 @@ export const chatMiddleware: Middleware = (store) => {
 
     if (createGroup.match(action) && isConnectionEstablished) {
       socket.emit(ChatEvent.CREATEGROUP, action.payload);
+    }
+
+    if (updateConversation.match(action) && isConnectionEstablished) {
+      socket.emit('update-conversation', {
+        conversationId: action.payload.conversationId,
+        fields: {
+          ...action.payload.fields,
+        },
+      });
     }
 
     next(action);

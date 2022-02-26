@@ -176,3 +176,16 @@ export const DropdownItem = styled.div`
     }
   }
 `;
+
+export const StyledModalWrap = styled.div`
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  animation: ${fadeIn} 0.3s ease;
+`;
