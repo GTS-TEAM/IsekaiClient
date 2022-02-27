@@ -139,7 +139,7 @@ export const MessageWrapStyled = styled.div<MessageStyledProps>`
       : undefined}
       
   ${(p) =>
-    p.type === MessageType.GIF
+    p.type === MessageType.GIF || p.type === MessageType.IMAGE
       ? css`
           img.img-file {
             border-radius: var(--borderRadius3);
@@ -147,4 +147,115 @@ export const MessageWrapStyled = styled.div<MessageStyledProps>`
           }
         `
       : undefined}
+`;
+
+export const File = styled.div`
+  display: flex;
+  align-items: center;
+  column-gap: 1.2rem;
+  padding: 1.2rem;
+  background-color: var(--mainColor);
+  border-radius: var(--borderRadius3);
+
+  & > svg {
+    width: 3.6rem;
+    height: 3.6rem;
+    color: var(--fds-white);
+  }
+
+  span {
+    width: 15rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    font-size: 1.4rem;
+    color: var(--fds-white);
+  }
+
+  a svg {
+    width: 2.4rem;
+    height: 2.4rem;
+    color: var(--fds-white);
+  }
+`;
+
+export const Audio = styled.div<{
+  themeStyle: string;
+}>`
+  border-radius: var(--borderRadius3);
+  width: 22rem;
+  height: 3.6rem;
+  background-color: ${(p) => p.themeStyle || 'var(--mainColor)'};
+  display: flex;
+  align-items: center;
+  padding: 0 0.65rem;
+  column-gap: 1.2rem;
+
+  audio {
+    display: none;
+  }
+
+  .MuiSlider-root {
+    color: var(--fds-white);
+
+    .MuiSlider-thumb {
+      color: inherit;
+    }
+
+    .MuiSlider-thumb.Mui-active,
+    .MuiSlider-thumb.Mui-focusVisible,
+    .MuiSlider-thumb:hover {
+      box-shadow: unset;
+    }
+  }
+
+  .duration {
+    margin-left: auto;
+    height: 2.3rem;
+    width: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.2rem;
+    background-color: var(--fds-white);
+    border-radius: inherit;
+    color: ${(p) => p.themeStyle || 'var(--mainColor)'};
+    flex-shrink: 0;
+  }
+
+  .control {
+    width: 2.3rem;
+    height: 2.3rem;
+    background-color: var(--fds-white);
+    border-radius: 50%;
+    flex-shrink: 0;
+    cursor: pointer;
+    position: relative;
+
+    & > div {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    svg {
+      width: 1.4rem;
+      height: 1.4rem;
+      color: ${(p) => p.themeStyle || 'var(--mainColor)'};
+    }
+  }
+`;
+
+export const Video = styled.div`
+  border-radius: var(--borderRadius3);
+  overflow: hidden;
+  max-width: 30rem;
 `;

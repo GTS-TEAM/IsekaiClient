@@ -59,6 +59,10 @@ const TypeMessage: React.FC<{
   };
 
   const uploadFile = async (file: File) => {
+    if (file.size > 5 * 1024 * 1024) {
+      return;
+    }
+
     let type = file.type.includes(MessageType.IMAGE)
       ? MessageType.IMAGE
       : file.type.includes(MessageType.AUDIO)
@@ -66,10 +70,26 @@ const TypeMessage: React.FC<{
       : file.type.includes(MessageType.VIDEO)
       ? MessageType.VIDEO
       : MessageType.FILE;
+    let url;
     const formData = new FormData();
-    formData.append('file', file);
-    const { data } = await isekaiApi.uploadImg(formData);
-    console.log({ data });
+
+    if (type === MessageType.AUDIO || type === MessageType.VIDEO) {
+      formData.append('file', file);
+      const { data } = await isekaiApi.uploadSongFile(formData);
+      url = data.url;
+    } else {
+      formData.append('files', file);
+      const { data } = await isekaiApi.uploadImg(formData);
+      url = data.urls[0];
+    }
+
+    if (currentConversation?.type === ConversationType.GROUP) {
+      dispatch(submitMessage({ message: url as string, conversationId: currentConversation.id, type }));
+    } else {
+      const receiver = getReceiver(currentConversation, currentUser as User);
+      console.log(receiver);
+      dispatch(submitMessage({ message: url as string, receiverId: receiver?.id, type }));
+    }
   };
 
   const changeFileHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -132,7 +152,7 @@ const TypeMessage: React.FC<{
                     style={{ display: 'none' }}
                     ref={inputFileRef}
                     onChange={changeFileHandler}
-                    // accept="image/*"
+                    accept="image/jpeg,image/gif,image/png,application/pdf,video/*,audio/*"
                   />
                 </DropdownItem>
                 <DropdownItem>
