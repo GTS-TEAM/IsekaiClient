@@ -86,5 +86,6 @@ export const SidebarItem = styled.div`
     font-size: 1.6rem;
     font-weight: 500;
     color: var(--fds-gray-7);
+    line-height: 1.4;
   }
 `;

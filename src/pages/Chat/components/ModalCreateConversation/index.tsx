@@ -3,7 +3,7 @@ import { isekaiApi } from 'api/isekaiApi';
 import ModalWrapper from 'components/NewModal';
 import { Header } from 'components/NewModal/styles';
 import { authSelector } from 'features/authSlice';
-import { addConversation, chatSelector, createGroup, selectConversation, unmountChat } from 'features/chatSlice';
+import { addConversation, chatSelector, createGroup, selectConversation, unmountMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { IMG } from 'images';
 import React, { useRef, useState } from 'react';
@@ -12,6 +12,7 @@ import { GrFormClose } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
 import { ConversationItem, ConversationType, User } from 'share/types';
 import { compareTwoArrMember } from 'utils/compareTwoArrMember';
+import { v4 as uuidv4 } from 'uuid';
 import { ButtonStart, ListSearch, ModalBody, StyledModal } from './styles';
 
 const Modal: React.FC<{ isOpen: boolean; onClose: () => any }> = ({ isOpen, onClose }) => {
@@ -47,7 +48,7 @@ const Modal: React.FC<{ isOpen: boolean; onClose: () => any }> = ({ isOpen, onCl
       );
 
       if (!isCan) {
-        dispatch(unmountChat());
+        dispatch(unmountMessage());
         const choosesId: string[] = chooses.map((choose: any) => choose.id);
         dispatch(createGroup(choosesId));
         navigation(`/message/${conversationExist?.id}`);
@@ -60,16 +61,36 @@ const Modal: React.FC<{ isOpen: boolean; onClose: () => any }> = ({ isOpen, onCl
           conversation.id === `${currentUser?.id}-${chooses[0].id}` ||
           conversation.id === `${chooses[0].id}-${currentUser?.id}`,
       );
+      console.log(conversationExist);
       if (conversationExist) {
         navigation(`/message/${conversationExist.id}`);
       } else {
         const newConversation: ConversationItem = {
           id: `${currentUser?.id}-${chooses[0].id}`,
           members: [
-            { ...chooses[0], last_activity: null },
             {
-              ...currentUser,
-              last_activity: new Date().toISOString(),
+              id: uuidv4(),
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              deleted_conversation_at: null,
+              nickname: null,
+              role: 'member',
+              user: {
+                ...chooses[0],
+                last_activity: null,
+              },
+            },
+            {
+              id: uuidv4(),
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              deleted_conversation_at: null,
+              nickname: null,
+              role: 'member',
+              user: {
+                ...currentUser,
+                last_activity: null,
+              },
             },
           ],
           type: ConversationType.PRIVATE,

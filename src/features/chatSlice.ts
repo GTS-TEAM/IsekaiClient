@@ -1,9 +1,8 @@
 import { createAsyncThunk, createSlice, Middleware, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
-import { ChatEvent, ConversationItem, MessageItem, MessageType } from 'share/types';
+import { ChatEvent, ConversationItem, MessageItem } from 'share/types';
 import { io, Socket } from 'socket.io-client';
 import { RootState } from 'store';
-import { v4 as uuidv4 } from 'uuid';
 
 const END_POINT = 'wss://isekai-api.me';
 
@@ -63,7 +62,7 @@ const chatSlice = createSlice({
     receiveMessage: (state, action: PayloadAction<MessageItem>) => {
       const newConversation = {
         ...action.payload.conversation,
-        members: action.payload.conversation.members || state.currentConversation.members,
+        members: state.currentConversation.members,
       };
       state.messages.unshift({
         ...action.payload,
@@ -71,6 +70,7 @@ const chatSlice = createSlice({
           ...newConversation,
         },
       });
+
       state.currentConversation = newConversation;
 
       const conversationExistIndex = state.conversations.findIndex(
@@ -85,7 +85,7 @@ const chatSlice = createSlice({
             content: action.payload.content,
             updated_at: action.payload.updated_at,
             created_at: action.payload.created_at,
-            id: uuidv4(),
+            id: action.payload.id,
             type: action.payload.type,
             sender: action.payload.sender,
           },
@@ -107,10 +107,11 @@ const chatSlice = createSlice({
       }
 
       state.conversations.sort((a, b) => b.updated_at.localeCompare(a.updated_at));
+      console.log(action.payload);
     },
     submitMessage: (
       state,
-      action: PayloadAction<{ message: string; receiverId?: string; conversationId?: string; type?: MessageType }>,
+      action: PayloadAction<{ message: string; receiverId?: string; conversationId?: string; type?: string }>,
     ) => {
       return;
     },
@@ -123,7 +124,7 @@ const chatSlice = createSlice({
         state.conversations.unshift(action.payload);
       }
     },
-    unmountChat: (state) => {
+    unmountMessage: (state) => {
       state.messages = [];
       state.hasMore = false;
     },
@@ -142,6 +143,13 @@ const chatSlice = createSlice({
       }>,
     ) => {
       console.log(action.payload);
+    },
+    unmountChat: (state) => {
+      state.conversations = [];
+      state.currentConversation = null;
+      state.isConnected = false;
+      state.isEstablishingConnection = false;
+      state.messages = [];
     },
   },
   extraReducers: (builder) => {
@@ -175,11 +183,12 @@ export const {
   startConnecting,
   submitMessage,
   receiveMessage,
-  unmountChat,
+  unmountMessage,
   createGroup,
   selectConversation,
   addConversation,
   updateConversation,
+  unmountChat,
 } = chatSlice.actions;
 export const chatSelector = (state: RootState) => state.chat;
 
@@ -226,6 +235,12 @@ export const chatMiddleware: Middleware = (store) => {
         fields: {
           ...action.payload.fields,
         },
+      });
+    }
+
+    if (unmountChat.match(action)) {
+      socket.emit('disconnect', function () {
+        console.log('disconnect client event....');
       });
     }
 

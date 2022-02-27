@@ -16,7 +16,7 @@ const Sidebar: React.FC<{}> = () => {
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { conversations, currentConversation } = useAppSelector(chatSelector);
+  const { conversations } = useAppSelector(chatSelector);
   const { id } = useParams();
 
   const closeModalHandler = () => {
@@ -82,8 +82,8 @@ const Sidebar: React.FC<{}> = () => {
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         display: '-webkit-box',
-                        '-webkit-line-clamp': '1',
-                        ' line-clamp': '1',
+                        WebkitLineClamp: '1',
+                        '  lineClamp': '1',
                         ' -webkit-box-orient': 'vertical',
                       },
                       'span:last-of-type': {
@@ -95,15 +95,25 @@ const Sidebar: React.FC<{}> = () => {
                       <>
                         <span>
                           {conversation.last_message?.type === MessageType.GIF
-                            ? `${conversation.last_message.sender?.username} đã gởi 1 tệp Gif`
+                            ? `${
+                                conversation.last_message.sender?.nickname || conversation.last_message.sender?.user.avatar
+                              } đã gởi 1 tệp Gif`
                             : conversation.last_message?.type === MessageType.AUDIO
-                            ? `${conversation.last_message.sender?.username} đã gởi 1 tệp Audio`
+                            ? `${
+                                conversation.last_message.sender?.nickname || conversation.last_message.sender?.user.avatar
+                              } đã gởi 1 tệp Audio`
                             : conversation.last_message?.type === MessageType.FILE
-                            ? `${conversation.last_message.sender?.username} đã gởi 1 File`
+                            ? `${
+                                conversation.last_message.sender?.nickname || conversation.last_message.sender?.user.avatar
+                              } đã gởi 1 File`
                             : conversation.last_message?.type === MessageType.IMAGE
-                            ? `${conversation.last_message.sender?.username} đã gởi 1 hình ảnh`
+                            ? `${
+                                conversation.last_message.sender?.nickname || conversation.last_message.sender?.user.avatar
+                              } đã gởi 1 hình ảnh`
                             : conversation.last_message?.type === MessageType.TEXT
-                            ? `${conversation.last_message.sender?.username}: ${conversation.last_message.content}`
+                            ? `${
+                                conversation.last_message.sender?.nickname || conversation.last_message.sender?.user.username
+                              }: ${conversation.last_message.content}`
                             : conversation.last_message.content}
                         </span>
                         <div></div>

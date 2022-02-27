@@ -18,15 +18,18 @@ const Message: React.FC<Props> = ({ message, type, theme }) => {
   const { user: currentUser } = useAppSelector(authSelector);
 
   return (
-    <MessageWrapStyled left={currentUser?.id === message.sender?.id} type={type}>
-      <Features left={currentUser?.id === message.sender?.id} />
+    <MessageWrapStyled left={currentUser?.id === message.sender?.user.id} type={type}>
+      <Features left={currentUser?.id === message.sender?.user.id} />
       {type === MessageType.TEXT || type === MessageType.SYSTEM ? (
         <StyledMessage type={type} themeStyle={theme} timeCreated={moment(message.created_at).format('HH:MM')}>
           {message.content}
         </StyledMessage>
       ) : null}
-      {type === MessageType.GIF && <img src={message.content} alt="" />}
-      {message.sender && <Avatar src={message.sender.avatar} alt={message.sender.username} />}
+      {type === MessageType.GIF && <img src={message.content} alt="" className="img-file" />}
+      {message.sender && (
+        <Avatar src={message.sender.user.avatar} alt={message.sender.nickname || message.sender.user.avatar} />
+      )}
+      {message.sender?.user.username}
     </MessageWrapStyled>
   );
 };

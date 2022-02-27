@@ -1,14 +1,15 @@
 import { Box, CircularProgress, ClickAwayListener } from '@mui/material';
+import { isekaiApi } from 'api/isekaiApi';
 import { authSelector } from 'features/authSlice';
 import { chatSelector, submitMessage } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { Suspense, useRef, useState } from 'react';
+import React, { ChangeEvent, Suspense, useRef, useState } from 'react';
 import { AiOutlineGif, AiOutlinePlus, AiOutlineSend } from 'react-icons/ai';
 import { BiSticker } from 'react-icons/bi';
 import { FiFile } from 'react-icons/fi';
 import { MdOutlineEmojiEmotions } from 'react-icons/md';
-import { ConversationType, User } from 'share/types';
+import { ConversationType, MessageType, User } from 'share/types';
 import { getReceiver } from 'utils/getReceiver';
 import Gif from '../Gif';
 import { ButtonOpenMore, ButtonSend, InputEmoji, InputMessage, StyledTypeMessage } from './styles';
@@ -22,11 +23,12 @@ const TypeMessage: React.FC<{
   const [textMessage, setTextMessage] = useState<string>('');
   const [isShowEmojiPicker, setIsShowEmojiPicker] = useState(false);
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
-  const { currentConversation } = useAppSelector(chatSelector);
-  const inputTextRef = useRef<HTMLInputElement | null>(null);
-  const dispatch = useAppDispatch();
-  const { user: currentUser } = useAppSelector(authSelector);
   const [isShowGif, setIsShowGif] = useState<boolean>(false);
+  const inputTextRef = useRef<HTMLInputElement | null>(null);
+  const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const { currentConversation } = useAppSelector(chatSelector);
+  const { user: currentUser } = useAppSelector(authSelector);
+  const dispatch = useAppDispatch();
 
   const changeTextMessageEmoji = (value: string) => {
     // two line get position of cursor
@@ -49,10 +51,33 @@ const TypeMessage: React.FC<{
         dispatch(submitMessage({ message: textMessage, conversationId: currentConversation.id }));
       } else {
         const receiver = getReceiver(currentConversation, currentUser as User);
+        console.log(receiver);
         dispatch(submitMessage({ message: textMessage, receiverId: receiver?.id }));
       }
     }
     setTextMessage('');
+  };
+
+  const uploadFile = async (file: File) => {
+    let type = file.type.includes(MessageType.IMAGE)
+      ? MessageType.IMAGE
+      : file.type.includes(MessageType.AUDIO)
+      ? MessageType.AUDIO
+      : file.type.includes(MessageType.VIDEO)
+      ? MessageType.VIDEO
+      : MessageType.FILE;
+    const formData = new FormData();
+    formData.append('file', file);
+    const { data } = await isekaiApi.uploadImg(formData);
+    console.log({ data });
+  };
+
+  const changeFileHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+    uploadFile(file);
   };
 
   return (
@@ -92,12 +117,23 @@ const TypeMessage: React.FC<{
                     <span>Truyền tải chính xác ý bạn muốn nói.</span>
                   </Box>
                 </DropdownItem>
-                <DropdownItem>
+                <DropdownItem
+                  onClick={() => {
+                    inputFileRef.current?.click();
+                  }}
+                >
                   <FiFile />
                   <Box>
                     <h3>Tệp</h3>
                     <span>Thêm tệp vào cuộc trò chuyện của bạn.</span>
                   </Box>
+                  <input
+                    type="file"
+                    style={{ display: 'none' }}
+                    ref={inputFileRef}
+                    onChange={changeFileHandler}
+                    // accept="image/*"
+                  />
                 </DropdownItem>
                 <DropdownItem>
                   <BiSticker />

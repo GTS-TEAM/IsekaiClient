@@ -141,7 +141,7 @@ export const MessageWrapStyled = styled.div<MessageStyledProps>`
   ${(p) =>
     p.type === MessageType.GIF
       ? css`
-          img {
+          img.img-file {
             border-radius: var(--borderRadius3);
             max-width: 30rem;
           }

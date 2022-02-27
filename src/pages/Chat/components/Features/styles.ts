@@ -37,10 +37,10 @@ export const ListEmotionReaction = styled.div<{ left?: boolean }>`
   ${(p) =>
     !p.left
       ? css`
-          left: 6.2rem;
+          left: 4.2rem;
         `
       : css`
-          right: 6.2rem;
+          right: 4.2rem;
         `}
 
   .emoji {

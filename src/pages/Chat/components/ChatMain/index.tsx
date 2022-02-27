@@ -1,4 +1,4 @@
-import { chatSelector, getAllMessage, unmountChat } from 'features/chatSlice';
+import { chatSelector, getAllMessage, unmountMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -17,7 +17,7 @@ const ChatMain: FC<{
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(unmountChat());
+    dispatch(unmountMessage());
     dispatch(getAllMessage({ conversation_id: conversationId, offset: 0 }));
   }, [conversationId, dispatch]);
 

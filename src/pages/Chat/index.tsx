@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import Layout from 'components/Layout/Layout';
-import { startConnecting } from 'features/chatSlice';
+import { startConnecting, unmountChat } from 'features/chatSlice';
 import { useAppDispatch } from 'hooks/hooks';
 import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -23,6 +23,10 @@ const Chat = () => {
 
   useEffect(() => {
     dispatch(startConnecting());
+
+    return () => {
+      dispatch(unmountChat());
+    };
   }, [dispatch]);
 
   return (

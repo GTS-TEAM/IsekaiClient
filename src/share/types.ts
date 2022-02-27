@@ -226,16 +226,24 @@ export enum ChatEvent {
 
 export interface Member {
   id: string;
+  created_at: string;
   updated_at: string;
-  username: string;
-  roles: string;
-  avatar: string;
-  background: null | string;
-  bio: string | null;
-  phone: string | null;
-  date: string | null;
-  address: string | null;
-  last_activity: string | null;
+  nickname: null | string;
+  role: string;
+  deleted_conversation_at: null | string;
+  user: {
+    id: string;
+    updated_at: string;
+    username: string;
+    roles: string;
+    avatar: string;
+    background: null | string;
+    bio: string | null;
+    phone: string | null;
+    date: string | null;
+    address: string | null;
+    last_activity: string | null;
+  };
 }
 
 export interface MessageItem {
@@ -264,6 +272,7 @@ export interface MessageItem {
 
 export interface ConversationItem {
   id: string;
+  avatar: string | null;
   members: Member[];
   type: string;
   last_message: {
@@ -274,7 +283,6 @@ export interface ConversationItem {
     type: string;
     sender: Member | null;
   } | null;
-  avatar: string | null;
   name: string | null;
   created_at: string;
   updated_at: string;

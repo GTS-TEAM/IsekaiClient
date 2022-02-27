@@ -1,4 +1,5 @@
 import { ConversationItem, User } from 'share/types';
 export const getReceiver = (currentConversation: ConversationItem, currentUser: User) => {
-  return currentConversation?.members.find((member) => member.id !== currentUser.id);
+  console.log(currentConversation);
+  return currentConversation?.members.find((member) => member.user.id !== currentUser.id)?.user;
 };

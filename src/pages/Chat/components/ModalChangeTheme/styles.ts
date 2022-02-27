@@ -41,12 +41,12 @@ export const StyledButton = styled(Button)<{
   align-self: flex-end;
   margin: 1.2rem;
   padding: 0.5rem 1.2rem;
-  background-color: ${(p) => p.themeColor || 'var(--colorMain)'};
+  background-color: ${(p) => p.themeColor || 'var(--mainColor)'};
   text-transform: unset;
   font-size: 1.4rem;
   color: var(--fds-white);
 
   &:hover {
-    background-color: ${(p) => p.themeColor || 'var(--colorMain)'};
+    background-color: ${(p) => p.themeColor || 'var(--mainColor)'};
   }
 `;
