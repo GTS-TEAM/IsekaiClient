@@ -5,7 +5,7 @@ import { chatSelector } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppSelector } from 'hooks/hooks';
 import React, { useState } from 'react';
-import { AiOutlineEdit } from 'react-icons/ai';
+import { AiOutlineEdit, AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { BiFileBlank } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
@@ -13,6 +13,7 @@ import { MdOutlineColorLens, MdOutlineRemoveCircleOutline } from 'react-icons/md
 import { ConversationType, User } from 'share/types';
 import { convertNameConversation } from 'utils/convertNameConversation';
 import { getReceiver } from 'utils/getReceiver';
+import ModalAddMember from '../ModalAddMember';
 import ModalChangeNameConversation from '../ModalChangeNameConversation';
 import ModalChangeTheme from '../ModalChangeTheme';
 import { RecipientBox, StyledButtonIcon, StyledHeader } from './styles';
@@ -26,6 +27,7 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
   const [isShowModalChangeTheme, setIsShowModalChangeTheme] = useState<boolean>(false);
   const [isShowModalChangeName, setIsShowModalChangeName] = useState<boolean>(false);
+  const [isShowModalAddMember, setIsShowModalAddMember] = useState<boolean>(false);
   const { currentConversation } = useAppSelector(chatSelector);
   const { user: currentUser } = useAppSelector(authSelector);
 
@@ -69,7 +71,6 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
           </StyledButtonIcon>
         </>
       )}
-      {currentConversation?.type === ConversationType.GROUP && 'add member'}
       {isShowDropdown && (
         <ClickAwayListener
           onClickAway={() => {
@@ -81,6 +82,20 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
             right={type === 'popup' ? 'calc(100% + 0.6rem)' : '1.2rem'}
           >
             <DropdownContent>
+              {currentConversation?.type === ConversationType.GROUP && (
+                <DropdownItem
+                  onClick={() => {
+                    setIsShowDropdown(false);
+                    setIsShowModalAddMember(true);
+                  }}
+                >
+                  <AiOutlineUsergroupAdd />
+                  <Box>
+                    <h3>Thêm</h3>
+                    <span>Thêm thành viên vào nhóm</span>
+                  </Box>
+                </DropdownItem>
+              )}
               <DropdownItem>
                 <BiFileBlank />
                 <Box>
@@ -100,13 +115,7 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
                   <span>Chỉnh sửa tên cuộc trò chyện</span>
                 </Box>
               </DropdownItem>
-              <DropdownItem>
-                <MdOutlineRemoveCircleOutline />
-                <Box>
-                  <h3>Xóa</h3>
-                  <span>Xóa cuộc trò chuyện</span>
-                </Box>
-              </DropdownItem>
+
               <DropdownItem
                 onClick={() => {
                   setIsShowDropdown(false);
@@ -117,6 +126,13 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
                 <Box>
                   <h3>Tùy chỉnh</h3>
                   <span>Thay đổi màu của cuộc trò chuyện</span>
+                </Box>
+              </DropdownItem>
+              <DropdownItem>
+                <MdOutlineRemoveCircleOutline />
+                <Box>
+                  <h3>Xóa</h3>
+                  <span>Xóa cuộc trò chuyện</span>
                 </Box>
               </DropdownItem>
             </DropdownContent>
@@ -133,6 +149,12 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
         isShow={isShowModalChangeName}
         onClose={() => {
           setIsShowModalChangeName(false);
+        }}
+      />
+      <ModalAddMember
+        isShow={isShowModalAddMember}
+        onClose={() => {
+          setIsShowModalAddMember(false);
         }}
       />
     </StyledHeader>

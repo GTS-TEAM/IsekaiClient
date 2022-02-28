@@ -1,10 +1,10 @@
-import { Box, CircularProgress, ClickAwayListener } from '@mui/material';
+import { Alert, Box, CircularProgress, ClickAwayListener } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
 import { authSelector } from 'features/authSlice';
 import { chatSelector, submitMessage } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { ChangeEvent, Suspense, useRef, useState } from 'react';
+import React, { ChangeEvent, Suspense, useEffect, useRef, useState } from 'react';
 import { AiOutlineGif, AiOutlinePlus, AiOutlineSend } from 'react-icons/ai';
 import { BiSticker } from 'react-icons/bi';
 import { FiFile } from 'react-icons/fi';
@@ -24,8 +24,10 @@ const TypeMessage: React.FC<{
   const [isShowEmojiPicker, setIsShowEmojiPicker] = useState(false);
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
   const [isShowGif, setIsShowGif] = useState<boolean>(false);
+  const [isShowError, setIsShowError] = useState<boolean>(false);
   const inputTextRef = useRef<HTMLInputElement | null>(null);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const [sentLoading, setSentLoading] = useState(false);
   const { currentConversation } = useAppSelector(chatSelector);
   const { user: currentUser } = useAppSelector(authSelector);
   const dispatch = useAppDispatch();
@@ -60,6 +62,9 @@ const TypeMessage: React.FC<{
 
   const uploadFile = async (file: File) => {
     if (file.size > 5 * 1024 * 1024) {
+      setIsShowError(true);
+      setIsShowDropdown(false);
+
       return;
     }
 
@@ -73,6 +78,7 @@ const TypeMessage: React.FC<{
     let url;
     const formData = new FormData();
 
+    setSentLoading(true);
     if (type === MessageType.AUDIO || type === MessageType.VIDEO) {
       formData.append('file', file);
       const { data } = await isekaiApi.uploadSongFile(formData);
@@ -90,6 +96,7 @@ const TypeMessage: React.FC<{
       console.log(receiver);
       dispatch(submitMessage({ message: url as string, receiverId: receiver?.id, type }));
     }
+    setSentLoading(false);
   };
 
   const changeFileHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -97,8 +104,18 @@ const TypeMessage: React.FC<{
     if (!file) {
       return;
     }
+    setIsShowDropdown(false);
     uploadFile(file);
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsShowError(false);
+    }, 3000);
+    return () => {
+      clearTimeout(timer);
+    };
+  });
 
   return (
     <StyledTypeMessage>
@@ -205,17 +222,45 @@ const TypeMessage: React.FC<{
           />
         </Suspense>
       </InputMessage>
-      <ButtonSend
-        onClick={sendMessageHandler}
-        sx={{
-          svg: {
+
+      {sentLoading ? (
+        <CircularProgress
+          size={24}
+          sx={{
             color: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
-          },
-        }}
-      >
-        <AiOutlineSend />
-      </ButtonSend>
+          }}
+        />
+      ) : (
+        <ButtonSend
+          onClick={sendMessageHandler}
+          sx={{
+            svg: {
+              color: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
+            },
+          }}
+        >
+          <AiOutlineSend />
+        </ButtonSend>
+      )}
       <Gif isShow={isShowGif} setIsShow={setIsShowGif} />
+      {isShowError && (
+        <Alert
+          severity="error"
+          variant="filled"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            fontSize: '1.6rem',
+            fontWeight: '500',
+            position: 'fixed',
+            top: '2rem',
+            right: '2rem',
+            zIndex: '101',
+          }}
+        >
+          File phải nhỏ hơn 5MB
+        </Alert>
+      )}
     </StyledTypeMessage>
   );
 };

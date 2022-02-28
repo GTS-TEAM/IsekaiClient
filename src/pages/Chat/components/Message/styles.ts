@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled/macro';
 import { MessageType } from 'share/types';
+import { fadeIn } from 'utils/keyframeStyle';
 
 export const StyledMessage = styled.div<{
   timeCreated: number | string | null;
@@ -103,7 +104,6 @@ export const MessageWrapStyled = styled.div<MessageStyledProps>`
     !p.left
       ? css`
           ${StyledMessage} {
-            margin-left: 1rem;
             &::before {
               transform: translateY(-50%) rotate(-180deg);
               right: calc(100% - 0.5px);
@@ -258,4 +258,85 @@ export const Video = styled.div`
   border-radius: var(--borderRadius3);
   overflow: hidden;
   max-width: 30rem;
+  height: 35rem;
+  background-color: var(--fds-white);
+  position: relative;
+
+  .play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    color: var(--fds-white);
+    width: 5rem;
+    height: 5rem;
+    cursor: pointer;
+  }
+
+  .control {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    column-gap: 1.2rem;
+    padding: 1.2rem;
+    color: var(--fds-white);
+    display: none;
+    animation: ${fadeIn} 0.5s ease;
+
+    svg {
+      color: inherit;
+      width: 1.6rem;
+      height: 1.6rem;
+      flex-shrink: 0;
+      cursor: pointer;
+
+      &.volume-svg {
+        width: 1.8rem;
+        height: 1.8rem;
+      }
+    }
+
+    .MuiSlider-root {
+      color: inherit;
+      .MuiSlider-thumb.Mui-active,
+      .MuiSlider-thumb.Mui-focusVisible,
+      .MuiSlider-thumb:hover {
+        box-shadow: unset;
+      }
+    }
+
+    .volume {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      row-gap: 1.2rem;
+      position: relative;
+
+      .MuiSlider-root {
+        position: absolute;
+        bottom: calc(100% + 1.2rem);
+        height: 5rem;
+        width: 0.5em;
+      }
+
+      .MuiSlider-rail {
+        opacity: 0;
+      }
+    }
+  }
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &:hover {
+    .control {
+      display: flex;
+    }
+  }
 `;

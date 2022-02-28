@@ -151,6 +151,9 @@ const chatSlice = createSlice({
       state.isEstablishingConnection = false;
       state.messages = [];
     },
+    addMember: (state, action: PayloadAction<{ membersId: string[]; conversationId: string }>) => {
+      return;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -189,6 +192,7 @@ export const {
   addConversation,
   updateConversation,
   unmountChat,
+  addMember,
 } = chatSlice.actions;
 export const chatSelector = (state: RootState) => state.chat;
 
@@ -215,7 +219,12 @@ export const chatMiddleware: Middleware = (store) => {
         }
       });
 
+      socket.on('error', (data) => {
+        console.log(data);
+      });
+
       socket.on(ChatEvent.MESSAGE, (message: MessageItem) => {
+        console.log(message);
         store.dispatch(receiveMessage(message as MessageItem));
         selectConversation(message.conversation);
         window.history.replaceState(null, '', `/message/${message.conversation.id}`);
@@ -238,11 +247,17 @@ export const chatMiddleware: Middleware = (store) => {
       });
     }
 
-    if (unmountChat.match(action)) {
-      socket.emit('disconnect', function () {
-        console.log('disconnect client event....');
+    if (addMember.match(action) && isConnectionEstablished) {
+      socket.emit(ChatEvent.ADDMEMBER, {
+        ...action.payload,
       });
     }
+
+    // if (unmountChat.match(action)) {
+    //   socket.emit('disconnect', function () {
+    //     console.log('disconnect client event....');
+    //   });
+    // }
 
     next(action);
   };

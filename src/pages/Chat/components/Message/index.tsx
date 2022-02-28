@@ -3,7 +3,7 @@ import { authSelector } from 'features/authSlice';
 import { useAppSelector } from 'hooks/hooks';
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
-import { BsPauseFill, BsPlayFill } from 'react-icons/bs';
+import { BsFillVolumeDownFill, BsFillVolumeMuteFill, BsPauseFill, BsPlayCircle, BsPlayFill } from 'react-icons/bs';
 import { MdAttachFile, MdFileDownload } from 'react-icons/md';
 import { MessageItem, MessageType } from 'share/types';
 import { formatDuration } from 'utils/formatDuration';
@@ -20,11 +20,15 @@ interface Props {
 const Message: React.FC<Props> = ({ message, type, theme }) => {
   const { user: currentUser } = useAppSelector(authSelector);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [durationAudio, setDurationAudio] = useState<number>(0);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [togglePlayAudio, setTogglePlayAudio] = useState<boolean>(false);
+  const [durationAudio, setDurationAudio] = useState<number>(0);
   const [currentDurationAudio, setCurrentDurationAudio] = useState<number>(0);
-
-  console.log({ durationAudio, currentDurationAudio });
+  const [togglePlayVideo, setTogglePlayVideo] = useState<boolean>(false);
+  const [durationVideo, setDurationVideo] = useState<number>(0);
+  const [currentDurationVideo, setCurrentDurationVideo] = useState<number>(0);
+  const [volumeVideo, setVolumeVideo] = useState<number>(0);
+  const [currentVolumeVideo, setCurrentVolumeVideo] = useState<number>(0);
 
   return (
     <MessageWrapStyled left={currentUser?.id === message.sender?.user.id} type={type}>
@@ -35,7 +39,7 @@ const Message: React.FC<Props> = ({ message, type, theme }) => {
         </StyledMessage>
       ) : null}
       {type === MessageType.FILE && (
-        <File>
+        <File style={{ backgroundColor: theme || 'var(--mainColor)' }}>
           <MdAttachFile />
           <span>{message.content}</span>
           <a href={message.content} target="_blank" download rel="noreferrer">
@@ -102,7 +106,78 @@ const Message: React.FC<Props> = ({ message, type, theme }) => {
       )}
       {type === MessageType.VIDEO && (
         <Video>
-          <video src={message.content} controls></video>
+          {!togglePlayVideo && (
+            <BsPlayCircle
+              className="play"
+              onClick={() => {
+                videoRef.current?.play();
+                setTogglePlayVideo(!togglePlayVideo);
+              }}
+            />
+          )}
+          <video
+            src={message.content}
+            ref={videoRef}
+            onLoadedMetadata={() => {
+              if (videoRef.current) {
+                setDurationVideo(videoRef.current?.duration as number);
+                setVolumeVideo(videoRef.current?.volume as number);
+                videoRef.current.volume = 0;
+              }
+            }}
+            onTimeUpdate={() => {
+              setCurrentDurationVideo(videoRef.current?.currentTime as number);
+            }}
+            onEnded={() => {
+              setTogglePlayVideo(false);
+              setCurrentDurationVideo(0);
+            }}
+          ></video>
+          {togglePlayVideo && (
+            <div className="control">
+              <BsPauseFill
+                onClick={() => {
+                  videoRef.current?.pause();
+                  setTogglePlayVideo(!togglePlayVideo);
+                }}
+              />
+              <Slider
+                size="small"
+                min={0}
+                max={durationVideo}
+                step={0.1}
+                value={currentDurationVideo}
+                onChange={(e, value) => {
+                  if (videoRef.current) {
+                    videoRef.current.currentTime = value as number;
+                    setCurrentDurationVideo(value as number);
+                  }
+                }}
+              />
+              <span>{formatDuration(durationVideo)}</span>
+              <div className="volume">
+                <Slider
+                  size="small"
+                  orientation="vertical"
+                  min={0}
+                  max={volumeVideo}
+                  value={currentVolumeVideo}
+                  step={0.1}
+                  onChange={(e, value) => {
+                    if (videoRef.current) {
+                      videoRef.current.volume = value as number;
+                      setCurrentVolumeVideo(value as number);
+                    }
+                  }}
+                />
+                {currentVolumeVideo > 0 ? (
+                  <BsFillVolumeDownFill className="volume-svg" />
+                ) : (
+                  <BsFillVolumeMuteFill className="volume-svg" />
+                )}
+              </div>
+            </div>
+          )}
         </Video>
       )}
       {type === MessageType.GIF || type === MessageType.IMAGE ? (

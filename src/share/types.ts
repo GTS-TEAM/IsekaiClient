@@ -222,6 +222,8 @@ export enum ConversationType {
 export enum ChatEvent {
   MESSAGE = 'message',
   CREATEGROUP = 'create-group',
+  ADDMEMBER = 'add-members-to-group',
+  LEAVEGROUP = 'leave-group',
 }
 
 export interface Member {
