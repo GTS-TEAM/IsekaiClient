@@ -48,10 +48,10 @@ const Modal: React.FC<{ isOpen: boolean; onClose: () => any }> = ({ isOpen, onCl
       );
 
       if (!isCan) {
-        dispatch(unmountMessage());
         const choosesId: string[] = chooses.map((choose: any) => choose.id);
         dispatch(createGroup(choosesId));
         navigation(`/message/${conversationExist?.id}`);
+        dispatch(unmountMessage());
       } else {
         navigation(`/message/${conversationExist?.id}`);
       }
@@ -61,9 +61,9 @@ const Modal: React.FC<{ isOpen: boolean; onClose: () => any }> = ({ isOpen, onCl
           conversation.id === `${currentUser?.id}-${chooses[0].id}` ||
           conversation.id === `${chooses[0].id}-${currentUser?.id}`,
       );
-      console.log(conversationExist);
       if (conversationExist) {
         navigation(`/message/${conversationExist.id}`);
+        dispatch(selectConversation(conversationExist));
       } else {
         const newConversation: ConversationItem = {
           id: `${currentUser?.id}-${chooses[0].id}`,
@@ -101,8 +101,8 @@ const Modal: React.FC<{ isOpen: boolean; onClose: () => any }> = ({ isOpen, onCl
           updated_at: new Date().toISOString(),
           theme: '#a56ffd',
         };
-        dispatch(addConversation(newConversation));
         dispatch(selectConversation(newConversation));
+        dispatch(addConversation(newConversation));
         navigation(`/message/${currentUser?.id}-${chooses[0].id}`);
       }
     }

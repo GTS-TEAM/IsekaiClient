@@ -240,10 +240,10 @@ export interface Member {
     roles: string;
     avatar: string;
     background: null | string;
-    bio: string | null;
-    phone: string | null;
-    date: string | null;
-    address: string | null;
+    bio?: string | null;
+    phone?: string | null;
+    date?: string | null;
+    address?: string | null;
     last_activity: string | null;
   };
 }

@@ -149,6 +149,10 @@ export const isekaiApi = {
     });
   },
 
+  uploadVideoOrMusicMessage: (arrFile: FormData) => {
+    return axios.post<{ urls: string[] }>('/upload/video', arrFile);
+  },
+
   getListMusic: () => {
     return axios.get<MusicItem[]>('music');
   },
@@ -165,7 +169,7 @@ export const isekaiApi = {
     return axios.get<MessageItem[]>(`conversations/message/${conversation_id}`, {
       params: {
         offset: offset,
-        limit: 10,
+        limit: 20,
       },
     });
   },
@@ -177,11 +181,8 @@ export const isekaiApi = {
       },
     });
   },
-  getConversationByReceiverId: (receiverId: string) => {
-    return axios.get(`conversations/${receiverId}`);
-  },
 
-  getConversationByConversationId: (conversationId: string) => {
-    return axios.get(`conversations/${conversationId}`);
+  removeConversation: (conversationId: string) => {
+    return axios.delete(`conversations/${conversationId}`);
   },
 };

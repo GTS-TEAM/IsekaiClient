@@ -3,7 +3,7 @@ import Layout from 'components/Layout/Layout';
 import { startConnecting, unmountChat } from 'features/chatSlice';
 import { useAppDispatch } from 'hooks/hooks';
 import React, { useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ChatView from './components/ChatView';
 import Sidebar from './components/Sidebar';
 import { ChatBody, StyledChat } from './styles';
@@ -20,7 +20,7 @@ import { ChatBody, StyledChat } from './styles';
 
 const Chat = () => {
   const dispatch = useAppDispatch();
-
+  const { id } = useParams();
   useEffect(() => {
     dispatch(startConnecting());
 
@@ -46,10 +46,7 @@ const Chat = () => {
               },
             }}
           >
-            <Routes>
-              <Route path="" element={<p>Vui lòng chọn cuộc trò chuyện</p>} />
-              <Route path=":id" element={<ChatView />} />
-            </Routes>
+            {id ? <ChatView /> : <p>hihi</p>}
           </Box>
         </ChatBody>
       </StyledChat>

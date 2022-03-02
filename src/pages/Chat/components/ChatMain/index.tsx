@@ -25,13 +25,17 @@ const ChatMain: FC<{
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    setOffset(0);
+  }, [currentConversation]);
+
   return (
     <StyledChatMain id="scrollableDiv" height={heightChatMain}>
       <InfiniteScroll
         dataLength={messages.length}
         next={() => {
-          setOffset(offset + 10);
-          dispatch(getAllMessage({ conversation_id: conversationId, offset: offset + 10 }));
+          setOffset(offset + 20);
+          dispatch(getAllMessage({ conversation_id: conversationId, offset: offset + 20 }));
         }}
         hasMore={hasMore}
         inverse={true}

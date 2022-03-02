@@ -1,15 +1,17 @@
 import { Avatar, ClickAwayListener } from '@mui/material';
 import { Box } from '@mui/system';
+import ModalConfirm from 'components/ModalConfirm';
 import { authSelector } from 'features/authSlice';
-import { chatSelector } from 'features/chatSlice';
+import { chatSelector, leaveGroup, removeConversation } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
-import { useAppSelector } from 'hooks/hooks';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useState } from 'react';
 import { AiOutlineEdit, AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { BiFileBlank } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { IoMdClose } from 'react-icons/io';
+import { IoMdClose, IoMdLogOut } from 'react-icons/io';
 import { MdOutlineColorLens, MdOutlineRemoveCircleOutline } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 import { ConversationType, User } from 'share/types';
 import { convertNameConversation } from 'utils/convertNameConversation';
 import { getReceiver } from 'utils/getReceiver';
@@ -28,8 +30,12 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
   const [isShowModalChangeTheme, setIsShowModalChangeTheme] = useState<boolean>(false);
   const [isShowModalChangeName, setIsShowModalChangeName] = useState<boolean>(false);
   const [isShowModalAddMember, setIsShowModalAddMember] = useState<boolean>(false);
+  const [isShowModalConfirm, setIsShowModalConfirm] = useState<boolean>(false);
+  const [isShowModalConfirmRemove, setIsShowModalConfirmRemove] = useState<boolean>(false);
   const { currentConversation } = useAppSelector(chatSelector);
   const { user: currentUser } = useAppSelector(authSelector);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   return (
     <StyledHeader borderRadius={borderRadius}>
@@ -55,7 +61,6 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
           <span>Hoạt Động 10 phút trước</span>
         </Box>
       </RecipientBox>
-
       {type === 'popup' ? (
         <StyledButtonIcon onClick={onClose}>
           <IoMdClose />
@@ -128,7 +133,26 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
                   <span>Thay đổi màu của cuộc trò chuyện</span>
                 </Box>
               </DropdownItem>
-              <DropdownItem>
+              {currentConversation?.type === ConversationType.GROUP && (
+                <DropdownItem
+                  onClick={() => {
+                    setIsShowDropdown(false);
+                    setIsShowModalConfirm(true);
+                  }}
+                >
+                  <IoMdLogOut />
+                  <Box>
+                    <h3>Out</h3>
+                    <span>Rời khỏi nhóm chat</span>
+                  </Box>
+                </DropdownItem>
+              )}
+              <DropdownItem
+                onClick={() => {
+                  setIsShowDropdown(false);
+                  setIsShowModalConfirmRemove(true);
+                }}
+              >
                 <MdOutlineRemoveCircleOutline />
                 <Box>
                   <h3>Xóa</h3>
@@ -156,6 +180,34 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
         onClose={() => {
           setIsShowModalAddMember(false);
         }}
+      />
+      <ModalConfirm
+        header="Rời khỏi nhóm chat?"
+        content="Bạn sẽ không nhận được tin nhắn từ cuộc trò chuyện này nữa và mọi người sẽ thấy bạn rời nhóm."
+        onClose={() => {
+          setIsShowModalConfirm(false);
+        }}
+        onConfirm={() => {
+          dispatch(leaveGroup({ conversationId: currentConversation?.id }));
+          navigate('/message', {
+            replace: true,
+          });
+        }}
+        isShow={isShowModalConfirm}
+      />
+      <ModalConfirm
+        header="Xóa đoạn chat"
+        content="Bạn không thể hoàn tác sau khi xóa cuộc trò chuyện này."
+        onClose={() => {
+          setIsShowModalConfirmRemove(false);
+        }}
+        onConfirm={() => {
+          dispatch(removeConversation(currentConversation?.id as string));
+          navigate('/message', {
+            replace: true,
+          });
+        }}
+        isShow={isShowModalConfirmRemove}
       />
     </StyledHeader>
   );

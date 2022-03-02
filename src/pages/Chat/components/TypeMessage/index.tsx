@@ -53,7 +53,6 @@ const TypeMessage: React.FC<{
         dispatch(submitMessage({ message: textMessage, conversationId: currentConversation.id }));
       } else {
         const receiver = getReceiver(currentConversation, currentUser as User);
-        console.log(receiver);
         dispatch(submitMessage({ message: textMessage, receiverId: receiver?.id }));
       }
     }
@@ -80,9 +79,9 @@ const TypeMessage: React.FC<{
 
     setSentLoading(true);
     if (type === MessageType.AUDIO || type === MessageType.VIDEO) {
-      formData.append('file', file);
-      const { data } = await isekaiApi.uploadSongFile(formData);
-      url = data.url;
+      formData.append('files', file);
+      const { data } = await isekaiApi.uploadVideoOrMusicMessage(formData);
+      url = data.urls[0];
     } else {
       formData.append('files', file);
       const { data } = await isekaiApi.uploadImg(formData);
@@ -93,7 +92,6 @@ const TypeMessage: React.FC<{
       dispatch(submitMessage({ message: url as string, conversationId: currentConversation.id, type }));
     } else {
       const receiver = getReceiver(currentConversation, currentUser as User);
-      console.log(receiver);
       dispatch(submitMessage({ message: url as string, receiverId: receiver?.id, type }));
     }
     setSentLoading(false);

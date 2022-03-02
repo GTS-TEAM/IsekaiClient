@@ -24,7 +24,8 @@ const Sidebar: React.FC<{}> = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllConversations({ offset: 0, limit: 20 }));
+    dispatch(getAllConversations({ offset: 0, limit: 20, conversationId: id as string }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   return (
@@ -44,15 +45,16 @@ const Sidebar: React.FC<{}> = () => {
           {conversations.map((conversation) => {
             const receiver = getReceiver(conversation, currentUser as User);
             // const last_message= conversation.last_message?.type===MessageType.GIF?
+            const nameSender =
+              conversation.last_message?.sender?.user.username === currentUser?.username
+                ? 'Bạn'
+                : conversation.last_message?.sender?.nickname || conversation.last_message?.sender?.user.username;
             return (
               <SidebarItem
                 key={conversation.id}
                 onClick={() => {
                   navigate(`/message/${conversation.id}`);
                   dispatch(selectConversation(conversation));
-                }}
-                style={{
-                  backgroundColor: (id as string) === conversation.id ? 'red' : undefined,
                 }}
               >
                 <Avatar src={receiver?.avatar as string} />
@@ -95,25 +97,15 @@ const Sidebar: React.FC<{}> = () => {
                       <>
                         <span>
                           {conversation.last_message?.type === MessageType.GIF
-                            ? `${
-                                conversation.last_message.sender?.nickname || conversation.last_message.sender?.user.avatar
-                              } đã gởi 1 tệp Gif`
+                            ? `${nameSender} đã gởi 1 tệp Gif`
                             : conversation.last_message?.type === MessageType.AUDIO
-                            ? `${
-                                conversation.last_message.sender?.nickname || conversation.last_message.sender?.user.avatar
-                              } đã gởi 1 tệp Audio`
+                            ? `${nameSender} đã gởi 1 tệp Audio`
                             : conversation.last_message?.type === MessageType.FILE
-                            ? `${
-                                conversation.last_message.sender?.nickname || conversation.last_message.sender?.user.avatar
-                              } đã gởi 1 File`
+                            ? `${nameSender} đã gởi 1 File`
                             : conversation.last_message?.type === MessageType.IMAGE
-                            ? `${
-                                conversation.last_message.sender?.nickname || conversation.last_message.sender?.user.avatar
-                              } đã gởi 1 hình ảnh`
+                            ? `${nameSender} đã gởi 1 hình ảnh`
                             : conversation.last_message?.type === MessageType.TEXT
-                            ? `${
-                                conversation.last_message.sender?.nickname || conversation.last_message.sender?.user.username
-                              }: ${conversation.last_message.content}`
+                            ? `${nameSender}: ${conversation.last_message.content}`
                             : conversation.last_message.content}
                         </span>
                         <div></div>

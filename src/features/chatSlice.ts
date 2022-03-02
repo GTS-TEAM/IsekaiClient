@@ -3,6 +3,7 @@ import { isekaiApi } from 'api/isekaiApi';
 import { ChatEvent, ConversationItem, MessageItem } from 'share/types';
 import { io, Socket } from 'socket.io-client';
 import { RootState } from 'store';
+import { Member } from './../share/types';
 
 const END_POINT = 'wss://isekai-api.me';
 
@@ -22,10 +23,25 @@ export const getAllConversations = createAsyncThunk<
   {
     offset: number;
     limit: number;
+    conversationId: string;
+  },
+  {
+    state: RootState;
   }
->('chat/getAllConversations', async ({ offset, limit }) => {
+>('chat/getAllConversations', async ({ offset, limit, conversationId }, thunkApi) => {
   const { data } = await isekaiApi.getAllConversation(limit, offset);
+  const conversationExist = data.find((item: any) => item.id === conversationId);
+  if (conversationExist) {
+    thunkApi.dispatch(selectConversation(conversationExist));
+  } else {
+    thunkApi.dispatch(selectConversation(data[0]));
+  }
   return data;
+});
+
+export const removeConversation = createAsyncThunk('chat/removeConversation', async (conversationId: string) => {
+  await isekaiApi.removeConversation(conversationId);
+  return conversationId;
 });
 
 const initialState: {
@@ -64,6 +80,7 @@ const chatSlice = createSlice({
         ...action.payload.conversation,
         members: state.currentConversation.members,
       };
+
       state.messages.unshift({
         ...action.payload,
         conversation: {
@@ -107,7 +124,6 @@ const chatSlice = createSlice({
       }
 
       state.conversations.sort((a, b) => b.updated_at.localeCompare(a.updated_at));
-      console.log(action.payload);
     },
     submitMessage: (
       state,
@@ -141,9 +157,7 @@ const chatSlice = createSlice({
           theme?: string;
         };
       }>,
-    ) => {
-      console.log(action.payload);
-    },
+    ) => {},
     unmountChat: (state) => {
       state.conversations = [];
       state.currentConversation = null;
@@ -151,8 +165,28 @@ const chatSlice = createSlice({
       state.isEstablishingConnection = false;
       state.messages = [];
     },
-    addMember: (state, action: PayloadAction<{ membersId: string[]; conversationId: string }>) => {
-      return;
+    addMember: (state, action: PayloadAction<{ membersId: string[]; conversationId: string; members: Member[] }>) => {
+      const indexConversationExist = state.conversations.findIndex(
+        (conversation) => conversation.id === action.payload.conversationId,
+      );
+      if (state.conversations[indexConversationExist]) {
+        state.conversations[indexConversationExist] = {
+          ...state.conversations[indexConversationExist],
+          members: state.conversations[indexConversationExist].members.concat(action.payload.members),
+        };
+      }
+      state.currentConversation = {
+        ...state.currentConversation,
+        members: state.currentConversation.members.concat(action.payload.members),
+      };
+    },
+    leaveGroup: (
+      state,
+      action: PayloadAction<{
+        conversationId: string;
+      }>,
+    ) => {
+      state.conversations = state.conversations.filter((conversation) => conversation.id !== action.payload.conversationId);
     },
   },
   extraReducers: (builder) => {
@@ -167,16 +201,20 @@ const chatSlice = createSlice({
           state.hasMore = true;
         }
         state.messages = [...state.messages, ...action.payload];
+        state.isLoading = false;
       })
       .addCase(getAllMessage.rejected, (state, action) => {
         state.error = action.error.message;
+        state.isLoading = false;
       })
       .addCase(getAllConversations.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(getAllConversations.fulfilled, (state, action: PayloadAction<ConversationItem[]>) => {
         state.conversations = action.payload;
-        state.currentConversation = action.payload[0];
+      })
+      .addCase(removeConversation.fulfilled, (state, action) => {
+        state.conversations = state.conversations.filter((conversation) => conversation.id !== action.payload);
       });
   },
 });
@@ -193,6 +231,7 @@ export const {
   updateConversation,
   unmountChat,
   addMember,
+  leaveGroup,
 } = chatSlice.actions;
 export const chatSelector = (state: RootState) => state.chat;
 
@@ -224,9 +263,10 @@ export const chatMiddleware: Middleware = (store) => {
       });
 
       socket.on(ChatEvent.MESSAGE, (message: MessageItem) => {
-        console.log(message);
-        store.dispatch(receiveMessage(message as MessageItem));
-        selectConversation(message.conversation);
+        if (!message) {
+          return;
+        }
+        store.dispatch(receiveMessage(message));
         window.history.replaceState(null, '', `/message/${message.conversation.id}`);
       });
     }
@@ -249,7 +289,14 @@ export const chatMiddleware: Middleware = (store) => {
 
     if (addMember.match(action) && isConnectionEstablished) {
       socket.emit(ChatEvent.ADDMEMBER, {
-        ...action.payload,
+        membersId: action.payload.membersId,
+        conversationId: action.payload.conversationId,
+      });
+    }
+
+    if (leaveGroup.match(action) && isConnectionEstablished) {
+      socket.emit(ChatEvent.LEAVEGROUP, {
+        conversationId: action.payload.conversationId,
       });
     }
 

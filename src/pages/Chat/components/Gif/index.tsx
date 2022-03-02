@@ -45,6 +45,7 @@ const Component = React.forwardRef<HTMLDivElement>((props, ref) => {
         onGifClick={(gif, e) => {
           e.preventDefault();
           if (currentConversation?.type === ConversationType.GROUP) {
+            console.log(gif);
             dispatch(
               submitMessage({ message: gif.images.original.url, conversationId: id as string, type: MessageType.GIF }),
             );

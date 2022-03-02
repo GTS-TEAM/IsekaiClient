@@ -4,11 +4,12 @@ import ModalWrapper from 'components/NewModal';
 import { Header } from 'components/NewModal/styles';
 import { addMember, chatSelector } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 import { GrFormClose } from 'react-icons/gr';
 import { IoCloseOutline } from 'react-icons/io5';
-import { User } from 'share/types';
+import { Member, User } from 'share/types';
+import { v4 as uuidv4 } from 'uuid';
 import { Body, ItemResult, ListChoose, ListResult, StyledModal } from './styles';
 
 const ModalAddMember: React.FC<{
@@ -28,16 +29,6 @@ const ModalAddMember: React.FC<{
   const isChecked = (id: string) => {
     return chooses.some((choose: User) => choose.id === id);
   };
-
-  useEffect(() => {
-    const search = async () => {
-      const { data } = await isekaiApi.globalSearch('');
-      // tim thay tk member co cai id giong voi cai data search lay ra nhung dua khac
-      const newData = data.filter((item) => !currentConversation?.members.find((member: any) => member.user.id === item.id));
-      setResult(newData.slice(0, 10));
-    };
-    search();
-  }, [currentConversation]);
 
   return isShow ? (
     <ModalWrapper>
@@ -123,7 +114,31 @@ const ModalAddMember: React.FC<{
               disabled={chooses.length === 0}
               onClick={() => {
                 const membersId = chooses.map((choose) => choose.id);
-                dispatch(addMember({ membersId, conversationId: currentConversation?.id }));
+                const newMembers: Member[] = chooses.map((choose) => {
+                  return {
+                    id: uuidv4(),
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                    nickname: null,
+                    role: 'member',
+                    deleted_conversation_at: null,
+                    user: {
+                      address: choose.address,
+                      avatar: choose.avatar,
+                      background: choose.background,
+                      bio: choose.bio as string,
+                      date: choose.date as string,
+                      id: choose.id,
+                      phone: choose.phone as string,
+                      roles: choose.roles as string,
+                      updated_at: new Date().toISOString(),
+                      username: choose.username,
+                      last_activity: null,
+                    },
+                  };
+                });
+                dispatch(addMember({ membersId, conversationId: currentConversation?.id, members: newMembers }));
+                setChooses([]);
                 onClose();
               }}
             >
@@ -136,4 +151,4 @@ const ModalAddMember: React.FC<{
   ) : null;
 };
 
-export default ModalAddMember;
+export default React.memo(ModalAddMember);

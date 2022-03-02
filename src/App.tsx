@@ -53,7 +53,15 @@ function App() {
             }
           />
           <Route
-            path="/message/*"
+            path="/message"
+            element={
+              <RequireAuth>
+                <Chat />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/message/:id"
             element={
               <RequireAuth>
                 <Chat />

@@ -17,7 +17,7 @@ const ModalChangeTheme: React.FC<{
   isShow: boolean;
 }> = ({ onClose, isShow }) => {
   const { currentConversation } = useAppSelector(chatSelector);
-  const [chooseColor, setChooseColor] = useState<string>(currentConversation?.theme);
+  const [chooseColor, setChooseColor] = useState<string>('');
   const dispatch = useAppDispatch();
   return isShow
     ? createPortal(
