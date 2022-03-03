@@ -46,7 +46,7 @@ const Chat = () => {
               },
             }}
           >
-            {id ? <ChatView /> : <p>hihi</p>}
+            {id ? <ChatView /> : <p>Chọn cuộc trò chuyện.</p>}
           </Box>
         </ChatBody>
       </StyledChat>

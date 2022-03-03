@@ -51,7 +51,7 @@ const ModalChangeNameConversation: React.FC<{
                   }
                   dispatch(
                     updateConversation({
-                      conversationId: currentConversation?.id,
+                      conversationId: currentConversation?.id as string,
                       fields: {
                         name: text,
                       },

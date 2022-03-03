@@ -63,7 +63,7 @@ const ChatMain: FC<{
             message={mess}
             maxWidth={maxWidthMessage}
             type={mess.type}
-            theme={currentConversation?.theme}
+            theme={currentConversation?.theme as string}
           />
         ))}
         <div

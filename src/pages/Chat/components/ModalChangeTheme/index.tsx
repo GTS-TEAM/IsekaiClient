@@ -49,11 +49,11 @@ const ModalChangeTheme: React.FC<{
                 ))}
               </ListTheme>
               <StyledButton
-                themeColor={currentConversation?.theme}
+                themeColor={currentConversation?.theme as string}
                 onClick={() => {
                   dispatch(
                     updateConversation({
-                      conversationId: currentConversation.id,
+                      conversationId: currentConversation?.id as string,
                       fields: {
                         theme: chooseColor,
                       },

@@ -4,11 +4,11 @@ export const convertNameConversation = (currentConversation: ConversationItem, u
   return currentConversation?.name
     ? currentConversation.name
     : currentConversation?.type === ConversationType.GROUP
-    ? `${currentConversation.members
+    ? `${currentConversation?.members
         .slice(0, 2)
         .map((member: any) => (member.nickname || member.user.id === user.id ? 'Bạn' : member.user.username))
         .join(', ')} ${
-        currentConversation.members.length - 2 > 0 ? `và ${currentConversation.members.length - 2} người khác` : ''
+        currentConversation?.members.length - 2 > 0 ? `và ${currentConversation?.members.length - 2} người khác` : ''
       }`
     : getReceiver(currentConversation, user as User)?.username;
 };

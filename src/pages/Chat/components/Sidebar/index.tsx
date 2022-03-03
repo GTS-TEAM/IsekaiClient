@@ -6,7 +6,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MessageType, User } from 'share/types';
+import { ConversationType, MessageType, User } from 'share/types';
 import { convertNameConversation } from 'utils/convertNameConversation';
 import { getReceiver } from 'utils/getReceiver';
 import Modal from '../ModalCreateConversation';
@@ -16,7 +16,7 @@ const Sidebar: React.FC<{}> = () => {
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { conversations } = useAppSelector(chatSelector);
+  const { conversations, currentConversation } = useAppSelector(chatSelector);
   const { id } = useParams();
 
   const closeModalHandler = () => {
@@ -56,8 +56,13 @@ const Sidebar: React.FC<{}> = () => {
                   navigate(`/message/${conversation.id}`);
                   dispatch(selectConversation(conversation));
                 }}
+                style={{ backgroundColor: id === conversation.id ? '#fafafa' : undefined }}
               >
-                <Avatar src={receiver?.avatar as string} />
+                {conversation.type === ConversationType.GROUP ? (
+                  <Avatar src={conversation.avatar as string} alt={conversation.name as string} />
+                ) : (
+                  <Avatar src={receiver?.avatar} alt={receiver?.username.charAt(0).toUpperCase()} />
+                )}
                 <Box>
                   <h3>{convertNameConversation(conversation, currentUser as User)}</h3>
                   <Box

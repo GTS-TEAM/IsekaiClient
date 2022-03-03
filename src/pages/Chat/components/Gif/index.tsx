@@ -5,7 +5,7 @@ import { chatSelector, submitMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { ConversationType, MessageType, User } from 'share/types';
+import { ConversationItem, ConversationType, MessageType, User } from 'share/types';
 import { getReceiver } from 'utils/getReceiver';
 import { StyledDropdownMenu } from './styles';
 
@@ -50,7 +50,7 @@ const Component = React.forwardRef<HTMLDivElement>((props, ref) => {
               submitMessage({ message: gif.images.original.url, conversationId: id as string, type: MessageType.GIF }),
             );
           } else {
-            const receiver = getReceiver(currentConversation, user as User);
+            const receiver = getReceiver(currentConversation as ConversationItem, user as User);
             dispatch(submitMessage({ message: gif.images.original.url, receiverId: receiver?.id, type: MessageType.GIF }));
           }
         }}

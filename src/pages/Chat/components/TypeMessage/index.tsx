@@ -1,15 +1,16 @@
-import { Alert, Box, CircularProgress, ClickAwayListener } from '@mui/material';
+import { Box, CircularProgress, ClickAwayListener } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
+import ErrorAlert from 'components/ErrorAlert';
 import { authSelector } from 'features/authSlice';
 import { chatSelector, submitMessage } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { ChangeEvent, Suspense, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, Suspense, useRef, useState } from 'react';
 import { AiOutlineGif, AiOutlinePlus, AiOutlineSend } from 'react-icons/ai';
 import { BiSticker } from 'react-icons/bi';
 import { FiFile } from 'react-icons/fi';
 import { MdOutlineEmojiEmotions } from 'react-icons/md';
-import { ConversationType, MessageType, User } from 'share/types';
+import { ConversationItem, ConversationType, MessageType, User } from 'share/types';
 import { getReceiver } from 'utils/getReceiver';
 import Gif from '../Gif';
 import { ButtonOpenMore, ButtonSend, InputEmoji, InputMessage, StyledTypeMessage } from './styles';
@@ -52,7 +53,7 @@ const TypeMessage: React.FC<{
       if (currentConversation?.type === ConversationType.GROUP) {
         dispatch(submitMessage({ message: textMessage, conversationId: currentConversation.id }));
       } else {
-        const receiver = getReceiver(currentConversation, currentUser as User);
+        const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
         dispatch(submitMessage({ message: textMessage, receiverId: receiver?.id }));
       }
     }
@@ -91,7 +92,7 @@ const TypeMessage: React.FC<{
     if (currentConversation?.type === ConversationType.GROUP) {
       dispatch(submitMessage({ message: url as string, conversationId: currentConversation.id, type }));
     } else {
-      const receiver = getReceiver(currentConversation, currentUser as User);
+      const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
       dispatch(submitMessage({ message: url as string, receiverId: receiver?.id, type }));
     }
     setSentLoading(false);
@@ -105,15 +106,6 @@ const TypeMessage: React.FC<{
     setIsShowDropdown(false);
     uploadFile(file);
   };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsShowError(false);
-    }, 3000);
-    return () => {
-      clearTimeout(timer);
-    };
-  });
 
   return (
     <StyledTypeMessage>
@@ -241,24 +233,14 @@ const TypeMessage: React.FC<{
         </ButtonSend>
       )}
       <Gif isShow={isShowGif} setIsShow={setIsShowGif} />
-      {isShowError && (
-        <Alert
-          severity="error"
-          variant="filled"
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '1.6rem',
-            fontWeight: '500',
-            position: 'fixed',
-            top: '2rem',
-            right: '2rem',
-            zIndex: '101',
-          }}
-        >
-          File phải nhỏ hơn 5MB
-        </Alert>
-      )}
+      <ErrorAlert
+        isShow={isShowError}
+        onClose={() => {
+          setIsShowError(false);
+        }}
+      >
+        File phải nhỏ hơn 5MB
+      </ErrorAlert>
     </StyledTypeMessage>
   );
 };

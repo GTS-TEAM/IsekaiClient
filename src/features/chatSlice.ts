@@ -1,11 +1,8 @@
-import { createAsyncThunk, createSlice, Middleware, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
-import { ChatEvent, ConversationItem, MessageItem } from 'share/types';
-import { io, Socket } from 'socket.io-client';
 import { RootState } from 'store';
-import { Member } from './../share/types';
-
-const END_POINT = 'wss://isekai-api.me';
+import { v4 as uuid } from 'uuid';
+import { ConversationItem, Member, MemberFields, MessageItem } from './../share/types';
 
 export const getAllMessage = createAsyncThunk<
   MessageItem[],
@@ -30,11 +27,14 @@ export const getAllConversations = createAsyncThunk<
   }
 >('chat/getAllConversations', async ({ offset, limit, conversationId }, thunkApi) => {
   const { data } = await isekaiApi.getAllConversation(limit, offset);
+
   const conversationExist = data.find((item: any) => item.id === conversationId);
   if (conversationExist) {
     thunkApi.dispatch(selectConversation(conversationExist));
   } else {
-    thunkApi.dispatch(selectConversation(data[0]));
+    if (data.length > 0) {
+      thunkApi.dispatch(selectConversation(data[0]));
+    }
   }
   return data;
 });
@@ -51,13 +51,15 @@ const initialState: {
   isLoading: boolean;
   error: null | string | undefined;
   conversations: ConversationItem[];
+  removedConversations: ConversationItem[];
   hasMore: boolean;
-  currentConversation: null | any;
+  currentConversation: null | ConversationItem;
 } = {
   isEstablishingConnection: false,
   isConnected: false,
   messages: [],
   conversations: [],
+  removedConversations: [],
   currentConversation: null,
   hasMore: false,
   isLoading: false,
@@ -76,24 +78,11 @@ const chatSlice = createSlice({
       state.isEstablishingConnection = true;
     },
     receiveMessage: (state, action: PayloadAction<MessageItem>) => {
-      const newConversation = {
-        ...action.payload.conversation,
-        members: state.currentConversation.members,
-      };
-
-      state.messages.unshift({
-        ...action.payload,
-        conversation: {
-          ...newConversation,
-        },
-      });
-
-      state.currentConversation = newConversation;
-
+      state.messages.unshift(action.payload);
+      state.currentConversation = action.payload.conversation;
       const conversationExistIndex = state.conversations.findIndex(
         (conversation) => conversation.id === action.payload.conversation.id,
       );
-
       if (state.conversations[conversationExistIndex]) {
         state.conversations[conversationExistIndex] = {
           ...state.conversations[conversationExistIndex],
@@ -108,6 +97,7 @@ const chatSlice = createSlice({
           },
           theme: action.payload.conversation.theme,
           name: action.payload.conversation.name,
+          avatar: action.payload.conversation.avatar,
         };
       } else {
         state.conversations.push({
@@ -115,10 +105,17 @@ const chatSlice = createSlice({
           created_at: action.payload.created_at,
           avatar: null,
           name: null,
-          members: action.payload.conversation.members || state.currentConversation?.members,
+          members: action.payload.conversation.members,
           id: action.payload.conversation.id,
           type: action.payload.conversation.type,
-          last_message: action.payload.conversation.last_message,
+          last_message: {
+            content: action.payload.content,
+            created_at: action.payload.created_at,
+            updated_at: action.payload.updated_at,
+            id: uuid(),
+            type: action.payload.type,
+            sender: action.payload.sender,
+          },
           theme: action.payload.conversation.theme,
         });
       }
@@ -155,6 +152,7 @@ const chatSlice = createSlice({
           name?: string;
           avatar?: string;
           theme?: string;
+          member?: MemberFields;
         };
       }>,
     ) => {},
@@ -172,12 +170,15 @@ const chatSlice = createSlice({
       if (state.conversations[indexConversationExist]) {
         state.conversations[indexConversationExist] = {
           ...state.conversations[indexConversationExist],
-          members: state.conversations[indexConversationExist].members.concat(action.payload.members),
+          members: state.conversations[indexConversationExist].members?.concat(action.payload.members),
         };
       }
+
+      // @ts-ignore
       state.currentConversation = {
         ...state.currentConversation,
-        members: state.currentConversation.members.concat(action.payload.members),
+        // @ts-ignore
+        members: state.currentConversation?.members?.concat(action.payload.members),
       };
     },
     leaveGroup: (
@@ -214,6 +215,13 @@ const chatSlice = createSlice({
         state.conversations = action.payload;
       })
       .addCase(removeConversation.fulfilled, (state, action) => {
+        const removedConversation = state.conversations.find((conversation) => conversation.id === action.payload);
+        if (removedConversation) {
+          state.removedConversations.push({
+            ...removedConversation,
+            last_message: null,
+          });
+        }
         state.conversations = state.conversations.filter((conversation) => conversation.id !== action.payload);
       });
   },
@@ -233,81 +241,7 @@ export const {
   addMember,
   leaveGroup,
 } = chatSlice.actions;
+
 export const chatSelector = (state: RootState) => state.chat;
-
-export const chatMiddleware: Middleware = (store) => {
-  let socket: Socket;
-  return (next) => (action) => {
-    const isConnectionEstablished = socket && store.getState().chat.isConnected;
-    if (startConnecting.match(action)) {
-      socket = io(END_POINT, {
-        path: '/api/socket.io',
-        query: {
-          token: store.getState().auth.token.access_token,
-        },
-        transports: ['websocket'],
-      });
-
-      socket.on('connect', () => {
-        store.dispatch(connectionEstablished());
-      });
-
-      socket.on('connect-response', (data) => {
-        if (data === 'jwt expired' || data === 'jwt malformed') {
-          window.location.replace('/home');
-        }
-      });
-
-      socket.on('error', (data) => {
-        console.log(data);
-      });
-
-      socket.on(ChatEvent.MESSAGE, (message: MessageItem) => {
-        if (!message) {
-          return;
-        }
-        store.dispatch(receiveMessage(message));
-        window.history.replaceState(null, '', `/message/${message.conversation.id}`);
-      });
-    }
-    if (submitMessage.match(action) && isConnectionEstablished) {
-      socket.emit(ChatEvent.MESSAGE, { ...action.payload });
-    }
-
-    if (createGroup.match(action) && isConnectionEstablished) {
-      socket.emit(ChatEvent.CREATEGROUP, action.payload);
-    }
-
-    if (updateConversation.match(action) && isConnectionEstablished) {
-      socket.emit('update-conversation', {
-        conversationId: action.payload.conversationId,
-        fields: {
-          ...action.payload.fields,
-        },
-      });
-    }
-
-    if (addMember.match(action) && isConnectionEstablished) {
-      socket.emit(ChatEvent.ADDMEMBER, {
-        membersId: action.payload.membersId,
-        conversationId: action.payload.conversationId,
-      });
-    }
-
-    if (leaveGroup.match(action) && isConnectionEstablished) {
-      socket.emit(ChatEvent.LEAVEGROUP, {
-        conversationId: action.payload.conversationId,
-      });
-    }
-
-    // if (unmountChat.match(action)) {
-    //   socket.emit('disconnect', function () {
-    //     console.log('disconnect client event....');
-    //   });
-    // }
-
-    next(action);
-  };
-};
 
 export default chatSlice.reducer;

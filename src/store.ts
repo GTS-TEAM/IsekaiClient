@@ -2,10 +2,11 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import musicSlice from 'features/musicSlice';
 import userSlice from 'features/userSlice';
 import weatherSlice from 'features/weatherSlice';
+import { chatMiddleware } from 'middleware';
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authSlice from './features/authSlice';
-import chatSlice, { chatMiddleware } from './features/chatSlice';
+import chatSlice from './features/chatSlice';
 import postsSlice from './features/postsSlice';
 import uiSlice from './features/uiSlice';
 

@@ -23,7 +23,7 @@ const ModalAddMember: React.FC<{
 
   const handleSearch = async (text: string) => {
     const { data } = await isekaiApi.globalSearch(text);
-    const newData = data.filter((item) => !currentConversation?.members.find((member: any) => member.user.id === item.id));
+    const newData = data.filter((item) => !currentConversation?.members?.find((member: any) => member.user.id === item.id));
     setResult(newData);
   };
   const isChecked = (id: string) => {
@@ -137,7 +137,7 @@ const ModalAddMember: React.FC<{
                     },
                   };
                 });
-                dispatch(addMember({ membersId, conversationId: currentConversation?.id, members: newMembers }));
+                dispatch(addMember({ membersId, conversationId: currentConversation?.id as string, members: newMembers }));
                 setChooses([]);
                 onClose();
               }}

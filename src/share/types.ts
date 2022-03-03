@@ -254,21 +254,7 @@ export interface MessageItem {
   type: string;
   created_at: string;
   updated_at: string;
-  conversation: {
-    id: string;
-    type: string;
-    name: string | null;
-    last_message: {
-      content: string;
-      created_at: string;
-      updated_at: string;
-      id: string;
-      type: string;
-      sender: Member;
-    } | null;
-    members: Member[];
-    theme: string | null;
-  };
+  conversation: ConversationItem;
   sender: Member | null;
 }
 
@@ -299,4 +285,10 @@ export enum MessageType {
   FILE = 'file',
   SYSTEM = 'system',
   GIF = 'gif',
+}
+
+export interface MemberFields {
+  id: string;
+  nickname?: string;
+  role?: string;
 }

@@ -10,7 +10,7 @@ import React, { useRef, useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 import { GrFormClose } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
-import { ConversationItem, ConversationType, User } from 'share/types';
+import { ConversationItem, ConversationType, Member, User } from 'share/types';
 import { compareTwoArrMember } from 'utils/compareTwoArrMember';
 import { v4 as uuidv4 } from 'uuid';
 import { ButtonStart, ListSearch, ModalBody, StyledModal } from './styles';
@@ -21,7 +21,7 @@ const Modal: React.FC<{ isOpen: boolean; onClose: () => any }> = ({ isOpen, onCl
   const [chooses, setChooses] = useState<any>([]);
   const dispatch = useAppDispatch();
   const { user: currentUser } = useAppSelector(authSelector);
-  const { conversations: currentConversations, currentConversation } = useAppSelector(chatSelector);
+  const { conversations: currentConversations, currentConversation, removedConversations } = useAppSelector(chatSelector);
   const navigation = useNavigate();
 
   const handleChangeTextHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,10 +41,10 @@ const Modal: React.FC<{ isOpen: boolean; onClose: () => any }> = ({ isOpen, onCl
     // const currentMember=
     if (chooses.length >= 2) {
       const isCan = currentConversations.some((conversation) => {
-        return compareTwoArrMember(conversation.members, [...chooses, currentUser]);
+        return compareTwoArrMember(conversation.members as Member[], [...chooses, currentUser]);
       });
       const conversationExist = currentConversations.find((conversation) =>
-        compareTwoArrMember(conversation.members, [...chooses, currentUser]),
+        compareTwoArrMember(conversation.members as Member[], [...chooses, currentUser]),
       );
 
       if (!isCan) {
@@ -56,51 +56,62 @@ const Modal: React.FC<{ isOpen: boolean; onClose: () => any }> = ({ isOpen, onCl
         navigation(`/message/${conversationExist?.id}`);
       }
     } else {
+      const newConversation: ConversationItem = {
+        id: `${currentUser?.id}-${chooses[0].id}`,
+        members: [
+          {
+            id: uuidv4(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            deleted_conversation_at: null,
+            nickname: null,
+            role: 'member',
+            user: {
+              ...chooses[0],
+              last_activity: null,
+            },
+          },
+          {
+            id: uuidv4(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            deleted_conversation_at: null,
+            nickname: null,
+            role: 'member',
+            user: {
+              ...currentUser,
+              last_activity: null,
+            },
+          },
+        ],
+        type: ConversationType.PRIVATE,
+        last_message: null,
+        avatar: null,
+        name: null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        theme: '#a56ffd',
+      };
       const conversationExist = currentConversations.find(
         (conversation) =>
           conversation.id === `${currentUser?.id}-${chooses[0].id}` ||
           conversation.id === `${chooses[0].id}-${currentUser?.id}`,
       );
+
+      const conversationExitOnRemoved = removedConversations.find(
+        (conversation) =>
+          conversation.id === `${currentUser?.id}-${chooses[0].id}` ||
+          conversation.id === `${chooses[0].id}-${currentUser?.id}`,
+      );
+
       if (conversationExist) {
-        navigation(`/message/${conversationExist.id}`);
+        navigation(`/message/${conversationExist?.id}`);
         dispatch(selectConversation(conversationExist));
+      } else if (conversationExitOnRemoved) {
+        navigation(`/message/${conversationExitOnRemoved.id}`);
+        dispatch(selectConversation(conversationExitOnRemoved));
+        dispatch(addConversation(conversationExitOnRemoved));
       } else {
-        const newConversation: ConversationItem = {
-          id: `${currentUser?.id}-${chooses[0].id}`,
-          members: [
-            {
-              id: uuidv4(),
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-              deleted_conversation_at: null,
-              nickname: null,
-              role: 'member',
-              user: {
-                ...chooses[0],
-                last_activity: null,
-              },
-            },
-            {
-              id: uuidv4(),
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-              deleted_conversation_at: null,
-              nickname: null,
-              role: 'member',
-              user: {
-                ...currentUser,
-                last_activity: null,
-              },
-            },
-          ],
-          type: ConversationType.PRIVATE,
-          last_message: null,
-          avatar: null,
-          name: null,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          theme: '#a56ffd',
-        };
         dispatch(selectConversation(newConversation));
         dispatch(addConversation(newConversation));
         navigation(`/message/${currentUser?.id}-${chooses[0].id}`);
@@ -120,7 +131,7 @@ const Modal: React.FC<{ isOpen: boolean; onClose: () => any }> = ({ isOpen, onCl
               <GrFormClose />
             </IconButton>
           </Header>
-          <ModalBody colorTheme={currentConversation?.theme}>
+          <ModalBody colorTheme={currentConversation?.theme as string}>
             <IMG.Bubbles />
             <Box className="input-field">
               <div className="icon">

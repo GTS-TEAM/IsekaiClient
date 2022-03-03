@@ -1,23 +1,26 @@
 import { Avatar, ClickAwayListener } from '@mui/material';
 import { Box } from '@mui/system';
+import { isekaiApi } from 'api/isekaiApi';
+import ErrorAlert from 'components/ErrorAlert';
 import ModalConfirm from 'components/ModalConfirm';
 import { authSelector } from 'features/authSlice';
-import { chatSelector, leaveGroup, removeConversation } from 'features/chatSlice';
+import { chatSelector, leaveGroup, removeConversation, updateConversation } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { AiOutlineEdit, AiOutlineUsergroupAdd } from 'react-icons/ai';
-import { BiFileBlank } from 'react-icons/bi';
+import { BiFileBlank, BiImageAdd } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoMdClose, IoMdLogOut } from 'react-icons/io';
 import { MdOutlineColorLens, MdOutlineRemoveCircleOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
-import { ConversationType, User } from 'share/types';
+import { ConversationItem, ConversationType, User } from 'share/types';
 import { convertNameConversation } from 'utils/convertNameConversation';
 import { getReceiver } from 'utils/getReceiver';
 import ModalAddMember from '../ModalAddMember';
 import ModalChangeNameConversation from '../ModalChangeNameConversation';
 import ModalChangeTheme from '../ModalChangeTheme';
+import ModalEditNickName from '../ModalEditNickName';
 import { RecipientBox, StyledButtonIcon, StyledHeader } from './styles';
 
 const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => any; conservationId: string }> = ({
@@ -32,13 +35,53 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
   const [isShowModalAddMember, setIsShowModalAddMember] = useState<boolean>(false);
   const [isShowModalConfirm, setIsShowModalConfirm] = useState<boolean>(false);
   const [isShowModalConfirmRemove, setIsShowModalConfirmRemove] = useState<boolean>(false);
+  const [isShowError, setIsShowError] = useState<boolean>(false);
   const { currentConversation } = useAppSelector(chatSelector);
   const { user: currentUser } = useAppSelector(authSelector);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const receiver = useMemo(
+    () => getReceiver(currentConversation as ConversationItem, currentUser as User),
+    [currentConversation, currentUser],
+  );
 
   return (
     <StyledHeader borderRadius={borderRadius}>
+      <ErrorAlert
+        isShow={isShowError}
+        onClose={() => {
+          setIsShowError(false);
+        }}
+      >
+        File phải nhỏ hơn 5MB
+      </ErrorAlert>
+      <input
+        type="file"
+        accept="image/png,image/jpg,image/svg,image/jpeg"
+        ref={inputRef}
+        style={{ display: 'none' }}
+        onChange={async (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          if (file.size >= 5 * 1024 * 1024) {
+            setIsShowError(true);
+            return;
+          }
+          const formData = new FormData();
+          formData.append('files', file);
+          const { data } = await isekaiApi.uploadImg(formData);
+          dispatch(
+            updateConversation({
+              conversationId: currentConversation?.id as string,
+              fields: {
+                avatar: data.urls[0],
+              },
+            }),
+          );
+        }}
+      />
       <RecipientBox
         popup={type === 'popup' ? true : false}
         onClick={
@@ -49,15 +92,14 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
             : undefined
         }
       >
-        <Avatar
-          src={
-            currentConversation?.type === ConversationType.GROUP
-              ? currentConversation?.avatar
-              : getReceiver(currentConversation, currentUser as User)?.avatar
-          }
-        />
+        {currentConversation?.type === ConversationType.GROUP ? (
+          <Avatar src={currentConversation?.avatar as string} alt={currentConversation?.name as string} />
+        ) : (
+          <Avatar src={receiver?.avatar} alt={receiver?.username.charAt(0).toUpperCase()} />
+        )}
+
         <Box>
-          <h3>{convertNameConversation(currentConversation, currentUser as User)}</h3>
+          <h3>{convertNameConversation(currentConversation as ConversationItem, currentUser as User)}</h3>
           <span>Hoạt Động 10 phút trước</span>
         </Box>
       </RecipientBox>
@@ -108,19 +150,45 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
                   <span>Xem tất cả tệp bạn đã gởi</span>
                 </Box>
               </DropdownItem>
+              {currentConversation?.type === ConversationType.GROUP && (
+                <DropdownItem
+                  onClick={() => {
+                    setIsShowDropdown(false);
+                    setIsShowModalChangeName(true);
+                  }}
+                >
+                  <AiOutlineEdit />
+                  <Box>
+                    <h3>Chỉnh sửa</h3>
+                    <span>Chỉnh sửa tên cuộc trò chyện</span>
+                  </Box>
+                </DropdownItem>
+              )}
               <DropdownItem
                 onClick={() => {
                   setIsShowDropdown(false);
-                  setIsShowModalChangeName(true);
                 }}
               >
                 <AiOutlineEdit />
                 <Box>
-                  <h3>Chỉnh sửa</h3>
-                  <span>Chỉnh sửa tên cuộc trò chyện</span>
+                  <h3>Chỉnh sửa biệt hiệu</h3>
+                  <span>Chỉnh sửa biệt hiệu cho từng thành viên</span>
                 </Box>
               </DropdownItem>
-
+              {currentConversation?.type === ConversationType.GROUP && (
+                <DropdownItem
+                  onClick={() => {
+                    setIsShowDropdown(false);
+                    inputRef.current?.click();
+                  }}
+                >
+                  <BiImageAdd />
+                  <Box>
+                    <h3>Avatar</h3>
+                    <span>Thay đổi avatar của cuộc trò chuyện</span>
+                  </Box>
+                </DropdownItem>
+              )}
               <DropdownItem
                 onClick={() => {
                   setIsShowDropdown(false);
@@ -188,7 +256,7 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
           setIsShowModalConfirm(false);
         }}
         onConfirm={() => {
-          dispatch(leaveGroup({ conversationId: currentConversation?.id }));
+          dispatch(leaveGroup({ conversationId: currentConversation?.id as string }));
           navigate('/message', {
             replace: true,
           });
@@ -209,6 +277,7 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
         }}
         isShow={isShowModalConfirmRemove}
       />
+      <ModalEditNickName />
     </StyledHeader>
   );
 };
