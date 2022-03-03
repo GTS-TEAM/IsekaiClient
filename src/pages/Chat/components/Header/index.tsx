@@ -35,6 +35,7 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
   const [isShowModalAddMember, setIsShowModalAddMember] = useState<boolean>(false);
   const [isShowModalConfirm, setIsShowModalConfirm] = useState<boolean>(false);
   const [isShowModalConfirmRemove, setIsShowModalConfirmRemove] = useState<boolean>(false);
+  const [isShowModalEditNickName, setIsShowModalEditNickName] = useState<boolean>(false);
   const [isShowError, setIsShowError] = useState<boolean>(false);
   const { currentConversation } = useAppSelector(chatSelector);
   const { user: currentUser } = useAppSelector(authSelector);
@@ -167,12 +168,13 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
               <DropdownItem
                 onClick={() => {
                   setIsShowDropdown(false);
+                  setIsShowModalEditNickName(true);
                 }}
               >
                 <AiOutlineEdit />
                 <Box>
-                  <h3>Chỉnh sửa biệt hiệu</h3>
-                  <span>Chỉnh sửa biệt hiệu cho từng thành viên</span>
+                  <h3>Chỉnh sửa biệt danh</h3>
+                  <span>Chỉnh sửa biệt danh cho từng thành viên</span>
                 </Box>
               </DropdownItem>
               {currentConversation?.type === ConversationType.GROUP && (
@@ -277,7 +279,12 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
         }}
         isShow={isShowModalConfirmRemove}
       />
-      <ModalEditNickName />
+      <ModalEditNickName
+        isShow={isShowModalEditNickName}
+        onClose={() => {
+          setIsShowModalEditNickName(false);
+        }}
+      />
     </StyledHeader>
   );
 };

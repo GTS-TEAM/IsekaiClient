@@ -27,10 +27,12 @@ export const MemberItem = styled.div`
     background-color: rgb(250, 250, 250);
   }
 
-  .main-box {
+  .main-box,
+  .input-field {
     display: flex;
     flex: 1;
     align-items: center;
+    height: 100%;
     column-gap: 1.2rem;
   }
 
@@ -49,24 +51,27 @@ export const MemberItem = styled.div`
       font-size: 1.2rem;
     }
   }
+  .input-field {
+    position: relative;
 
-  input {
-    flex: 1;
-    padding: 1.5rem;
-    font-size: 1.4rem;
-    color: inherit;
-    border-radius: var(--borderRadius2);
-    transition: border 0.3s ease;
-    border: 1px solid transparent;
-    font-weight: 500;
-
-    &::placeholder {
-      font-weight: 500;
+    input {
+      flex: 1;
+      padding: 1.5rem;
+      font-size: 1.4rem;
       color: inherit;
-    }
+      border-radius: var(--borderRadius2);
+      transition: border 0.3s ease;
+      border: 1px solid transparent;
+      font-weight: 500;
 
-    &:focus {
-      border: 1px solid var(--fds-gray-4);
+      &::placeholder {
+        font-weight: 500;
+        color: inherit;
+      }
+
+      &:focus {
+        border: 1px solid var(--fds-gray-4);
+      }
     }
   }
 
