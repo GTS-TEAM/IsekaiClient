@@ -124,7 +124,16 @@ const chatSlice = createSlice({
     },
     submitMessage: (
       state,
-      action: PayloadAction<{ message: string; receiverId?: string; conversationId?: string; type?: string }>,
+      action: PayloadAction<{
+        message?: string;
+        receiverId?: string;
+        conversationId?: string;
+        type?: string;
+        files?: {
+          link: string;
+          name: string;
+        }[];
+      }>,
     ) => {
       return;
     },

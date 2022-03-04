@@ -4,7 +4,7 @@ import { Modal } from 'components/NewModal/styles';
 
 export const StyledModal = styled(Modal)`
   width: 100%;
-  width: 42rem;
+  width: 55rem;
 `;
 
 export const ButtonStart = styled(Button)`
@@ -84,7 +84,6 @@ export const ModalBody = styled.div<{
 `;
 
 export const ListSearch = styled.div`
-  position: absolute;
   width: 100%;
   height: auto;
   background-color: var(--fds-white);
@@ -97,6 +96,9 @@ export const ListSearch = styled.div`
   display: flex;
   flex-direction: column;
   row-gap: 1.2rem;
+  max-height: 32rem;
+  min-height: 32rem;
+  overflow-y: auto;
 
   &::-webkit-scrollbar {
     width: 0;
@@ -105,6 +107,9 @@ export const ListSearch = styled.div`
   .MuiFormControlLabel-root {
     display: flex;
     align-items: center;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+
     column-gap: 1.2rem;
     cursor: pointer;
     margin: 0;

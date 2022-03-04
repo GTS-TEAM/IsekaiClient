@@ -16,7 +16,7 @@ const Sidebar: React.FC<{}> = () => {
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { conversations, currentConversation } = useAppSelector(chatSelector);
+  const { conversations } = useAppSelector(chatSelector);
   const { id } = useParams();
 
   const closeModalHandler = () => {

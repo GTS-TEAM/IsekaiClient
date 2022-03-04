@@ -12,6 +12,12 @@ export const StyledChatMain = styled.div<{
   overflow-y: auto;
   overflow-x: hidden;
   background-color: #f0f2f5;
+
+  .MuiCircularProgress-root {
+    align-self: center;
+    width: 3.6rem !important;
+    height: 3.6rem !important;
+  }
 `;
 
 export const EndChat = styled.div`

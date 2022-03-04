@@ -26,7 +26,7 @@ const TypeMessage: React.FC<{
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
   const [isShowGif, setIsShowGif] = useState<boolean>(false);
   const [isShowError, setIsShowError] = useState<boolean>(false);
-  const inputTextRef = useRef<HTMLInputElement | null>(null);
+  const inputTextRef = useRef<HTMLTextAreaElement | null>(null);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const [sentLoading, setSentLoading] = useState(false);
   const { currentConversation } = useAppSelector(chatSelector);
@@ -175,9 +175,8 @@ const TypeMessage: React.FC<{
         )}
       </Box>
       <InputMessage>
-        <input
+        <textarea
           ref={inputTextRef}
-          type="text"
           placeholder="Aa"
           value={textMessage}
           onChange={(e) => {

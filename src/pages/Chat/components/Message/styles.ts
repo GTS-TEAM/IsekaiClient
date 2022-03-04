@@ -18,6 +18,7 @@ export const StyledMessage = styled.div<{
   position: relative;
   max-width: ${(p) => (p.maxWidtH ? p.maxWidtH : '60rem')};
   line-height: 1.5;
+  word-break: break-all;
 
   /* &::before {
     content: '';

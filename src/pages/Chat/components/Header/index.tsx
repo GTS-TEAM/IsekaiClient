@@ -21,6 +21,7 @@ import ModalAddMember from '../ModalAddMember';
 import ModalChangeNameConversation from '../ModalChangeNameConversation';
 import ModalChangeTheme from '../ModalChangeTheme';
 import ModalEditNickName from '../ModalEditNickName';
+import ModalViewFiles from '../ModalViewFiles';
 import { RecipientBox, StyledButtonIcon, StyledHeader } from './styles';
 
 const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => any; conservationId: string }> = ({
@@ -36,6 +37,7 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
   const [isShowModalConfirm, setIsShowModalConfirm] = useState<boolean>(false);
   const [isShowModalConfirmRemove, setIsShowModalConfirmRemove] = useState<boolean>(false);
   const [isShowModalEditNickName, setIsShowModalEditNickName] = useState<boolean>(false);
+  const [isShowModalViewFiles, setIsShowModalViewFiles] = useState<boolean>(false);
   const [isShowError, setIsShowError] = useState<boolean>(false);
   const { currentConversation } = useAppSelector(chatSelector);
   const { user: currentUser } = useAppSelector(authSelector);
@@ -283,6 +285,12 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
         isShow={isShowModalEditNickName}
         onClose={() => {
           setIsShowModalEditNickName(false);
+        }}
+      />
+      <ModalViewFiles
+        isShow={isShowModalViewFiles}
+        onClose={() => {
+          setIsShowModalViewFiles(false);
         }}
       />
     </StyledHeader>

@@ -23,11 +23,15 @@ export const InputMessage = styled.div`
   border: 1px solid #dbdbdb;
   padding: 0 1.2rem;
 
-  input {
+  textarea {
     width: 100%;
     flex: 1;
     font-size: 1.5rem;
     color: var(--fds-gray-8);
+    resize: none;
+    overflow-y: auto !important;
+    display: flex;
+    height: 4rem;
 
     &::placeholder {
       font-weight: 500;

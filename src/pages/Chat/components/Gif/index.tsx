@@ -51,7 +51,18 @@ const Component = React.forwardRef<HTMLDivElement>((props, ref) => {
             );
           } else {
             const receiver = getReceiver(currentConversation as ConversationItem, user as User);
-            dispatch(submitMessage({ message: gif.images.original.url, receiverId: receiver?.id, type: MessageType.GIF }));
+            dispatch(
+              submitMessage({
+                files: [
+                  {
+                    link: gif.images.original.url,
+                    name: gif.title,
+                  },
+                ],
+                receiverId: receiver?.id,
+                type: MessageType.GIF,
+              }),
+            );
           }
         }}
       />

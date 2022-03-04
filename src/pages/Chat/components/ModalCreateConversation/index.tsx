@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ButtonStart, ListSearch, ModalBody, StyledModal } from './styles';
 
 const Modal: React.FC<{ isOpen: boolean; onClose: () => any }> = ({ isOpen, onClose }) => {
-  const [resultSearch, setResultSearch] = useState<User[] | null>(null);
+  const [resultSearch, setResultSearch] = useState<User[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [chooses, setChooses] = useState<any>([]);
   const dispatch = useAppDispatch();
@@ -26,7 +26,7 @@ const Modal: React.FC<{ isOpen: boolean; onClose: () => any }> = ({ isOpen, onCl
 
   const handleChangeTextHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.trim().length === 0) {
-      setResultSearch(null);
+      setResultSearch([]);
       return;
     }
     const { data } = await isekaiApi.globalSearch(e.target.value);
@@ -138,45 +138,35 @@ const Modal: React.FC<{ isOpen: boolean; onClose: () => any }> = ({ isOpen, onCl
                 <BiSearch />
               </div>
               <input type="text" placeholder="Tìm kiếm..." onChange={handleChangeTextHandler} ref={inputRef} />
-              {resultSearch && resultSearch.length > 0 && (
-                <ClickAwayListener
-                  onClickAway={() => {
-                    setResultSearch(null);
-                  }}
-                >
-                  <ListSearch>
-                    {resultSearch.map((item) => (
-                      <FormControlLabel
-                        key={item.id}
-                        label={
-                          <Box>
-                            <Avatar src={item.avatar} />
-                            <h3>{item.username}</h3>
-                          </Box>
-                        }
-                        control={
-                          <Checkbox
-                            value={JSON.stringify(item)}
-                            checked={haveChecked(item.id)}
-                            onChange={(e) => {
-                              const value: User = JSON.parse(e.target.value);
-                              const valueExist: User = chooses.find((choose: User) => choose.id === value.id);
-                              if (valueExist) {
-                                setChooses((currentValue: User[]) =>
-                                  currentValue.filter((item) => item.id !== valueExist.id),
-                                );
-                              } else {
-                                setChooses((currentValue: User[]) => [...currentValue, value]);
-                              }
-                            }}
-                          />
-                        }
-                      />
-                    ))}
-                  </ListSearch>
-                </ClickAwayListener>
-              )}
             </Box>
+              <ListSearch>
+                {resultSearch.map((item) => (
+                  <FormControlLabel
+                    key={item.id}
+                    label={
+                      <Box>
+                        <Avatar src={item.avatar} />
+                        <h3>{item.username}</h3>
+                      </Box>
+                    }
+                    control={
+                      <Checkbox
+                        value={JSON.stringify(item)}
+                        checked={haveChecked(item.id)}
+                        onChange={(e) => {
+                          const value: User = JSON.parse(e.target.value);
+                          const valueExist: User = chooses.find((choose: User) => choose.id === value.id);
+                          if (valueExist) {
+                            setChooses((currentValue: User[]) => currentValue.filter((item) => item.id !== valueExist.id));
+                          } else {
+                            setChooses((currentValue: User[]) => [...currentValue, value]);
+                          }
+                        }}
+                      />
+                    }
+                  />
+                ))}
+              </ListSearch>
 
             <p>Chọn một người dùng để bắt đầu một cuộc trò chuyện mới.</p>
             <ButtonStart disabled={chooses.length === 0} onClick={handleStartChat}>

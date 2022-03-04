@@ -185,4 +185,14 @@ export const isekaiApi = {
   removeConversation: (conversationId: string) => {
     return axios.delete(`conversations/${conversationId}`);
   },
+
+  getAllFiles: (conversationId: string, limit: number, offset: number, type: string) => {
+    return axios.get(`conversations/${conversationId}/files`, {
+      params: {
+        limit: 10,
+        offset,
+        type,
+      },
+    });
+  },
 };

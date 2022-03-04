@@ -1,10 +1,11 @@
+import { Avatar, CircularProgress } from '@mui/material';
 import { chatSelector, getAllMessage, unmountMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { MessageItem } from 'share/types';
 import Message from '../Message';
-import { StyledChatMain } from './styles';
+import { EndChat, StyledChatMain } from './styles';
 
 const ChatMain: FC<{
   heightChatMain?: string;
@@ -39,7 +40,7 @@ const ChatMain: FC<{
         }}
         hasMore={hasMore}
         inverse={true}
-        loader={<p>loading...</p>}
+        loader={<CircularProgress sx={{ color: currentConversation?.theme || 'var(--mainColor)' }} />}
         scrollableTarget="scrollableDiv"
         style={{
           display: 'flex',
@@ -48,14 +49,14 @@ const ChatMain: FC<{
           overflow: 'unset',
           scrollBehavior: 'smooth',
         }}
-        // endMessage={
-        //   <EndChat>
-        //     <Avatar />
-        //     <h3>Minh Nguyen</h3>
-        //     <span>Bạn bè</span>
-        //     <span>Các bạn là bạn bè trên Isekai</span>
-        //   </EndChat>
-        // }
+        endMessage={
+          <EndChat>
+            <Avatar />
+            <h3>Minh Nguyen</h3>
+            <span>Bạn bè</span>
+            <span>Các bạn là bạn bè trên Isekai</span>
+          </EndChat>
+        }
       >
         {messages.map((mess: MessageItem) => (
           <Message
