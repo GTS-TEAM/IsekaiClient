@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,SAAS,CAAC;EACR,KAAK,EAAE,IAAI;EACX,MAAM,EAAE,IAAI;EACZ,QAAQ,EAAE,MAAM;EAChB,aAAa,EAAE,GAAG;CAOnB;;AAXD,AAME,SANO,CAMP,GAAG,CAAC;EACF,KAAK,EAAE,IAAI;EACX,MAAM,EAAE,IAAI;EACZ,UAAU,EAAE,KAAK;CAClB",
+    "sources": [
+        "UserImg.module.scss"
+    ],
+    "names": [],
+    "file": "UserImg.module.css"
+}

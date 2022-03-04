@@ -1,0 +1,96 @@
+.emotion__wrap {
+  background-color: var(--grayColor1);
+  padding: 1.6rem;
+  padding-top: 6.2rem;
+  border-radius: var(--borderRadius3);
+  border: 1px solid var(--borderColor);
+  position: relative;
+}
+
+.close {
+  cursor: pointer;
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  height: 3rem;
+  width: 3rem;
+  background-color: var(--textColorGray);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border-radius: 50%;
+}
+
+.close svg {
+  width: 2.4rem;
+  height: 2.4rem;
+  color: var(--textColorWhite);
+}
+
+.emotions {
+  --col: 2;
+  --gap: 2rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  gap: var(--gap);
+  margin-right: calc(-1 * var(--gap));
+}
+
+.emotions .emotion {
+  width: calc(100% / var(--col) - var(--gap));
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  cursor: pointer;
+  -webkit-column-gap: 1rem;
+          column-gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-radius: var(--borderRadius);
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.emotions .emotion.active {
+  background-color: var(--mainColor);
+}
+
+.emotions .emotion.active span {
+  color: var(--textColorWhite);
+}
+
+.emotions .emotion.active .emoji {
+  background-color: transparent;
+}
+
+.emotions .emotion .emoji {
+  background-color: var(--grayColor);
+  border-radius: 50%;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.emotions .emotion .emoji img {
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+.emotions .emotion span {
+  font-size: 1.6rem;
+  color: var(--textColorGray);
+}
+/*# sourceMappingURL=Emotion.module.css.map */

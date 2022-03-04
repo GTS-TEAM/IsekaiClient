@@ -2,23 +2,27 @@ import { useFormik } from 'formik';
 import { useAppDispatch } from 'hooks/hooks';
 import React, { useEffect } from 'react';
 import { AiFillFacebook } from 'react-icons/ai';
-import { FcGoogle } from 'react-icons/fc';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { authSelector, loginHandler } from '../../features/authSlice';
+import { authSelector, loginGoogleHandler, loginHandler } from '../../features/authSlice';
 import './Auth.scss';
+//Google Login
+import {GoogleLogin} from 'react-google-login'
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { token, login } = useSelector(authSelector);
+  const clientId = '113229342458-nffji5842i81t7sp50g08k4q044c8tj5.apps.googleusercontent.com'
+
 
   const formik = useFormik({
     initialValues: {
       email: '',
       password: '',
     },
+    //call back here
     onSubmit: (values, actions) => {
       dispatch(
         loginHandler({
@@ -52,10 +56,28 @@ const Login = () => {
           <h1>Login</h1>
           {login.error && <div className="error-login">{login.error}</div>}
           <div className="btns__provider">
-            <button>
-              <FcGoogle />
-              <span>Continue with Google</span>
-            </button>
+          <GoogleLogin
+            className='google-login'
+            clientId={clientId}
+            buttonText="Login with Google"
+            onSuccess={(res:any) => {
+               dispatch(
+                 loginGoogleHandler({
+                 accessToken:res.tokenId,
+                 callback: () => {
+                    navigate('/home', {
+                    replace:true
+                    })
+                   }
+                  })
+            )
+            }}
+            onFailure={(res:any)=> {
+              console.log(res.error)
+            }}
+            cookiePolicy={'single_host_origin'}
+            isSignedIn={true}
+              /> 
             <button>
               <AiFillFacebook color="#3c5a99" />
               <span>Continue with Facebook</span>

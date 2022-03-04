@@ -218,3 +218,12 @@ export interface MusicItem {
   create_at: string;
   uploader: User;
 }
+
+export type profileOb  = {
+  email:string,
+  familyName:string,
+  givenName:string,
+  googleId:number,
+  imageUrl:string, 
+  name:string,
+}
