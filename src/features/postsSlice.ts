@@ -86,6 +86,10 @@ export const getUserPosts = createAsyncThunk('posts/gerUserPosts', async (d: { u
   return data;
 });
 
+export const getSinglePost = createAsyncThunk('post/getSinglePost', async (id: string) => {
+  const { data } = await isekaiApi.getPost(id);
+  return data;
+});
 interface InitialState {
   timeline: {
     posts: PostItem[];
@@ -278,7 +282,14 @@ const postsSlice = createSlice({
         const indexPostExit = state.timeline.posts.findIndex((post) => post.id === action.payload);
         state.timeline.posts.splice(indexPostExit, 1);
       })
-      .addCase(likePost.fulfilled, (state, action) => {});
+      .addCase(likePost.fulfilled, (state, action) => {})
+      .addCase(getSinglePost.pending, (state) => {
+        state.timeline.loading = true;
+      })
+      .addCase(getSinglePost.fulfilled, (state, action: PayloadAction<PostItem>) => {
+        state.timeline.posts.push(action.payload);
+        state.timeline.loading = false;
+      });
   },
 });
 

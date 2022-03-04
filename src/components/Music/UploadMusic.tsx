@@ -52,6 +52,7 @@ const UploadMusic = () => {
 
   const toggleShowForm = () => {
     setShowForm(!showForm);
+    formik.resetForm();
   };
 
   const openFileTrigger = () => {

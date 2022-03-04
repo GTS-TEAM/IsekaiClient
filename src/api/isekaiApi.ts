@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CommentItem, InfoUser, MusicItem, PostItem, ResLogin, Token, User } from './../share/types';
+import { CommentItem, InfoUser, MessageItem, MusicItem, PostItem, ResLogin, Token, User } from './../share/types';
 
 export const isekaiApi = {
   login: (email: string, password: string) => {
@@ -149,6 +149,10 @@ export const isekaiApi = {
     });
   },
 
+  uploadVideoOrMusicMessage: (arrFile: FormData) => {
+    return axios.post<{ urls: string[] }>('/upload/video', arrFile);
+  },
+
   getListMusic: () => {
     return axios.get<MusicItem[]>('music');
   },
@@ -157,6 +161,37 @@ export const isekaiApi = {
     return axios.get<User[]>('search', {
       params: {
         q,
+      },
+    });
+  },
+
+  getAllMessage: (conversation_id: string, offset: number) => {
+    return axios.get<MessageItem[]>(`conversations/message/${conversation_id}`, {
+      params: {
+        offset: offset,
+        limit: 20,
+      },
+    });
+  },
+  getAllConversation: (limit: number, offset: number) => {
+    return axios.get('conversations', {
+      params: {
+        limit,
+        offset,
+      },
+    });
+  },
+
+  removeConversation: (conversationId: string) => {
+    return axios.delete(`conversations/${conversationId}`);
+  },
+
+  getAllFiles: (conversationId: string, limit: number, offset: number, type: string) => {
+    return axios.get(`conversations/${conversationId}/files`, {
+      params: {
+        limit: 10,
+        offset,
+        type,
       },
     });
   },

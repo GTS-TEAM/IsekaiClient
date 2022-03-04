@@ -9,3 +9,5 @@ declare module '*.svg' {
   export default src;
 }
 declare namespace _ {}
+declare module '@emotion/babel-plugin';
+declare module 'emoji-mart';
