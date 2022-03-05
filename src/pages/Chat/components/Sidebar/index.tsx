@@ -6,7 +6,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ConversationType, MessageType, User } from 'share/types';
+import { ConversationType, FileType, MessageType, User } from 'share/types';
 import { convertNameConversation } from 'utils/convertNameConversation';
 import { getReceiver } from 'utils/getReceiver';
 import ModalCreateCovnersation from '../ModalChooseUser/ModalCreateCovnersation';
@@ -103,12 +103,14 @@ const Sidebar: React.FC<{}> = () => {
                         <span>
                           {conversation.last_message?.type === MessageType.GIF
                             ? `${nameSender} đã gởi 1 tệp Gif`
-                            : conversation.last_message?.type === MessageType.AUDIO
+                            : conversation.last_message?.type === FileType.AUDIO
                             ? `${nameSender} đã gởi 1 tệp Audio`
-                            : conversation.last_message?.type === MessageType.FILE
+                            : conversation.last_message?.type === FileType.FILE
                             ? `${nameSender} đã gởi 1 File`
-                            : conversation.last_message?.type === MessageType.IMAGE
+                            : conversation.last_message?.type === FileType.IMAGE
                             ? `${nameSender} đã gởi 1 hình ảnh`
+                            : conversation.last_message?.type === FileType.VIDEO
+                            ? `${nameSender} đã gởi 1 video`
                             : conversation.last_message?.type === MessageType.TEXT
                             ? `${nameSender}: ${conversation.last_message.content}`
                             : conversation.last_message.content}

@@ -187,12 +187,13 @@ export const isekaiApi = {
     return axios.delete(`conversations/${conversationId}`);
   },
 
-  getAllFiles: (conversationId: string, limit: number, offset: number, type: string) => {
+  getAllFiles: (conversationId: string, limit: number, offset: number, type1: string, type2: string) => {
     return axios.get(`conversations/${conversationId}/files`, {
       params: {
         limit: 10,
         offset,
-        type,
+        type1,
+        type2,
       },
     });
   },

@@ -5,7 +5,7 @@ import moment from 'moment';
 import React, { useRef, useState } from 'react';
 import { BsFillVolumeDownFill, BsFillVolumeMuteFill, BsPauseFill, BsPlayCircle, BsPlayFill } from 'react-icons/bs';
 import { MdAttachFile, MdFileDownload } from 'react-icons/md';
-import { MessageItem, MessageType } from 'share/types';
+import { FileType, MessageItem, MessageType } from 'share/types';
 import { formatDuration } from 'utils/formatDuration';
 import Features from '../Features';
 import { Audio, File, MessageWrapStyled, StyledMessage, Video } from './styles';
@@ -43,12 +43,22 @@ const Message: React.FC<Props> = ({ message, theme }) => {
         </MessageWrapStyled>
       ) : null}
 
+      {message.type === MessageType.GIF && (
+        <MessageWrapStyled left={currentUser?.id === message.sender?.user.id} type={message.type}>
+          <Features left={currentUser?.id === message.sender?.user.id} />
+          <img src={message.content} alt="" className="img-file" />
+          {message.sender && (
+            <Avatar src={message.sender.user.avatar} alt={message.sender.nickname || message.sender.user.avatar} />
+          )}
+        </MessageWrapStyled>
+      )}
+
       {message.files &&
         message.files.length > 0 &&
         message.files.map((file) => (
           <MessageWrapStyled key={file.id} left={currentUser?.id === message.sender?.user.id} type={file.type}>
             <Features left={currentUser?.id === message.sender?.user.id} />
-            {file.type === MessageType.FILE && (
+            {file.type === FileType.FILE && (
               <File style={{ backgroundColor: theme || 'var(--mainColor)' }}>
                 <MdAttachFile />
                 <span>{file.name}</span>
@@ -57,7 +67,7 @@ const Message: React.FC<Props> = ({ message, theme }) => {
                 </a>
               </File>
             )}
-            {file.type === MessageType.AUDIO && (
+            {file.type === FileType.AUDIO && (
               <Audio themeStyle={theme as string}>
                 <div
                   className="control"
@@ -114,7 +124,7 @@ const Message: React.FC<Props> = ({ message, theme }) => {
                 <span className="duration">{formatDuration(durationAudio)}</span>
               </Audio>
             )}
-            {file.type === MessageType.VIDEO && (
+            {file.type === FileType.VIDEO && (
               <Video>
                 {!togglePlayVideo && (
                   <BsPlayCircle
@@ -190,9 +200,7 @@ const Message: React.FC<Props> = ({ message, theme }) => {
                 )}
               </Video>
             )}
-            {file.type === MessageType.GIF || file.type === MessageType.IMAGE ? (
-              <img src={file.link} alt="" className="img-file" />
-            ) : null}
+            {file.type === FileType.IMAGE ? <img src={file.link} alt="" className="img-file" /> : null}
             {message.sender && (
               <Avatar src={message.sender.user.avatar} alt={message.sender.nickname || message.sender.user.avatar} />
             )}

@@ -12,7 +12,7 @@ import { BiSticker } from 'react-icons/bi';
 import { FiFile, FiFileText } from 'react-icons/fi';
 import { IoCloseOutline } from 'react-icons/io5';
 import { MdOutlineEmojiEmotions } from 'react-icons/md';
-import { ConversationItem, ConversationType, MessageType, User } from 'share/types';
+import { ConversationItem, ConversationType, FileType, MessageType, User } from 'share/types';
 import { getReceiver } from 'utils/getReceiver';
 import { v4 as uuid } from 'uuid';
 import Gif from '../Gif';
@@ -72,24 +72,27 @@ const TypeMessage: React.FC<{
         type: file.type,
       };
     });
+
     if (textMessage.trim().length === 0 && files.length === 0) {
       return;
     } else {
       if (currentConversation?.type === ConversationType.GROUP) {
         dispatch(
           submitMessage({
-            message: textMessage,
+            message: textMessage.trim(),
             conversationId: currentConversation.id,
             files: filesToSend.length > 0 ? filesToSend : undefined,
+            type: filesToSend.length > 0 ? filesToSend[0].type : undefined,
           }),
         );
       } else {
         const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
         dispatch(
           submitMessage({
-            message: textMessage,
+            message: textMessage.trim(),
             receiverId: receiver?.id,
             files: filesToSend.length > 0 ? filesToSend : undefined,
+            type: filesToSend.length > 0 ? filesToSend[0].type : undefined,
           }),
         );
       }
@@ -106,18 +109,18 @@ const TypeMessage: React.FC<{
       return;
     }
 
-    let type = file.type.includes(MessageType.IMAGE)
-      ? MessageType.IMAGE
-      : file.type.includes(MessageType.AUDIO)
-      ? MessageType.AUDIO
-      : file.type.includes(MessageType.VIDEO)
-      ? MessageType.VIDEO
-      : MessageType.FILE;
+    let type = file.type.includes(FileType.IMAGE)
+      ? FileType.IMAGE
+      : file.type.includes(FileType.AUDIO)
+      ? FileType.AUDIO
+      : file.type.includes(FileType.VIDEO)
+      ? FileType.VIDEO
+      : FileType.FILE;
     let url: string;
     const formData = new FormData();
 
     setSentLoading(true);
-    if (type === MessageType.AUDIO || type === MessageType.VIDEO) {
+    if (type === FileType.AUDIO || type === FileType.VIDEO) {
       formData.append('files', file);
       const { data } = await isekaiApi.uploadVideoOrMusicMessage(formData);
       url = data.urls[0];
@@ -238,7 +241,7 @@ const TypeMessage: React.FC<{
             <ListFilesPreview>
               {files.map((file) => (
                 <li key={file.id}>
-                  {file.type === MessageType.IMAGE || file.type === MessageType.GIF ? (
+                  {file.type === FileType.IMAGE || file.type === MessageType.GIF ? (
                     <img src={file.link} alt={file.name} />
                   ) : (
                     <FilePreview>
@@ -267,6 +270,7 @@ const TypeMessage: React.FC<{
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
+                  e.preventDefault();
                   e.stopPropagation();
                   sendMessageHandler();
                 }

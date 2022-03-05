@@ -43,27 +43,27 @@ export const Close = styled.div`
 `;
 
 export const Body = styled.div`
-  padding: 1.6rem;
   max-height: 40rem;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   row-gap: 1.6rem;
+
+  .MuiBox-root {
+    padding: 1.6rem 1.6rem 0 1.6rem;
+  }
 `;
 
-export const InputArea = styled.div`
-  textarea {
-    width: 100%;
-    resize: none;
-    font-size: 1.6rem;
-    color: var(--fds-gray-8);
-    font-family: inherit;
-    min-height: 11rem;
-    padding: 1.6rem;
-    background-color: var(--grayColor1);
-    border-radius: var(--borderRadius2);
-    border: 1px solid var(--fds-gray-4);
-  }
+export const InputArea = styled.textarea`
+  resize: none;
+  font-size: 1.6rem;
+  color: var(--fds-gray-8);
+  font-family: inherit;
+  padding: 1.6rem;
+  background-color: var(--grayColor1);
+  border-radius: var(--borderRadius2);
+  border: 1px solid var(--fds-gray-4);
+  min-height: 11rem;
+  margin: 0 1.6rem;
 `;
 
 export const Bottom = styled(Stack)`
@@ -72,6 +72,8 @@ export const Bottom = styled(Stack)`
   align-items: center;
   justify-content: space-between;
   border-top: 1px solid var(--fds-gray-4);
+  background-color: var(--fds-white);
+  flex-shrink: 0;
 `;
 
 export const TextBottom = styled.p`

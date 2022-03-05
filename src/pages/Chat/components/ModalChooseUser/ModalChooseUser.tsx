@@ -14,8 +14,7 @@ import { Body, ItemResult, ListChoose, ListResult, StyledModal } from './styles'
 
 const ModalChooseUser: React.FC<{
   onClose: () => any;
-  isShow: boolean;
-}> = ({ isShow, onClose }) => {
+}> = ({ onClose }) => {
   const [result, setResult] = useState<User[] | null>(null);
   const [chooses, setChooses] = useState<User[]>([]);
   const { currentConversation } = useAppSelector(chatSelector);
@@ -30,7 +29,7 @@ const ModalChooseUser: React.FC<{
     return chooses.some((choose: User) => choose.id === id);
   };
 
-  return isShow ? (
+  return (
     <ModalWrapper>
       <ClickAwayListener onClickAway={onClose}>
         <StyledModal>
@@ -148,7 +147,7 @@ const ModalChooseUser: React.FC<{
         </StyledModal>
       </ClickAwayListener>
     </ModalWrapper>
-  ) : null;
+  );
 };
 
 export default React.memo(ModalChooseUser);

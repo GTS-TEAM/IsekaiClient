@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled/macro';
-import { MessageType } from 'share/types';
+import { FileType, MessageType } from 'share/types';
 import { fadeIn } from 'utils/keyframeStyle';
 
 export const StyledMessage = styled.div<{
@@ -140,7 +140,7 @@ export const MessageWrapStyled = styled.div<MessageStyledProps>`
       : undefined}
       
   ${(p) =>
-    p.type === MessageType.GIF || p.type === MessageType.IMAGE
+    p.type === MessageType.GIF || p.type === FileType.IMAGE
       ? css`
           img.img-file {
             border-radius: var(--borderRadius3);

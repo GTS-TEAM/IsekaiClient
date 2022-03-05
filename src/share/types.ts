@@ -287,12 +287,15 @@ export interface ConversationItem {
 
 export enum MessageType {
   TEXT = 'text',
+  SYSTEM = 'system',
+  GIF = 'gif',
+}
+
+export enum FileType {
   IMAGE = 'image',
   VIDEO = 'video',
   AUDIO = 'audio',
   FILE = 'file',
-  SYSTEM = 'system',
-  GIF = 'gif',
 }
 
 export interface MemberFields {

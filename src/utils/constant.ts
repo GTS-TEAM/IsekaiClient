@@ -1,1 +1,1 @@
-export const LIMITCHAT = 10;
+export const LIMITCHAT = 20;

@@ -49,7 +49,13 @@ const ModalChangeTheme: React.FC<{
                 ))}
               </ListTheme>
               <StyledButton
-                themeColor={currentConversation?.theme as string}
+                sx={{
+                  backgroundColor: currentConversation?.theme,
+
+                  '&:hover': {
+                    backgroundColor: currentConversation?.theme,
+                  },
+                }}
                 onClick={() => {
                   dispatch(
                     updateConversation({

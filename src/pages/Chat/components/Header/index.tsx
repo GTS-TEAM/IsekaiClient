@@ -252,12 +252,13 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
           setIsShowModalChangeName(false);
         }}
       />
-      <ModalChooseUser
-        isShow={isShowModalAddMember}
-        onClose={() => {
-          setIsShowModalAddMember(false);
-        }}
-      />
+      {isShowModalAddMember && (
+        <ModalChooseUser
+          onClose={() => {
+            setIsShowModalAddMember(false);
+          }}
+        />
+      )}
       <ModalConfirm
         header="Rời khỏi nhóm chat?"
         content="Bạn sẽ không nhận được tin nhắn từ cuộc trò chuyện này nữa và mọi người sẽ thấy bạn rời nhóm."
@@ -286,20 +287,22 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
         }}
         isShow={isShowModalConfirmRemove}
       />
-      <ModalEditNickName
-        isShow={isShowModalEditNickName}
-        onClose={() => {
-          setIsShowModalEditNickName(false);
-        }}
-      />
-      <ModalViewFiles
-        isShow={isShowModalViewFiles}
-        onClose={() => {
-          setIsShowModalViewFiles(false);
-        }}
-      />
+      {isShowModalEditNickName && (
+        <ModalEditNickName
+          onClose={() => {
+            setIsShowModalEditNickName(false);
+          }}
+        />
+      )}
+      {isShowModalViewFiles && (
+        <ModalViewFiles
+          onClose={() => {
+            setIsShowModalViewFiles(false);
+          }}
+        />
+      )}
     </StyledHeader>
   );
 };
 
-export default Header;
+export default React.memo(Header);

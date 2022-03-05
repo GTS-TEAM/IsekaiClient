@@ -12,8 +12,7 @@ import { Body, ListMember, MemberItem, StyledModal } from './styles';
 
 const ModalEditNickName: React.FC<{
   onClose: () => any;
-  isShow: boolean;
-}> = ({ isShow, onClose }) => {
+}> = ({ onClose }) => {
   const { currentConversation } = useAppSelector(chatSelector);
   const [activeMemberEdit, setActiveMemberEdit] = useState<string>('');
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -27,7 +26,7 @@ const ModalEditNickName: React.FC<{
     };
   }, []);
 
-  return isShow ? (
+  return (
     <ModalWrapper>
       <ClickAwayListener onClickAway={onClose}>
         <StyledModal>
@@ -129,7 +128,7 @@ const ModalEditNickName: React.FC<{
         </StyledModal>
       </ClickAwayListener>
     </ModalWrapper>
-  ) : null;
+  );
 };
 
 export default ModalEditNickName;
