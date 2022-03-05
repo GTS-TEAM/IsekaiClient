@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled/macro';
 export const StyledPost = styled.div`
   display: flex;
@@ -22,8 +23,22 @@ export const Body = styled.div`
   }
 `;
 
-export const Description = styled.p`
+export const Description = styled.p<{ haveReadMore: boolean; isReadMore: boolean }>`
   font-size: 1.4rem;
   color: var(--fds-gray-7);
   line-height: 1.5;
+  white-space: pre-line;
+  overflow: hidden;
+  ${(p) =>
+    p.haveReadMore
+      ? css`
+          max-height: 50rem;
+        `
+      : null}
+  ${(p) =>
+    p.isReadMore
+      ? css`
+          max-height: unset;
+        `
+      : null}
 `;

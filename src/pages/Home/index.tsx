@@ -6,7 +6,7 @@ import ListPost from 'components/ListPost/ListPost';
 import Music from 'components/Music/Music';
 import Weather from 'components/Weather/Weather';
 import { getTimeline, postsSelector, unmountTimeline } from 'features/postsSlice';
-import { Dispatch, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListMusic } from '../../features/musicSlice';
 import { Feed, StyledHomepage } from './Styles';
@@ -15,6 +15,7 @@ const Homepage = () => {
   const dispatch = useDispatch();
   const { timeline } = useSelector(postsSelector);
   const [page, setPage] = useState(1);
+
   const fetchMoreHandler = () => {
     dispatch(getTimeline(page + 1));
     setPage(page + 1);
@@ -35,7 +36,7 @@ const Homepage = () => {
   }, [dispatch]);
 
   return (
-    <StyledHomepage>
+    <StyledHomepage className="layout">
       <Container className="homepage-container">
         <Stack
           className="w-25"

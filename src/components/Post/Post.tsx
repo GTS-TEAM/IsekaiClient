@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import Actions from 'components/Actions/Actions';
 import Comments from 'components/Comments/Comments';
 import GridImg from 'components/GridImg/GridImg';
@@ -8,7 +8,7 @@ import More from 'components/More/More';
 import Overlay from 'components/Overlay/Overlay';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PostItem } from 'share/types';
 import { authSelector } from '../../features/authSlice';
 import {
@@ -33,6 +33,9 @@ const Post: React.FC<Props> = ({ post }) => {
   const [isOpenComment, setIsOpenComment] = useState<boolean>(false);
   const { user: currentUser } = useAppSelector(authSelector);
   const [anchorElPost, setAnchorElPost] = React.useState<null | HTMLElement>(null);
+  const [isReadMore, setIsReaMore] = useState<boolean>(false);
+  const [haveReadMore, setHaveReadMore] = useState<boolean>(false);
+  const descRef = useRef<HTMLParagraphElement | null>(null);
 
   const { modalPost: uiModalPost } = useAppSelector(uiSelector);
 
@@ -78,6 +81,14 @@ const Post: React.FC<Props> = ({ post }) => {
 
   useOverFlowHidden(uiModalPost.isOpenEdit);
 
+  useEffect(() => {
+    if ((descRef.current?.offsetHeight as number) >= 500) {
+      setHaveReadMore(true);
+    } else {
+      setHaveReadMore(false);
+    }
+  }, []);
+
   return (
     <StyledPost>
       <Header>
@@ -106,7 +117,36 @@ const Post: React.FC<Props> = ({ post }) => {
         </Stack>
       </Header>
       <Body>
-        {post.description.length !== 0 && <Description>{post.description}</Description>}
+        {post.description.length !== 0 && (
+          <Box
+            sx={{
+              span: {
+                fontSize: '1.4rem',
+                color: 'var(--mainColor)',
+                lineHeight: '1.5',
+                fontWeight: '500',
+                cursor: 'pointer',
+
+                '&:hover': {
+                  textDecoration: 'underline',
+                },
+              },
+            }}
+          >
+            <Description ref={descRef} haveReadMore={haveReadMore} isReadMore={isReadMore}>
+              {post.description}
+            </Description>
+            {haveReadMore && !isReadMore && (
+              <span
+                onClick={() => {
+                  setIsReaMore(true);
+                }}
+              >
+                Đọc thêm
+              </span>
+            )}
+          </Box>
+        )}
         {post.image.length === 0 ? null : <GridImg post={post} />}
         <LiveStats
           totalLike={post.likeCount}
