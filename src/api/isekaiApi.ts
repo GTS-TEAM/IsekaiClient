@@ -10,9 +10,9 @@ export const isekaiApi = {
   },
 
   //Gooogle Login api
-  loginGoogle:(accessToken:string) => {
+  loginGoogle:(token:string) => {
     return axios.post<ResLogin>('/auth/google',{
-      accessToken
+      token
     });
   },
 

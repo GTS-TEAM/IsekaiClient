@@ -8,14 +8,13 @@ import * as Yup from 'yup';
 import { authSelector, loginGoogleHandler, loginHandler } from '../../features/authSlice';
 import './Auth.scss';
 //Google Login
-import {GoogleLogin} from 'react-google-login'
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { token, login } = useSelector(authSelector);
-  const clientId = '113229342458-nffji5842i81t7sp50g08k4q044c8tj5.apps.googleusercontent.com'
-
+  const clientId = '113229342458-nffji5842i81t7sp50g08k4q044c8tj5.apps.googleusercontent.com';
 
   const formik = useFormik({
     initialValues: {
@@ -56,28 +55,28 @@ const Login = () => {
           <h1>Login</h1>
           {login.error && <div className="error-login">{login.error}</div>}
           <div className="btns__provider">
-          <GoogleLogin
-            className='google-login'
-            clientId={clientId}
-            buttonText="Login with Google"
-            onSuccess={(res:any) => {
-               dispatch(
-                 loginGoogleHandler({
-                 accessToken:res.tokenId,
-                 callback: () => {
-                    navigate('/home', {
-                    replace:true
-                    })
-                   }
-                  })
-            )
-            }}
-            onFailure={(res:any)=> {
-              console.log(res.error)
-            }}
-            cookiePolicy={'single_host_origin'}
-            isSignedIn={true}
-              /> 
+            <GoogleLogin
+              className="google-login"
+              clientId={clientId}
+              buttonText="Login with Google"
+              onSuccess={(res: any) => {
+                dispatch(
+                  loginGoogleHandler({
+                    accessToken: res.tokenId,
+                    callback: () => {
+                      navigate('/home', {
+                        replace: true,
+                      });
+                    },
+                  }),
+                );
+              }}
+              onFailure={(res: any) => {
+                console.log(res.error);
+              }}
+              cookiePolicy={'single_host_origin'}
+              isSignedIn={true}
+            />
             <button>
               <AiFillFacebook color="#3c5a99" />
               <span>Continue with Facebook</span>

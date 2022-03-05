@@ -13,7 +13,7 @@ interface parameterLogin {
 
 interface parameterLoginGoogle {
      accessToken:string
-      callback: () => any
+     callback: () => any
 }
 
 export const loginHandler = createAsyncThunk<
@@ -21,7 +21,7 @@ export const loginHandler = createAsyncThunk<
   parameterLogin,
   {
     rejectValue: string;
-  }
+}
 >('auth/login', async (d, thunkApi) => {
   try {
     const { data } = await isekaiApi.login(d.email, d.password);
@@ -43,6 +43,7 @@ export const loginGoogleHandler = createAsyncThunk<
 >('auth/google', async (d, thunkApi) => {
   try {
     const { data } = await isekaiApi.loginGoogle(d.accessToken);
+    console.log("data",data);
     setTokenToLocalStorage({ access_token: data.access_token, refresh_token: data.refresh_token });
     d.callback(); // navigate to homepage
     return data;
@@ -148,6 +149,19 @@ const authSlice = createSlice({
         state.login.loading = false;
       })
       .addCase(loginHandler.rejected, (state, action) => {
+        state.login.loading = false;
+        state.login.error = action.payload;
+      })
+      .addCase(loginGoogleHandler.pending, (state) => {
+        state.login.loading = true;
+      })
+      .addCase(loginGoogleHandler.fulfilled,(state,action:PayloadAction<ResLogin>) => {
+        state.user = action.payload.user;
+        state.token.access_token = action.payload.access_token;
+        state.token.refresh_token = action.payload.refresh_token;
+        state.login.loading = false;
+      })
+      .addCase(loginGoogleHandler.rejected, (state, action) => {
         state.login.loading = false;
         state.login.error = action.payload;
       })
