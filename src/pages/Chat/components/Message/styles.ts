@@ -169,8 +169,8 @@ export const File = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 1;
-    line-clamp: 1;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     font-size: 1.4rem;
     color: var(--fds-white);
@@ -286,6 +286,8 @@ export const Video = styled.div`
     color: var(--fds-white);
     display: none;
     animation: ${fadeIn} 0.5s ease;
+    background: rgb(0, 0, 0);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(255, 255, 255, 0.2920518549216562) 100%);
 
     svg {
       color: inherit;
@@ -301,7 +303,10 @@ export const Video = styled.div`
     }
 
     .MuiSlider-root {
-      color: inherit;
+      color: #0084ff;
+      .MuiSlider-thumb {
+        color: var(--fds-white);
+      }
       .MuiSlider-thumb.Mui-active,
       .MuiSlider-thumb.Mui-focusVisible,
       .MuiSlider-thumb:hover {
@@ -324,7 +329,7 @@ export const Video = styled.div`
       }
 
       .MuiSlider-rail {
-        opacity: 0;
+        /* opacity: 0; */
       }
     }
   }

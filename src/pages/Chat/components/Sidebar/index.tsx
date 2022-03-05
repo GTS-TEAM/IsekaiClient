@@ -9,7 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ConversationType, MessageType, User } from 'share/types';
 import { convertNameConversation } from 'utils/convertNameConversation';
 import { getReceiver } from 'utils/getReceiver';
-import Modal from '../ModalCreateConversation';
+import ModalCreateCovnersation from '../ModalChooseUser/ModalCreateCovnersation';
 import { ButtonNewConversation, SidebarHeader, SidebarItem, SidebarMenu, StyledSidebar } from './styles';
 const Sidebar: React.FC<{}> = () => {
   const { user: currentUser } = useAppSelector(authSelector);
@@ -124,7 +124,7 @@ const Sidebar: React.FC<{}> = () => {
           })}
         </SidebarMenu>
       </StyledSidebar>
-      <Modal onClose={closeModalHandler} isOpen={isShowModal} />
+      <ModalCreateCovnersation onClose={closeModalHandler} isShow={isShowModal} />
     </>
   );
 };

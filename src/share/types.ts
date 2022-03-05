@@ -256,6 +256,14 @@ export interface MessageItem {
   updated_at: string;
   conversation: ConversationItem;
   sender: Member | null;
+  files: {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    link: string;
+    name: string;
+    type: string;
+  }[];
 }
 
 export interface ConversationItem {

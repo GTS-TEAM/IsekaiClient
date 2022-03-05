@@ -1,20 +1,30 @@
-import { Box, CircularProgress, ClickAwayListener } from '@mui/material';
+import { Box, CircularProgress, ClickAwayListener, IconButton } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
+import autosize from 'autosize';
 import ErrorAlert from 'components/ErrorAlert';
 import { authSelector } from 'features/authSlice';
 import { chatSelector, submitMessage } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { ChangeEvent, Suspense, useRef, useState } from 'react';
+import React, { ChangeEvent, Suspense, useEffect, useRef, useState } from 'react';
 import { AiOutlineGif, AiOutlinePlus, AiOutlineSend } from 'react-icons/ai';
 import { BiSticker } from 'react-icons/bi';
-import { FiFile } from 'react-icons/fi';
+import { FiFile, FiFileText } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 import { MdOutlineEmojiEmotions } from 'react-icons/md';
 import { ConversationItem, ConversationType, MessageType, User } from 'share/types';
 import { getReceiver } from 'utils/getReceiver';
+import { v4 as uuid } from 'uuid';
 import Gif from '../Gif';
-import { ButtonOpenMore, ButtonSend, InputEmoji, InputMessage, StyledTypeMessage } from './styles';
-
+import {
+  ButtonOpenMore,
+  ButtonSend,
+  FilePreview,
+  InputEmoji,
+  InputMessage,
+  ListFilesPreview,
+  StyledTypeMessage,
+} from './styles';
 const EmojiPicker = React.lazy(() => import('../EmojiPicker'));
 
 const TypeMessage: React.FC<{
@@ -29,6 +39,14 @@ const TypeMessage: React.FC<{
   const inputTextRef = useRef<HTMLTextAreaElement | null>(null);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const [sentLoading, setSentLoading] = useState(false);
+  const [files, setFiles] = useState<
+    {
+      id: string;
+      link: string;
+      name: string;
+      type: string;
+    }[]
+  >([]);
   const { currentConversation } = useAppSelector(chatSelector);
   const { user: currentUser } = useAppSelector(authSelector);
   const dispatch = useAppDispatch();
@@ -47,17 +65,37 @@ const TypeMessage: React.FC<{
   };
 
   const sendMessageHandler = () => {
-    if (textMessage.trim().length === 0) {
+    const filesToSend = files.map((file) => {
+      return {
+        name: file.name,
+        link: file.link,
+        type: file.type,
+      };
+    });
+    if (textMessage.trim().length === 0 && files.length === 0) {
       return;
     } else {
       if (currentConversation?.type === ConversationType.GROUP) {
-        dispatch(submitMessage({ message: textMessage, conversationId: currentConversation.id }));
+        dispatch(
+          submitMessage({
+            message: textMessage,
+            conversationId: currentConversation.id,
+            files: filesToSend.length > 0 ? filesToSend : undefined,
+          }),
+        );
       } else {
         const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
-        dispatch(submitMessage({ message: textMessage, receiverId: receiver?.id }));
+        dispatch(
+          submitMessage({
+            message: textMessage,
+            receiverId: receiver?.id,
+            files: filesToSend.length > 0 ? filesToSend : undefined,
+          }),
+        );
       }
     }
     setTextMessage('');
+    setFiles([]);
   };
 
   const uploadFile = async (file: File) => {
@@ -75,7 +113,7 @@ const TypeMessage: React.FC<{
       : file.type.includes(MessageType.VIDEO)
       ? MessageType.VIDEO
       : MessageType.FILE;
-    let url;
+    let url: string;
     const formData = new FormData();
 
     setSentLoading(true);
@@ -89,12 +127,24 @@ const TypeMessage: React.FC<{
       url = data.urls[0];
     }
 
-    if (currentConversation?.type === ConversationType.GROUP) {
-      dispatch(submitMessage({ message: url as string, conversationId: currentConversation.id, type }));
-    } else {
-      const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
-      dispatch(submitMessage({ message: url as string, receiverId: receiver?.id, type }));
-    }
+    setFiles((files) => {
+      return [
+        ...files,
+        {
+          id: uuid(),
+          name: file.name,
+          link: url,
+          type,
+        },
+      ];
+    });
+
+    // if (currentConversation?.type === ConversationType.GROUP) {
+    //   dispatch(submitMessage({ message: url as string, conversationId: currentConversation.id, type }));
+    // } else {
+    //   const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
+    //   dispatch(submitMessage({ message: url as string, receiverId: receiver?.id, type }));
+    // }
     setSentLoading(false);
   };
 
@@ -107,140 +157,175 @@ const TypeMessage: React.FC<{
     uploadFile(file);
   };
 
+  useEffect(() => {
+    const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
+    if (textarea) {
+      autosize(textarea);
+    }
+  }, []);
+
   return (
-    <StyledTypeMessage>
-      <Box
-        sx={{
-          position: 'relative',
-        }}
-      >
-        <ButtonOpenMore
-          onClick={() => {
-            setIsShowDropdown(!isShowDropdown);
-          }}
+    <>
+      <StyledTypeMessage>
+        <Box
           sx={{
-            backgroundColor: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
+            position: 'relative',
           }}
         >
-          <AiOutlinePlus />
-        </ButtonOpenMore>
-        {isShowDropdown && (
-          <ClickAwayListener
-            onClickAway={() => {
-              setIsShowDropdown(false);
+          <ButtonOpenMore
+            onClick={() => {
+              setIsShowDropdown(!isShowDropdown);
+            }}
+            sx={{
+              backgroundColor: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
             }}
           >
-            <DropdownMenu left="0" bottom="calc(100% + 1.2rem)">
-              <DropdownContent>
-                <DropdownItem
-                  onClick={() => {
-                    setIsShowGif(true);
-                    setIsShowDropdown(false);
-                  }}
-                >
-                  <AiOutlineGif />
-                  <Box>
-                    <h3>GIF</h3>
-                    <span>Truyền tải chính xác ý bạn muốn nói.</span>
-                  </Box>
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => {
-                    inputFileRef.current?.click();
-                  }}
-                >
-                  <FiFile />
-                  <Box>
-                    <h3>Tệp</h3>
-                    <span>Thêm tệp vào cuộc trò chuyện của bạn.</span>
-                  </Box>
-                  <input
-                    type="file"
-                    style={{ display: 'none' }}
-                    ref={inputFileRef}
-                    onChange={changeFileHandler}
-                    accept="image/jpeg,image/gif,image/png,application/pdf,video/*,audio/*"
-                  />
-                </DropdownItem>
-                <DropdownItem>
-                  <BiSticker />
-                  <Box>
-                    <h3>Nhãn dán</h3>
-                    <span>Giúp cuộc trò chuyện trở nên sinh động.</span>
-                  </Box>
-                </DropdownItem>
-              </DropdownContent>
-            </DropdownMenu>
-          </ClickAwayListener>
-        )}
-      </Box>
-      <InputMessage>
-        <textarea
-          ref={inputTextRef}
-          placeholder="Aa"
-          value={textMessage}
-          onChange={(e) => {
-            setTextMessage(e.target.value);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.stopPropagation();
-              sendMessageHandler();
-            }
-          }}
-        />
-        <InputEmoji
-          onClick={() => {
-            setIsShowEmojiPicker(!isShowEmojiPicker);
-          }}
-          sx={{
-            svg: {
-              color: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
-            },
-          }}
-        >
-          <MdOutlineEmojiEmotions />
-        </InputEmoji>
-        <Suspense fallback={<CircularProgress />}>
-          <EmojiPicker
-            onSelect={(emoji) => {
-              changeTextMessageEmoji(emoji.native);
-            }}
-            setIsShow={setIsShowEmojiPicker}
-            isShow={isShowEmojiPicker}
-          />
-        </Suspense>
-      </InputMessage>
+            <AiOutlinePlus />
+          </ButtonOpenMore>
+          {isShowDropdown && (
+            <ClickAwayListener
+              onClickAway={() => {
+                setIsShowDropdown(false);
+              }}
+            >
+              <DropdownMenu left="0" bottom="calc(100% + 1.2rem)">
+                <DropdownContent>
+                  <DropdownItem
+                    onClick={() => {
+                      setIsShowGif(true);
+                      setIsShowDropdown(false);
+                    }}
+                  >
+                    <AiOutlineGif />
+                    <Box>
+                      <h3>GIF</h3>
+                      <span>Truyền tải chính xác ý bạn muốn nói.</span>
+                    </Box>
+                  </DropdownItem>
+                  <DropdownItem
+                    onClick={() => {
+                      inputFileRef.current?.click();
+                    }}
+                  >
+                    <FiFile />
+                    <Box>
+                      <h3>Tệp</h3>
+                      <span>Thêm tệp vào cuộc trò chuyện của bạn.</span>
+                    </Box>
+                    <input
+                      type="file"
+                      style={{ display: 'none' }}
+                      ref={inputFileRef}
+                      onChange={changeFileHandler}
+                      accept="image/jpeg,image/gif,image/png,application/pdf,video/*,audio/*"
+                    />
+                  </DropdownItem>
+                  <DropdownItem>
+                    <BiSticker />
+                    <Box>
+                      <h3>Nhãn dán</h3>
+                      <span>Giúp cuộc trò chuyện trở nên sinh động.</span>
+                    </Box>
+                  </DropdownItem>
+                </DropdownContent>
+              </DropdownMenu>
+            </ClickAwayListener>
+          )}
+        </Box>
 
-      {sentLoading ? (
-        <CircularProgress
-          size={24}
-          sx={{
-            color: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
-          }}
-        />
-      ) : (
-        <ButtonSend
-          onClick={sendMessageHandler}
-          sx={{
-            svg: {
+        <InputMessage>
+          {files.length > 0 && (
+            <ListFilesPreview>
+              {files.map((file) => (
+                <li key={file.id}>
+                  {file.type === MessageType.IMAGE || file.type === MessageType.GIF ? (
+                    <img src={file.link} alt={file.name} />
+                  ) : (
+                    <FilePreview>
+                      <FiFileText />
+                      <span>{file.name}</span>
+                    </FilePreview>
+                  )}
+                  <IconButton
+                    onClick={() => {
+                      setFiles((files) => [...files].filter((fileItem) => fileItem.id !== file.id));
+                    }}
+                  >
+                    <IoCloseOutline />
+                  </IconButton>
+                </li>
+              ))}
+            </ListFilesPreview>
+          )}
+          <Box>
+            <textarea
+              ref={inputTextRef}
+              placeholder="Aa"
+              value={textMessage}
+              onChange={(e) => {
+                setTextMessage(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.stopPropagation();
+                  sendMessageHandler();
+                }
+              }}
+            />
+            <InputEmoji
+              onClick={() => {
+                setIsShowEmojiPicker(!isShowEmojiPicker);
+              }}
+              sx={{
+                svg: {
+                  color: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
+                },
+              }}
+            >
+              <MdOutlineEmojiEmotions />
+            </InputEmoji>
+          </Box>
+          <Suspense fallback={<CircularProgress />}>
+            <EmojiPicker
+              onSelect={(emoji) => {
+                changeTextMessageEmoji(emoji.native);
+              }}
+              setIsShow={setIsShowEmojiPicker}
+              isShow={isShowEmojiPicker}
+            />
+          </Suspense>
+        </InputMessage>
+
+        {sentLoading ? (
+          <CircularProgress
+            size={24}
+            sx={{
               color: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
-            },
+            }}
+          />
+        ) : (
+          <ButtonSend
+            onClick={sendMessageHandler}
+            sx={{
+              svg: {
+                color: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
+              },
+            }}
+          >
+            <AiOutlineSend />
+          </ButtonSend>
+        )}
+        <Gif isShow={isShowGif} setIsShow={setIsShowGif} />
+        <ErrorAlert
+          isShow={isShowError}
+          onClose={() => {
+            setIsShowError(false);
           }}
         >
-          <AiOutlineSend />
-        </ButtonSend>
-      )}
-      <Gif isShow={isShowGif} setIsShow={setIsShowGif} />
-      <ErrorAlert
-        isShow={isShowError}
-        onClose={() => {
-          setIsShowError(false);
-        }}
-      >
-        File phải nhỏ hơn 5MB
-      </ErrorAlert>
-    </StyledTypeMessage>
+          File phải nhỏ hơn 5MB
+        </ErrorAlert>
+      </StyledTypeMessage>
+    </>
   );
 };
 

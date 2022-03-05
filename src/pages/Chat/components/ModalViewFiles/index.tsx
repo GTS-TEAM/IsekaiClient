@@ -1,4 +1,4 @@
-import { IconButton } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
 import ModalWrapper from 'components/NewModal';
 import { Header, Modal } from 'components/NewModal/styles';
@@ -6,6 +6,7 @@ import { chatSelector } from 'features/chatSlice';
 import { useAppSelector } from 'hooks/hooks';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { GrFormClose } from 'react-icons/gr';
+import { MessageType } from 'share/types';
 import { Body, Tab, TabContent, TabHeaderWrapper, TabWrapper } from './styles';
 
 const ModalViewFiles: React.FC<{
@@ -21,10 +22,20 @@ const ModalViewFiles: React.FC<{
   const getAllFiles = useCallback(
     async (type: string) => {
       const { data } = await isekaiApi.getAllFiles(currentConversation?.id as string, 10, offset, type);
-      console.log(data);
+      setFiles(data);
     },
     [currentConversation, offset],
   );
+
+  useEffect(() => {
+    if (activeTab === '1') {
+      getAllFiles('video');
+    }
+    if (activeTab === '2') {
+      getAllFiles('file');
+    }
+  }, [activeTab, getAllFiles]);
+
   useEffect(() => {
     const tabs = tabHeaderWrapperRef.current?.querySelectorAll('div[data-id]');
     tabs?.forEach((tab) => {
@@ -33,13 +44,7 @@ const ModalViewFiles: React.FC<{
         setActiveTab(id as string);
       });
     });
-  }, []);
-
-  useEffect(() => {
-    if (activeTab === '1') {
-      getAllFiles('text');
-    }
-  }, [activeTab, getAllFiles]);
+  });
 
   return isShow ? (
     <ModalWrapper>
@@ -60,7 +65,41 @@ const ModalViewFiles: React.FC<{
                 Files
               </Tab>
             </TabHeaderWrapper>
-            <TabContent></TabContent>
+            <TabContent>
+              {files.map((file: any) => {
+                return (
+                  <div className="file">
+                    {file.type === MessageType.IMAGE || file.type === MessageType.GIF || file.type === MessageType.VIDEO ? (
+                      <Box
+                        sx={{
+                          position: 'relative',
+                          paddingTop: '100%',
+
+                          '& > div': {
+                            position: 'absolute',
+                            inset: '0',
+                          },
+
+                          '& img': {
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                          },
+                        }}
+                      >
+                        <div>
+                          {file.type === MessageType.VIDEO ? (
+                            <video src={file.link} muted autoPlay />
+                          ) : (
+                            <img src={file.link} alt={file.name} />
+                          )}
+                        </div>
+                      </Box>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </TabContent>
           </TabWrapper>
         </Body>
       </Modal>

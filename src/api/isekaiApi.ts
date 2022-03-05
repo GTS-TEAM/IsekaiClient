@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { LIMITCHAT } from 'utils/constant';
 import { CommentItem, InfoUser, MessageItem, MusicItem, PostItem, ResLogin, Token, User } from './../share/types';
 
 export const isekaiApi = {
@@ -169,7 +170,7 @@ export const isekaiApi = {
     return axios.get<MessageItem[]>(`conversations/message/${conversation_id}`, {
       params: {
         offset: offset,
-        limit: 20,
+        limit: LIMITCHAT,
       },
     });
   },

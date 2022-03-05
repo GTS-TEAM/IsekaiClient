@@ -13,6 +13,7 @@ export const StyledHeader = styled.div<{ borderRadius?: string }>`
   border-bottom: 1px solid var(--fds-gray-4);
   border-radius: ${(p) => p.borderRadius || null};
   position: relative;
+  flex-shrink: 0;
 `;
 
 export const RecipientBox = styled(Box)<{ popup: boolean }>`

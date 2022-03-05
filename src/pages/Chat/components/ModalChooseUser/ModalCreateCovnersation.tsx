@@ -2,41 +2,137 @@ import { Avatar, Box, Button, Checkbox, ClickAwayListener, FormControlLabel, Ico
 import { isekaiApi } from 'api/isekaiApi';
 import ModalWrapper from 'components/NewModal';
 import { Header } from 'components/NewModal/styles';
-import { addMember, chatSelector } from 'features/chatSlice';
+import { authSelector } from 'features/authSlice';
+import { addConversation, chatSelector, createGroup, selectConversation, unmountMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 import { GrFormClose } from 'react-icons/gr';
 import { IoCloseOutline } from 'react-icons/io5';
-import { Member, User } from 'share/types';
+import { useNavigate } from 'react-router-dom';
+import { ConversationItem, ConversationType, Member, User } from 'share/types';
+import { compareTwoArrMember } from 'utils/compareTwoArrMember';
 import { v4 as uuidv4 } from 'uuid';
 import { Body, ItemResult, ListChoose, ListResult, StyledModal } from './styles';
 
-const ModalAddMember: React.FC<{
+const ModalCreateConversation: React.FC<{
   onClose: () => any;
   isShow: boolean;
 }> = ({ isShow, onClose }) => {
   const [result, setResult] = useState<User[] | null>(null);
   const [chooses, setChooses] = useState<User[]>([]);
-  const { currentConversation } = useAppSelector(chatSelector);
+  const { currentConversation, conversations, removedConversations } = useAppSelector(chatSelector);
   const dispatch = useAppDispatch();
+  const { user: currentUser } = useAppSelector(authSelector);
+  const navigation = useNavigate();
 
   const handleSearch = async (text: string) => {
     const { data } = await isekaiApi.globalSearch(text);
-    const newData = data.filter((item) => !currentConversation?.members?.find((member: any) => member.user.id === item.id));
-    setResult(newData);
+    setResult(data);
   };
   const isChecked = (id: string) => {
     return chooses.some((choose: User) => choose.id === id);
   };
 
+  const handleStartChat = () => {
+    // const currentMember=
+    if (chooses.length >= 2) {
+      const isCan = conversations.some((conversation) => {
+        return compareTwoArrMember(conversation.members as Member[], [...chooses, currentUser as User]);
+      });
+      const conversationExist = conversations.find((conversation) =>
+        compareTwoArrMember(conversation.members as Member[], [...chooses, currentUser as User]),
+      );
+
+      if (!isCan) {
+        const choosesId: string[] = chooses.map((choose: any) => choose.id);
+        dispatch(createGroup(choosesId));
+        navigation(`/message/${conversationExist?.id}`);
+        dispatch(unmountMessage());
+      } else {
+        navigation(`/message/${conversationExist?.id}`);
+      }
+    } else {
+      const newConversation: ConversationItem = {
+        id: `${currentUser?.id}-${chooses[0].id}`,
+        members: [
+          {
+            id: uuidv4(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            deleted_conversation_at: null,
+            nickname: null,
+            role: 'member',
+            //@ts-ignore
+            user: {
+              ...chooses[0],
+              last_activity: null,
+            },
+          },
+          {
+            id: uuidv4(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            deleted_conversation_at: null,
+            nickname: null,
+            role: 'member',
+            //@ts-ignore
+            user: {
+              ...currentUser,
+              last_activity: null,
+            },
+          },
+        ],
+        type: ConversationType.PRIVATE,
+        last_message: null,
+        avatar: null,
+        name: null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        theme: '#a56ffd',
+      };
+      const conversationExist = conversations.find(
+        (conversation) =>
+          conversation.id === `${currentUser?.id}-${chooses[0].id}` ||
+          conversation.id === `${chooses[0].id}-${currentUser?.id}`,
+      );
+
+      const conversationExitOnRemoved = removedConversations.find(
+        (conversation) =>
+          conversation.id === `${currentUser?.id}-${chooses[0].id}` ||
+          conversation.id === `${chooses[0].id}-${currentUser?.id}`,
+      );
+
+      if (conversationExist) {
+        navigation(`/message/${conversationExist?.id}`);
+        dispatch(selectConversation(conversationExist));
+      } else if (conversationExitOnRemoved) {
+        navigation(`/message/${conversationExitOnRemoved.id}`);
+        dispatch(selectConversation(conversationExitOnRemoved));
+        dispatch(addConversation(conversationExitOnRemoved));
+      } else {
+        dispatch(selectConversation(newConversation));
+        dispatch(addConversation(newConversation));
+        navigation(`/message/${currentUser?.id}-${chooses[0].id}`);
+      }
+    }
+    onClose();
+    setChooses([]);
+  };
+
+  const closeHandler = () => {
+    onClose();
+    setChooses([]);
+    setResult([]);
+  };
+
   return isShow ? (
     <ModalWrapper>
-      <ClickAwayListener onClickAway={onClose}>
+      <ClickAwayListener onClickAway={closeHandler}>
         <StyledModal>
           <Header>
-            <h3>Thêm thành viên</h3>
-            <IconButton onClick={onClose}>
+            <h3>Tạo cuộc trò chuyện</h3>
+            <IconButton onClick={closeHandler}>
               <GrFormClose />
             </IconButton>
           </Header>
@@ -112,37 +208,9 @@ const ModalAddMember: React.FC<{
                 },
               }}
               disabled={chooses.length === 0}
-              onClick={() => {
-                const membersId = chooses.map((choose) => choose.id);
-                const newMembers: Member[] = chooses.map((choose) => {
-                  return {
-                    id: uuidv4(),
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString(),
-                    nickname: null,
-                    role: 'member',
-                    deleted_conversation_at: null,
-                    user: {
-                      address: choose.address,
-                      avatar: choose.avatar,
-                      background: choose.background,
-                      bio: choose.bio as string,
-                      date: choose.date as string,
-                      id: choose.id,
-                      phone: choose.phone as string,
-                      roles: choose.roles as string,
-                      updated_at: new Date().toISOString(),
-                      username: choose.username,
-                      last_activity: null,
-                    },
-                  };
-                });
-                dispatch(addMember({ membersId, conversationId: currentConversation?.id as string, members: newMembers }));
-                setChooses([]);
-                onClose();
-              }}
+              onClick={handleStartChat}
             >
-              Thêm thành viên
+              Bắt đầu cuộc trò chuyện
             </Button>
           </Body>
         </StyledModal>
@@ -151,4 +219,4 @@ const ModalAddMember: React.FC<{
   ) : null;
 };
 
-export default React.memo(ModalAddMember);
+export default React.memo(ModalCreateConversation);

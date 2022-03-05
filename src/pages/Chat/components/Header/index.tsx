@@ -17,9 +17,9 @@ import { useNavigate } from 'react-router-dom';
 import { ConversationItem, ConversationType, User } from 'share/types';
 import { convertNameConversation } from 'utils/convertNameConversation';
 import { getReceiver } from 'utils/getReceiver';
-import ModalAddMember from '../ModalAddMember';
 import ModalChangeNameConversation from '../ModalChangeNameConversation';
 import ModalChangeTheme from '../ModalChangeTheme';
+import ModalChooseUser from '../ModalChooseUser/ModalChooseUser';
 import ModalEditNickName from '../ModalEditNickName';
 import ModalViewFiles from '../ModalViewFiles';
 import { RecipientBox, StyledButtonIcon, StyledHeader } from './styles';
@@ -146,7 +146,12 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
                   </Box>
                 </DropdownItem>
               )}
-              <DropdownItem>
+              <DropdownItem
+                onClick={() => {
+                  setIsShowDropdown(false);
+                  setIsShowModalViewFiles(true);
+                }}
+              >
                 <BiFileBlank />
                 <Box>
                   <h3>Tệp</h3>
@@ -247,7 +252,7 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
           setIsShowModalChangeName(false);
         }}
       />
-      <ModalAddMember
+      <ModalChooseUser
         isShow={isShowModalAddMember}
         onClose={() => {
           setIsShowModalAddMember(false);
