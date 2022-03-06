@@ -2,19 +2,37 @@ import { useFormik } from 'formik';
 import { useAppDispatch } from 'hooks/hooks';
 import React, { useEffect } from 'react';
 import { AiFillFacebook } from 'react-icons/ai';
+import { FcGoogle } from 'react-icons/fc';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { authSelector, loginGoogleHandler, loginHandler } from '../../features/authSlice';
 import './Auth.scss';
 //Google Login
-import { GoogleLogin } from 'react-google-login';
+import { useGoogleLogin } from 'react-google-login';
 import { clientId } from 'share/types';
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { token, login } = useSelector(authSelector);
+  const { signIn } = useGoogleLogin({
+    clientId,
+    onSuccess(res: any) {
+      dispatch(
+        loginGoogleHandler({
+          accessToken: res.tokenId,
+          callback: () => {
+            navigate('/home', {
+              replace: true,
+            });
+          },
+        }),
+      );
+    },
+    isSignedIn: true,
+    cookiePolicy: 'single_host_origin',
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -55,28 +73,10 @@ const Login = () => {
           <h1>Login</h1>
           {login.error && <div className="error-login">{login.error}</div>}
           <div className="btns__provider">
-            <GoogleLogin
-              className="google-login"
-              clientId={clientId}
-              buttonText="Login with Google"
-              onSuccess={(res: any) => {
-                dispatch(
-                  loginGoogleHandler({
-                    accessToken: res.tokenId,
-                    callback: () => {
-                      navigate('/home', {
-                        replace: true,
-                      });
-                    },
-                  }),
-                );
-              }}
-              onFailure={(res: any) => {
-                console.log(res.error);
-              }}
-              cookiePolicy={'single_host_origin'}
-              isSignedIn={true}
-            />
+            <button onClick={() => signIn()}>
+              <FcGoogle />
+              <span>Continue with Google</span>
+            </button>
             <button>
               <AiFillFacebook color="#3c5a99" />
               <span>Continue with Facebook</span>
