@@ -5,7 +5,7 @@ import { Header } from 'components/NewModal/styles';
 import { authSelector } from 'features/authSlice';
 import { addConversation, chatSelector, createGroup, selectConversation, unmountMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 import { GrFormClose } from 'react-icons/gr';
 import { IoCloseOutline } from 'react-icons/io5';
@@ -17,8 +17,7 @@ import { Body, ItemResult, ListChoose, ListResult, StyledModal } from './styles'
 
 const ModalCreateConversation: React.FC<{
   onClose: () => any;
-  isShow: boolean;
-}> = ({ isShow, onClose }) => {
+}> = ({ onClose }) => {
   const [result, setResult] = useState<User[] | null>(null);
   const [chooses, setChooses] = useState<User[]>([]);
   const { currentConversation, conversations, removedConversations } = useAppSelector(chatSelector);
@@ -26,10 +25,10 @@ const ModalCreateConversation: React.FC<{
   const { user: currentUser } = useAppSelector(authSelector);
   const navigation = useNavigate();
 
-  const handleSearch = async (text: string) => {
+  const handleSearch = useCallback(async (text: string) => {
     const { data } = await isekaiApi.globalSearch(text);
     setResult(data);
-  };
+  }, []);
   const isChecked = (id: string) => {
     return chooses.some((choose: User) => choose.id === id);
   };
@@ -126,7 +125,11 @@ const ModalCreateConversation: React.FC<{
     setResult([]);
   };
 
-  return isShow ? (
+  useEffect(() => {
+    handleSearch('');
+  }, [handleSearch]);
+
+  return (
     <ModalWrapper>
       <ClickAwayListener onClickAway={closeHandler}>
         <StyledModal>
@@ -216,7 +219,7 @@ const ModalCreateConversation: React.FC<{
         </StyledModal>
       </ClickAwayListener>
     </ModalWrapper>
-  ) : null;
+  );
 };
 
 export default React.memo(ModalCreateConversation);

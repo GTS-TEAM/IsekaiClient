@@ -7,7 +7,6 @@ import React, { useEffect, useState } from 'react';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ConversationType, FileType, MessageType, User } from 'share/types';
-import { convertNameConversation } from 'utils/convertNameConversation';
 import { getReceiver } from 'utils/getReceiver';
 import ModalCreateCovnersation from '../ModalChooseUser/ModalCreateCovnersation';
 import { ButtonNewConversation, SidebarHeader, SidebarItem, SidebarMenu, StyledSidebar } from './styles';
@@ -64,7 +63,7 @@ const Sidebar: React.FC<{}> = () => {
                   <Avatar src={receiver?.avatar} alt={receiver?.username.charAt(0).toUpperCase()} />
                 )}
                 <Box>
-                  <h3>{convertNameConversation(conversation, currentUser as User)}</h3>
+                  <h3>{conversation.name || receiver?.username}</h3>
                   <Box
                     sx={{
                       display: 'flex',
@@ -126,7 +125,7 @@ const Sidebar: React.FC<{}> = () => {
           })}
         </SidebarMenu>
       </StyledSidebar>
-      <ModalCreateCovnersation onClose={closeModalHandler} isShow={isShowModal} />
+      {isShowModal && <ModalCreateCovnersation onClose={closeModalHandler} />}
     </>
   );
 };

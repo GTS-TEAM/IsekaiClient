@@ -92,51 +92,55 @@ const ModalViewFiles: React.FC<{
                   loader={<CircularProgress />}
                   height={500}
                 >
-                  {files.map((file: any) => (
-                    <div
-                      className="file-media"
-                      key={file.id}
-                      onClick={() => {
-                        setActiveSingleFile(file.id);
-                      }}
-                    >
-                      {activeSingleFile === file.id && (
-                        <ModalViewSingleMedial
-                          file={file}
-                          onClose={() => {
-                            setActiveSingleFile('');
-                          }}
-                        />
-                      )}
-
-                      <Box
-                        sx={{
-                          position: 'relative',
-                          paddingTop: '100%',
-                          cursor: 'pointer',
-
-                          '& > div': {
-                            position: 'absolute',
-                            inset: '0',
-                          },
-
-                          '& img,& video': {
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                          },
+                  {files.length > 0 ? (
+                    files.map((file: any) => (
+                      <div
+                        className="file-media"
+                        key={file.id}
+                        onClick={() => {
+                          setActiveSingleFile(file.id);
                         }}
                       >
-                        <div>
-                          {file.type === FileType.VIDEO ? (
-                            <video src={file.link} muted autoPlay />
-                          ) : (
-                            <img src={file.link} alt={file.name} />
-                          )}
-                        </div>
-                      </Box>
-                    </div>
-                  ))}
+                        {activeSingleFile === file.id && (
+                          <ModalViewSingleMedial
+                            file={file}
+                            onClose={() => {
+                              setActiveSingleFile('');
+                            }}
+                          />
+                        )}
+
+                        <Box
+                          sx={{
+                            position: 'relative',
+                            paddingTop: '100%',
+                            cursor: 'pointer',
+
+                            '& > div': {
+                              position: 'absolute',
+                              inset: '0',
+                            },
+
+                            '& img,& video': {
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                            },
+                          }}
+                        >
+                          <div>
+                            {file.type === FileType.VIDEO ? (
+                              <video src={file.link} muted autoPlay />
+                            ) : (
+                              <img src={file.link} alt={file.name} />
+                            )}
+                          </div>
+                        </Box>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Không có ảnh hay video nào.</p>
+                  )}
                 </SectionMedia>
               )}
               {activeTab === Sections.FILE && (
@@ -150,46 +154,50 @@ const ModalViewFiles: React.FC<{
                   loader={<CircularProgress />}
                   height={500}
                 >
-                  {files.map((file: any) => (
-                    <div className="file" key={file.id}>
-                      <Box
-                        sx={{
-                          padding: '1.2rem',
-                          display: 'flex',
-                          alignItems: 'center',
-                          columnGap: '1.2rem',
-                          height: '100%',
-                          color: 'var(--fds-gray-10)',
+                  {files.length > 0 ? (
+                    files.map((file: any) => (
+                      <div className="file" key={file.id}>
+                        <Box
+                          sx={{
+                            padding: '1.2rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            columnGap: '1.2rem',
+                            height: '100%',
+                            color: 'var(--fds-gray-10)',
 
-                          span: {
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            display: '-webkit-box',
-                            ' WebkitLineClamp': '2',
-                            lineClamp: '2',
-                            ' -webkit-box-orient': 'vertical',
-                            flex: '1',
-                            fontSize: '1.4rem',
-                          },
+                            span: {
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              display: '-webkit-box',
+                              ' WebkitLineClamp': '2',
+                              lineClamp: '2',
+                              ' -webkit-box-orient': 'vertical',
+                              flex: '1',
+                              fontSize: '1.4rem',
+                            },
 
-                          a: {
-                            color: 'inherit',
-                          },
+                            a: {
+                              color: 'inherit',
+                            },
 
-                          svg: {
-                            width: '2rem',
-                            height: '2rem',
-                          },
-                        }}
-                      >
-                        {file.type === FileType.AUDIO ? <MdOutlineQueueMusic /> : <FiFileText />}
-                        <span>{file.name}</span>
-                        <a href={file.link} download target={'_blank'} rel="noreferrer">
-                          <HiOutlineFolderDownload />
-                        </a>
-                      </Box>
-                    </div>
-                  ))}
+                            svg: {
+                              width: '2rem',
+                              height: '2rem',
+                            },
+                          }}
+                        >
+                          {file.type === FileType.AUDIO ? <MdOutlineQueueMusic /> : <FiFileText />}
+                          <span>{file.name}</span>
+                          <a href={file.link} download target={'_blank'} rel="noreferrer">
+                            <HiOutlineFolderDownload />
+                          </a>
+                        </Box>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Không có tệp nào.</p>
+                  )}
                 </SectionFile>
               )}
             </TabWrapper>

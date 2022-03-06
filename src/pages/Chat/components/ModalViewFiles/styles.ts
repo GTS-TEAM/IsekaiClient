@@ -42,8 +42,15 @@ export const SectionMedia = styled(InfiniteScroll)`
   flex-wrap: wrap;
   align-items: flex-start;
   gap: var(--gap);
-  /* margin-right: calc(-1 * var(--gap)); */
+  align-content: flex-start;
   overflow-y: auto;
+  width: 100%;
+  p {
+    color: var(--fds-gray-8);
+    font-size: 1.4rem;
+    text-align: center;
+    width: 100%;
+  }
 
   .file-media {
     width: calc(100% / var(--col) - var(--gap));
@@ -58,4 +65,11 @@ export const SectionFile = styled(InfiniteScroll)`
   row-gap: 1.2rem;
   overflow-y: auto;
   padding: 1.2rem;
+  align-content: flex-start;
+
+  p {
+    text-align: center;
+    color: var(--fds-gray-8);
+    font-size: 1.4rem;
+  }
 `;

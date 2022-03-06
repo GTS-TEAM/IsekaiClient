@@ -50,10 +50,10 @@ const ModalChangeTheme: React.FC<{
               </ListTheme>
               <StyledButton
                 sx={{
-                  backgroundColor: currentConversation?.theme,
+                  backgroundColor: currentConversation?.theme || 'var(--mainColor)',
 
                   '&:hover': {
-                    backgroundColor: currentConversation?.theme,
+                    backgroundColor: currentConversation?.theme || 'var(--mainColor)',
                   },
                 }}
                 onClick={() => {
