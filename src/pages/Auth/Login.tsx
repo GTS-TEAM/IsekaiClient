@@ -8,13 +8,13 @@ import * as Yup from 'yup';
 import { authSelector, loginGoogleHandler, loginHandler } from '../../features/authSlice';
 import './Auth.scss';
 //Google Login
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import { GoogleLogin } from 'react-google-login';
+import { clientId } from 'share/types';
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { token, login } = useSelector(authSelector);
-  const clientId = '113229342458-nffji5842i81t7sp50g08k4q044c8tj5.apps.googleusercontent.com';
 
   const formik = useFormik({
     initialValues: {

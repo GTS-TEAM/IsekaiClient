@@ -3,7 +3,7 @@ import { User } from 'share/types';
 import { getTokenFromLocalStorage, setTokenToLocalStorage } from '../api/axoisClient';
 import { isekaiApi } from '../api/isekaiApi';
 import { ResLogin, Token } from './../share/types';
-import { RootState } from './../store';
+import { RootState } from './../store'
 
 interface parameterLogin {
   email: string;
@@ -118,6 +118,7 @@ const initialState: InitialState = {
     message: null,
   },
 };
+
 
 const authSlice = createSlice({
   name: 'auth',
