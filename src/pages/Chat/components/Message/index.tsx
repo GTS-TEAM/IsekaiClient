@@ -129,12 +129,14 @@ const Message: React.FC<Props> = ({ message, theme }) => {
                 {!togglePlayVideo && (
                   <BsPlayCircle
                     className="play"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       videoRef.current?.play();
                       setTogglePlayVideo(!togglePlayVideo);
                     }}
                   />
                 )}
+
                 <video
                   src={file.link}
                   ref={videoRef}

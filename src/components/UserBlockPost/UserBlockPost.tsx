@@ -15,6 +15,7 @@ interface Props {
 
 const UserBlockPost: React.FC<Props> = ({ userImg, userId, userName, time, emoji }) => {
   const emotion = emotions.find((emotion) => emotion.id === emoji);
+  console.log(userImg);
 
   return (
     <StyledUserBlockPost>

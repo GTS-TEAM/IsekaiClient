@@ -1,4 +1,4 @@
-import { Box, ClickAwayListener, IconButton } from '@mui/material';
+import { Box, CircularProgress, ClickAwayListener, IconButton } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
 import ModalWrapper from 'components/NewModal';
 import { Header, Modal } from 'components/NewModal/styles';
@@ -10,12 +10,15 @@ import { GrFormClose } from 'react-icons/gr';
 import { HiOutlineFolderDownload } from 'react-icons/hi';
 import { MdOutlineQueueMusic } from 'react-icons/md';
 import { FileType } from 'share/types';
+import ModalViewSingleMedial from '../ModalViewSingleMedia';
 import { Body, SectionFile, SectionMedia, Tab, TabHeaderWrapper, TabWrapper } from './styles';
 
 enum Sections {
   FILE = 'files',
   MEDIA = 'media',
 }
+
+const LIMITED = 10;
 
 const ModalViewFiles: React.FC<{
   onClose: () => any;
@@ -25,34 +28,32 @@ const ModalViewFiles: React.FC<{
   const { currentConversation } = useAppSelector(chatSelector);
   const [files, setFiles] = useState<any>([]);
   const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState<boolean>(false);
+  const [activeSingleFile, setActiveSingleFile] = useState<string>('');
 
   const getAllFiles = useCallback(
-    async (type1: string, type2: string) => {
-      const { data } = await isekaiApi.getAllFiles(currentConversation?.id as string, 10, offset, type1, type2);
-      setFiles(data);
+    async (type1: string, type2: string, offset) => {
+      const { data } = await isekaiApi.getAllFiles(currentConversation?.id as string, LIMITED, offset, type1, type2);
+      if (data.length >= LIMITED) {
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
+      setFiles((files: any) => [...files, ...data]);
     },
-    [currentConversation, offset],
+    [currentConversation],
   );
 
-  useEffect(() => {
-    if (activeTab === Sections.MEDIA) {
-      getAllFiles('video', 'image');
-    }
-    if (activeTab === Sections.FILE) {
-      getAllFiles('file', 'audio');
-    }
-  }, [activeTab, getAllFiles]);
+  const changeTabHandler = (type1: string, type2: string, section: Sections) => () => {
+    setFiles([]);
+    setOffset(0);
+    setActiveTab(section);
+    getAllFiles(type1, type2, 0);
+  };
 
   useEffect(() => {
-    const tabs = tabHeaderWrapperRef.current?.querySelectorAll('div[data-id]');
-    tabs?.forEach((tab) => {
-      tab.addEventListener('click', (e) => {
-        const id = tab.getAttribute('data-id');
-        setActiveTab(id as Sections);
-        setFiles([]);
-      });
-    });
-  }, []);
+    getAllFiles(FileType.IMAGE, FileType.VIDEO, 0);
+  }, [getAllFiles]);
 
   return (
     <ModalWrapper>
@@ -68,22 +69,46 @@ const ModalViewFiles: React.FC<{
             <TabWrapper>
               <TabHeaderWrapper ref={tabHeaderWrapperRef}>
                 <Tab
-                  data-id={Sections.MEDIA}
+                  onClick={changeTabHandler(FileType.IMAGE, FileType.VIDEO, Sections.MEDIA)}
                   style={{ backgroundColor: activeTab === Sections.MEDIA ? '#dbdbdb' : undefined }}
                 >
                   File phương tiện
                 </Tab>
                 <Tab
-                  data-id={Sections.FILE}
+                  onClick={changeTabHandler(FileType.FILE, FileType.AUDIO, Sections.FILE)}
                   style={{ backgroundColor: activeTab === Sections.FILE ? '#dbdbdb' : undefined }}
                 >
                   Files
                 </Tab>
               </TabHeaderWrapper>
               {activeTab === Sections.MEDIA && (
-                <SectionMedia>
+                <SectionMedia
+                  dataLength={files.length}
+                  next={() => {
+                    getAllFiles(FileType.IMAGE, FileType.VIDEO, offset + LIMITED);
+                    setOffset(offset + LIMITED);
+                  }}
+                  hasMore={hasMore}
+                  loader={<CircularProgress />}
+                  height={500}
+                >
                   {files.map((file: any) => (
-                    <div className="file-media" key={file.id}>
+                    <div
+                      className="file-media"
+                      key={file.id}
+                      onClick={() => {
+                        setActiveSingleFile(file.id);
+                      }}
+                    >
+                      {activeSingleFile === file.id && (
+                        <ModalViewSingleMedial
+                          file={file}
+                          onClose={() => {
+                            setActiveSingleFile('');
+                          }}
+                        />
+                      )}
+
                       <Box
                         sx={{
                           position: 'relative',
@@ -115,7 +140,16 @@ const ModalViewFiles: React.FC<{
                 </SectionMedia>
               )}
               {activeTab === Sections.FILE && (
-                <SectionFile>
+                <SectionFile
+                  dataLength={files.length}
+                  next={() => {
+                    getAllFiles(FileType.FILE, FileType.AUDIO, offset + LIMITED);
+                    setOffset(offset + LIMITED);
+                  }}
+                  hasMore={hasMore}
+                  loader={<CircularProgress />}
+                  height={500}
+                >
                   {files.map((file: any) => (
                     <div className="file" key={file.id}>
                       <Box

@@ -7,6 +7,7 @@ import {
   receiveMessage,
   startConnecting,
   submitMessage,
+  unmountChat,
   updateConversation,
 } from 'features/chatSlice';
 import { ChatEvent, MessageItem } from 'share/types';
@@ -77,11 +78,9 @@ export const chatMiddleware: Middleware = (store) => {
       });
     }
 
-    // if (unmountChat.match(action)) {
-    //   socket.emit('disconnect', function () {
-    //     console.log('disconnect client event....');
-    //   });
-    // }
+    if (unmountChat.match(action)) {
+      socket.disconnect();
+    }
 
     next(action);
   };

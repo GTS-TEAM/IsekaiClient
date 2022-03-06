@@ -82,7 +82,6 @@ const TypeMessage: React.FC<{
             message: textMessage.trim(),
             conversationId: currentConversation.id,
             files: filesToSend.length > 0 ? filesToSend : undefined,
-            type: filesToSend.length > 0 ? filesToSend[0].type : undefined,
           }),
         );
       } else {
@@ -92,7 +91,6 @@ const TypeMessage: React.FC<{
             message: textMessage.trim(),
             receiverId: receiver?.id,
             files: filesToSend.length > 0 ? filesToSend : undefined,
-            type: filesToSend.length > 0 ? filesToSend[0].type : undefined,
           }),
         );
       }

@@ -190,7 +190,7 @@ export const isekaiApi = {
   getAllFiles: (conversationId: string, limit: number, offset: number, type1: string, type2: string) => {
     return axios.get(`conversations/${conversationId}/files`, {
       params: {
-        limit: 10,
+        limit,
         offset,
         type1,
         type2,
