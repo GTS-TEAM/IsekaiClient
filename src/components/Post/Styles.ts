@@ -23,7 +23,7 @@ export const Body = styled.div`
   }
 `;
 
-export const Description = styled.p<{ haveReadMore: boolean; isReadMore: boolean;includeUrl:boolean }>`
+export const Description = styled.p<{ haveReadMore: boolean; isReadMore: boolean; includeUrl?: boolean }>`
   font-size: 1.4rem;
   color: var(--fds-gray-7);
   line-height: 1.5;
@@ -43,11 +43,8 @@ export const Description = styled.p<{ haveReadMore: boolean; isReadMore: boolean
       : null}
   ${(p) =>
     p.includeUrl
-    ?
-    css`
-      color:blue ;
-      `
-      :
-      ``
-  }
+      ? css`
+          color: var(--mainColor);
+        `
+      : ``}
 `;

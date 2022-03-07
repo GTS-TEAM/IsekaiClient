@@ -1,3 +1,4 @@
+import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { Box, Stack } from '@mui/material';
 import Actions from 'components/Actions/Actions';
 import Comments from 'components/Comments/Comments';
@@ -24,7 +25,6 @@ import { closeEditPostModal, openEditPostModal, setPostIdEdit, uiSelector } from
 import { useOverFlowHidden } from '../../hooks/useOverFlowHidden';
 import emotions from '../../utils/emotions';
 import { Body, Description, Header, StyledPost } from './Styles';
-import { LinkPreview } from '@dhaiwat10/react-link-preview';
 interface Props {
   post: PostItem;
 }
@@ -120,6 +120,10 @@ const Post: React.FC<Props> = ({ post }) => {
         {post.description.length !== 0 && (
           <Box
             sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: '1rem',
+
               span: {
                 fontSize: '1.4rem',
                 color: 'var(--mainColor)',
@@ -133,25 +137,24 @@ const Post: React.FC<Props> = ({ post }) => {
               },
             }}
           >
-            {post.description.includes('https') && (
-              <Description
-                ref={descRef}
-                haveReadMore={haveReadMore}
-                isReadMore={isReadMore}
-                includeUrl={post.description.includes('https')}
-              >
-                {post.description}
+            {post.description.includes('https') ? (
+              <>
+                <Description
+                  ref={descRef}
+                  haveReadMore={haveReadMore}
+                  isReadMore={isReadMore}
+                  includeUrl={post.description.includes('https')}
+                >
+                  {post.description}
+                </Description>
                 <LinkPreview url={post.description} width="auto" />
+              </>
+            ) : (
+              <Description ref={descRef} haveReadMore={haveReadMore} isReadMore={isReadMore}>
+                {post.description}
               </Description>
             )}
-            <Description
-              ref={descRef}
-              haveReadMore={haveReadMore}
-              isReadMore={isReadMore}
-              includeUrl={post.description.includes('https')}
-            >
-              {post.description}
-            </Description>
+
             {haveReadMore && !isReadMore && (
               <span
                 onClick={() => {
