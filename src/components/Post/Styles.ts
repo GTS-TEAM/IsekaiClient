@@ -23,7 +23,7 @@ export const Body = styled.div`
   }
 `;
 
-export const Description = styled.p<{ haveReadMore: boolean; isReadMore: boolean }>`
+export const Description = styled.p<{ haveReadMore: boolean; isReadMore: boolean; includeUrl?: boolean }>`
   font-size: 1.4rem;
   color: var(--fds-gray-7);
   line-height: 1.5;
@@ -41,4 +41,10 @@ export const Description = styled.p<{ haveReadMore: boolean; isReadMore: boolean
           max-height: unset;
         `
       : null}
+  ${(p) =>
+    p.includeUrl
+      ? css`
+          color: var(--mainColor);
+        `
+      : ``}
 `;

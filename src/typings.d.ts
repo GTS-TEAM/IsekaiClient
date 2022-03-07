@@ -11,3 +11,4 @@ declare module '*.svg' {
 declare namespace _ {}
 declare module '@emotion/babel-plugin';
 declare module 'emoji-mart';
+declare module '@dhaiwat10/react-link-preview';
