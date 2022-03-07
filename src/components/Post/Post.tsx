@@ -133,7 +133,7 @@ const Post: React.FC<Props> = ({ post }) => {
               },
             }}
           >
-            {post.description.includes('https') ? (
+            {post.description.includes('https') && (
               <Description
                 ref={descRef}
                 haveReadMore={haveReadMore}
@@ -143,16 +143,15 @@ const Post: React.FC<Props> = ({ post }) => {
                 {post.description}
                 <LinkPreview url={post.description} width="auto" />
               </Description>
-            ) : (
-              <Description
-                ref={descRef}
-                haveReadMore={haveReadMore}
-                isReadMore={isReadMore}
-                includeUrl={post.description.includes('https')}
-              >
-                {post.description}
-              </Description>
             )}
+            <Description
+              ref={descRef}
+              haveReadMore={haveReadMore}
+              isReadMore={isReadMore}
+              includeUrl={post.description.includes('https')}
+            >
+              {post.description}
+            </Description>
             {haveReadMore && !isReadMore && (
               <span
                 onClick={() => {
