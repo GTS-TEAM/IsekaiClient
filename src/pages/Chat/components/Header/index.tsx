@@ -24,11 +24,10 @@ import ModalEditNickName from '../ModalEditNickName';
 import ModalViewFiles from '../ModalViewFiles';
 import { RecipientBox, StyledButtonIcon, StyledHeader } from './styles';
 
-const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => any; conservationId: string }> = ({
+const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => any }> = ({
   borderRadius,
   type,
   onClose,
-  conservationId,
 }) => {
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
   const [isShowModalChangeTheme, setIsShowModalChangeTheme] = useState<boolean>(false);

@@ -27,10 +27,7 @@ import {
 } from './styles';
 const EmojiPicker = React.lazy(() => import('../EmojiPicker'));
 
-const TypeMessage: React.FC<{
-  conversationId: string;
-  type?: string;
-}> = ({ conversationId, type = 'private' }) => {
+const TypeMessage: React.FC = () => {
   const [textMessage, setTextMessage] = useState<string>('');
   const [isShowEmojiPicker, setIsShowEmojiPicker] = useState(false);
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
@@ -330,7 +327,5 @@ const TypeMessage: React.FC<{
     </>
   );
 };
-
-TypeMessage.defaultProps = { type: 'private' };
 
 export default React.memo(TypeMessage);

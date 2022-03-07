@@ -60,7 +60,6 @@ export const globalStyles = css`
     font-size: 62.5%;
     -webkit-tap-highlight-color: transparent;
     line-height: 1;
-    user-select: none;
     font-family: 'Roboto', sans-serif;
   }
 

@@ -7,6 +7,8 @@ export const PopupWrap = styled.div`
   z-index: 99;
   right: 8rem;
   column-gap: 1.2rem;
+  height: 50rem;
+  max-width: 35rem;
 `;
 
 export const StyledPopup = styled.div`
