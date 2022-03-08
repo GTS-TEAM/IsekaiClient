@@ -9,12 +9,20 @@ import { deleteTokenFromLocalStorage } from '../../api/axoisClient';
 import { authSelector, logout } from '../../features/authSlice';
 import GlobalSearch from './GlobalSearch';
 import { DropdownMenu, HeaderWrap, Logo, Navbar, NavItem, StyledHeader, User } from './Styles';
+import { useGoogleLogout } from 'react-google-login';
+import { clientId } from 'share/types';
+
 const Header = () => {
   const { user } = useAppSelector(authSelector);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  //sigout if login with google
+  const { signOut } = useGoogleLogout({
+    clientId,
+  });
 
   const handleClickOpenDropdown = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
@@ -24,6 +32,7 @@ const Header = () => {
   };
 
   const clickLogoutHandler = () => {
+    signOut();
     dispatch(logout());
     handleCloseDropdown();
     deleteTokenFromLocalStorage();

@@ -68,7 +68,7 @@ function App() {
               </RequireAuth>
             }
           />
-
+          <Route path="*" element={<p>Not found</p>} />
           {/* 
         <Route path="/login/identify">
           {token.access_token ? <Redirect to="/" /> : <BasicCard />}

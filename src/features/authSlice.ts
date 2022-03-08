@@ -3,7 +3,7 @@ import { User } from 'share/types';
 import { getTokenFromLocalStorage, setTokenToLocalStorage } from '../api/axoisClient';
 import { isekaiApi } from '../api/isekaiApi';
 import { ResLogin, Token } from './../share/types';
-import { RootState } from './../store';
+import { RootState } from './../store'
 
 interface parameterLogin {
   email: string;
@@ -11,15 +11,39 @@ interface parameterLogin {
   callback: () => any;
 }
 
+interface parameterLoginGoogle {
+     accessToken:string
+     callback: () => any
+}
+
 export const loginHandler = createAsyncThunk<
   ResLogin,
   parameterLogin,
   {
     rejectValue: string;
-  }
+}
 >('auth/login', async (d, thunkApi) => {
   try {
     const { data } = await isekaiApi.login(d.email, d.password);
+    console.log("data",data);
+    setTokenToLocalStorage({ access_token: data.access_token, refresh_token: data.refresh_token });
+    d.callback(); // navigate to homepage
+    return data;
+  } catch (err: any) {
+    return thunkApi.rejectWithValue(err.response.data.message);
+  }
+});
+
+export const loginGoogleHandler = createAsyncThunk<
+  ResLogin,
+  parameterLoginGoogle,
+  {
+    rejectValue: string;
+  }
+>('auth/google', async (d, thunkApi) => {
+  try {
+    const { data } = await isekaiApi.loginGoogle(d.accessToken);
+    console.log("data",data);
     setTokenToLocalStorage({ access_token: data.access_token, refresh_token: data.refresh_token });
     d.callback(); // navigate to homepage
     return data;
@@ -95,6 +119,7 @@ const initialState: InitialState = {
   },
 };
 
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -125,6 +150,19 @@ const authSlice = createSlice({
         state.login.loading = false;
       })
       .addCase(loginHandler.rejected, (state, action) => {
+        state.login.loading = false;
+        state.login.error = action.payload;
+      })
+      .addCase(loginGoogleHandler.pending, (state) => {
+        state.login.loading = true;
+      })
+      .addCase(loginGoogleHandler.fulfilled,(state,action:PayloadAction<ResLogin>) => {
+        state.user = action.payload.user;
+        state.token.access_token = action.payload.access_token;
+        state.token.refresh_token = action.payload.refresh_token;
+        state.login.loading = false;
+      })
+      .addCase(loginGoogleHandler.rejected, (state, action) => {
         state.login.loading = false;
         state.login.error = action.payload;
       })

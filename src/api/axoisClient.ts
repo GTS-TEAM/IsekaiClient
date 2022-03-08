@@ -58,7 +58,6 @@ axios.interceptors.request.use(async (config) => {
       const decodedToken: {
         exp: number;
       } = jwtDecode(token.access_token);
-
       if (decodedToken.exp * 1000 < currentDate.getTime()) {
         await store.dispatch(refreshToken());
         if (config.headers) {

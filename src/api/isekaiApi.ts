@@ -9,6 +9,14 @@ export const isekaiApi = {
       password,
     });
   },
+
+  //Gooogle Login api
+  loginGoogle:(token:string) => {
+    return axios.post<ResLogin>('/auth/google',{
+      token
+    });
+  },
+
   register: (email: string, password: string, userName: string) => {
     return axios.post<{
       message: string;

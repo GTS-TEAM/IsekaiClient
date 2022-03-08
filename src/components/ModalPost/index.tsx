@@ -1,4 +1,5 @@
-import { Box, CircularProgress, Stack } from '@mui/material';
+import { LinkPreview } from '@dhaiwat10/react-link-preview';
+import { CircularProgress, Stack } from '@mui/material';
 import autosize from 'autosize';
 import Emotion from 'components/Emotion/Emotion';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
@@ -140,20 +141,23 @@ const ModalPost: React.FC<Props> = ({ className, style, type, postId, onCloseMod
         </Close>
       </Header>
       <Body>
-        <Box>
-          <UserBlockPost
-            userImg={user?.avatar || ''}
-            userId={user?.id || ''}
-            userName={user?.username || ''}
-            emoji={posts.dataPosts.emotion?.id}
-          />
-        </Box>
-        <InputArea
-          name="postValue"
-          onChange={postTextChangeHandler}
-          placeholder={`${user?.username} ơi, bạn đang nghĩ gì thế?`}
-          value={posts.dataPosts.postText}
-        ></InputArea>
+        <UserBlockPost
+          userImg={user?.avatar || ''}
+          userId={user?.id || ''}
+          userName={user?.username || ''}
+          emoji={posts.dataPosts.emotion?.id}
+        />
+        <InputArea>
+          <textarea
+            name="postValue"
+            onChange={postTextChangeHandler}
+            placeholder={`${user?.username} ơi, bạn đang nghĩ gì thế?`}
+            value={posts.dataPosts.postText}
+          ></textarea>
+        </InputArea>
+        {/(https?:\/\/[^\s]+)/g.test(posts.dataPosts.postText) && (
+          <LinkPreview url={posts.dataPosts.postText.match(/(https?:\/\/[^\s]+)/g)?.[0]} />
+        )}
         {posts.dataPosts.image.length !== 0 && (
           <ImgPreviewList sx={{ '--col': `${posts.dataPosts.image.length > 2 ? 2 : posts.dataPosts.image.length}` }}>
             {posts.dataPosts.image.map((img: any) => {
@@ -186,29 +190,29 @@ const ModalPost: React.FC<Props> = ({ className, style, type, postId, onCloseMod
           </InputPhoto>
         )}
         {uiModalPost.haveChooseEmotion && <Emotion onClose={closeEmotionHandler} />}
-        <Bottom>
-          <TextBottom>Thêm vào bài viết</TextBottom>
-          <Actions>
-            <div
-              className="add-photo"
-              onClick={() => {
-                dispatch(toggleHaveChoosePhoto());
-              }}
-            >
-              <IMG.AddPhoto style={{ fill: '#00a400' }} />
-            </div>
-            <div className="add-emotion" onClick={closeEmotionHandler}>
-              <IMG.Emotion style={{ fill: '#f5c33b' }} />
-            </div>
-            <button
-              onClick={type === 'post' ? createPostHandler : editPostHandler}
-              disabled={disabledBtn || posts.dataPosts?.loading}
-            >
-              {type === 'post' ? 'post' : 'edit'}
-            </button>
-          </Actions>
-        </Bottom>
       </Body>
+      <Bottom>
+        <TextBottom>Thêm vào bài viết</TextBottom>
+        <Actions>
+          <div
+            className="add-photo"
+            onClick={() => {
+              dispatch(toggleHaveChoosePhoto());
+            }}
+          >
+            <IMG.AddPhoto style={{ fill: '#00a400' }} />
+          </div>
+          <div className="add-emotion" onClick={closeEmotionHandler}>
+            <IMG.Emotion style={{ fill: '#f5c33b' }} />
+          </div>
+          <button
+            onClick={type === 'post' ? createPostHandler : editPostHandler}
+            disabled={disabledBtn || posts.dataPosts?.loading}
+          >
+            {type === 'post' ? 'post' : 'edit'}
+          </button>
+        </Actions>
+      </Bottom>
 
       {posts.dataPosts.loading ? (
         <React.Fragment>

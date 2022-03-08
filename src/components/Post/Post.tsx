@@ -1,3 +1,4 @@
+import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { Box, Stack } from '@mui/material';
 import Actions from 'components/Actions/Actions';
 import Comments from 'components/Comments/Comments';
@@ -8,7 +9,8 @@ import More from 'components/More/More';
 import Overlay from 'components/Overlay/Overlay';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { PostItem } from 'share/types';
 import { authSelector } from '../../features/authSlice';
 import {
@@ -24,10 +26,16 @@ import { closeEditPostModal, openEditPostModal, setPostIdEdit, uiSelector } from
 import { useOverFlowHidden } from '../../hooks/useOverFlowHidden';
 import emotions from '../../utils/emotions';
 import { Body, Description, Header, StyledPost } from './Styles';
-
 interface Props {
   post: PostItem;
 }
+// get start index + end index
+const getStartEnd = (str: string, sub: string) => {
+  return {
+    start: str.indexOf(sub),
+    end: str.indexOf(sub) + sub?.length - 1,
+  };
+};
 
 const Post: React.FC<Props> = ({ post }) => {
   const [isOpenComment, setIsOpenComment] = useState<boolean>(false);
@@ -42,6 +50,12 @@ const Post: React.FC<Props> = ({ post }) => {
   const openPost = Boolean(anchorElPost);
 
   const dispatch = useAppDispatch();
+
+  const url = useMemo(() => post.description.match(/(https?:\/\/[^\s]+)/g)?.[0], [post]) as string;
+
+  const { start, end } = useMemo(() => {
+    return getStartEnd(post.description, url);
+  }, [post, url]);
 
   const clickOpenMenuHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorElPost(event.currentTarget);
@@ -120,6 +134,10 @@ const Post: React.FC<Props> = ({ post }) => {
         {post.description.length !== 0 && (
           <Box
             sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: '1rem',
+
               span: {
                 fontSize: '1.4rem',
                 color: 'var(--mainColor)',
@@ -133,9 +151,23 @@ const Post: React.FC<Props> = ({ post }) => {
               },
             }}
           >
-            <Description ref={descRef} haveReadMore={haveReadMore} isReadMore={isReadMore}>
-              {post.description}
-            </Description>
+            {post.description.includes('https') ? (
+              <>
+                <Description ref={descRef} haveReadMore={haveReadMore} isReadMore={isReadMore}>
+                  {post.description.slice(0, start)}
+                  <Link to={url} target="_blank">
+                    {url}
+                  </Link>
+                  {post.description.slice(end + 1)}
+                </Description>
+                <LinkPreview url={url} width="auto" />
+              </>
+            ) : (
+              <Description ref={descRef} haveReadMore={haveReadMore} isReadMore={isReadMore}>
+                {post.description}
+              </Description>
+            )}
+
             {haveReadMore && !isReadMore && (
               <span
                 onClick={() => {

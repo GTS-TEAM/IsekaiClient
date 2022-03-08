@@ -6,19 +6,40 @@ import { FcGoogle } from 'react-icons/fc';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { authSelector, loginHandler } from '../../features/authSlice';
+import { authSelector, loginGoogleHandler, loginHandler } from '../../features/authSlice';
 import './Auth.scss';
+//Google Login
+import { useGoogleLogin } from 'react-google-login';
+import { clientId } from 'share/types';
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { token, login } = useSelector(authSelector);
+  const { signIn } = useGoogleLogin({
+    clientId,
+    onSuccess(res: any) {
+      dispatch(
+        loginGoogleHandler({
+          accessToken: res.tokenId,
+          callback: () => {
+            navigate('/home', {
+              replace: true,
+            });
+          },
+        }),
+      );
+    },
+    isSignedIn: true,
+    cookiePolicy: 'single_host_origin',
+  });
 
   const formik = useFormik({
     initialValues: {
       email: '',
       password: '',
     },
+    //call back here
     onSubmit: (values, actions) => {
       dispatch(
         loginHandler({
@@ -52,7 +73,7 @@ const Login = () => {
           <h1>Login</h1>
           {login.error && <div className="error-login">{login.error}</div>}
           <div className="btns__provider">
-            <button>
+            <button onClick={() => signIn()}>
               <FcGoogle />
               <span>Continue with Google</span>
             </button>
