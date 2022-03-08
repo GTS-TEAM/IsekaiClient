@@ -155,9 +155,10 @@ const ModalPost: React.FC<Props> = ({ className, style, type, postId, onCloseMod
             value={posts.dataPosts.postText}
           ></textarea>
         </InputArea>
-        {/(https?:\/\/[^\s]+)/g.test(posts.dataPosts.postText) && (
-          <LinkPreview url={posts.dataPosts.postText.match(/(https?:\/\/[^\s]+)/g)?.[0]} />
-        )}
+        {posts.dataPosts.postText.length > 4 &&
+          posts.dataPosts.postText.includes('https') &&
+          posts.dataPosts.image.length <= 0 && <LinkPreview url={posts.dataPosts.postText} />}
+        {posts.dataPosts.postText && <LinkPreview url={posts.dataPosts.postText} />}
         {posts.dataPosts.image.length !== 0 && (
           <ImgPreviewList sx={{ '--col': `${posts.dataPosts.image.length > 2 ? 2 : posts.dataPosts.image.length}` }}>
             {posts.dataPosts.image.map((img: any) => {
