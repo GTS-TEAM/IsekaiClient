@@ -8,6 +8,7 @@ import { IMG } from 'images';
 import React, { useEffect, useMemo, useState } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { RiImageAddFill } from 'react-icons/ri';
+import { REGEX_URL } from 'utils/constant';
 import { v4 as uuidv4 } from 'uuid';
 import { authSelector } from '../../features/authSlice';
 import {
@@ -155,9 +156,7 @@ const ModalPost: React.FC<Props> = ({ className, style, type, postId, onCloseMod
             value={posts.dataPosts.postText}
           ></textarea>
         </InputArea>
-        {/(https?:\/\/[^\s]+)/g.test(posts.dataPosts.postText) && (
-          <LinkPreview url={posts.dataPosts.postText.match(/(https?:\/\/[^\s]+)/g)?.[0]} />
-        )}
+        {REGEX_URL.test(posts.dataPosts.postText) && <LinkPreview url={posts.dataPosts.postText.match(REGEX_URL)?.[0]} />}
         {posts.dataPosts.image.length !== 0 && (
           <ImgPreviewList sx={{ '--col': `${posts.dataPosts.image.length > 2 ? 2 : posts.dataPosts.image.length}` }}>
             {posts.dataPosts.image.map((img: any) => {

@@ -10,12 +10,14 @@ import { ConversationType, FileType, MessageType, User } from 'share/types';
 import { getReceiver } from 'utils/getReceiver';
 import ModalCreateCovnersation from '../ModalChooseUser/ModalCreateCovnersation';
 import { ButtonNewConversation, SidebarHeader, SidebarItem, SidebarMenu, StyledSidebar } from './styles';
-const Sidebar: React.FC<{}> = () => {
+const Sidebar: React.FC<{
+  style?: React.CSSProperties;
+}> = ({ style }) => {
   const { user: currentUser } = useAppSelector(authSelector);
+  const { conversations } = useAppSelector(chatSelector);
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { conversations } = useAppSelector(chatSelector);
   const { id } = useParams();
 
   const closeModalHandler = () => {
@@ -29,7 +31,7 @@ const Sidebar: React.FC<{}> = () => {
 
   return (
     <>
-      <StyledSidebar>
+      <StyledSidebar style={style}>
         <SidebarHeader>
           <h1>Tin nhắn</h1>
           <ButtonNewConversation
@@ -130,4 +132,4 @@ const Sidebar: React.FC<{}> = () => {
   );
 };
 
-export default Sidebar;
+export default React.memo(Sidebar);

@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PostItem } from 'share/types';
+import { REGEX_URL } from 'utils/constant';
 import { authSelector } from '../../features/authSlice';
 import {
   addPostEmotion,
@@ -51,7 +52,7 @@ const Post: React.FC<Props> = ({ post }) => {
 
   const dispatch = useAppDispatch();
 
-  const url = useMemo(() => post.description.match(/(https?:\/\/[^\s]+)/g)?.[0], [post]) as string;
+  const url = useMemo(() => post.description.match(REGEX_URL)?.[0], [post]) as string;
 
   const { start, end } = useMemo(() => {
     return getStartEnd(post.description, url);

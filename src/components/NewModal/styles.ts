@@ -12,6 +12,7 @@ export const StyledModalWrap = styled.div`
   inset: 0;
   background-color: rgba(0, 0, 0, 0.7);
   animation: ${fadeIn} 0.3s ease;
+  padding: 0 1.5rem;
 `;
 
 export const Modal = styled.div`

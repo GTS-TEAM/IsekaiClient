@@ -1,8 +1,9 @@
 import { Box } from '@mui/material';
 import Layout from 'components/Layout/Layout';
-import { startConnecting, unmountChat } from 'features/chatSlice';
-import { useAppDispatch } from 'hooks/hooks';
-import React, { useEffect } from 'react';
+import { chatSelector, startConnecting, unmountChat } from 'features/chatSlice';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { useWindowSize } from 'hooks/useWindowSize';
+import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import ChatView from './components/ChatView';
 import Sidebar from './components/Sidebar';
@@ -21,6 +22,31 @@ import { ChatBody, StyledChat } from './styles';
 const Chat = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
+  const { windowWidth } = useWindowSize();
+  const { currentConversation } = useAppSelector(chatSelector);
+
+  const responsive = useMemo(() => {
+    if (windowWidth < 768 && currentConversation) {
+      return {
+        displayChatView: 'flex !important',
+        displaySidebar: 'none !important',
+        width: '100%',
+      };
+    } else if (windowWidth < 768 && !currentConversation) {
+      return {
+        displayChatView: 'none !important',
+        displaySidebar: 'flex !important',
+        width: '100%',
+      };
+    }
+
+    return {
+      display: 'flex !important',
+      displaySidebar: 'flex !important',
+      width: '32rem',
+    };
+  }, [windowWidth, currentConversation]);
+
   useEffect(() => {
     dispatch(startConnecting());
 
@@ -33,17 +59,18 @@ const Chat = () => {
     <Layout>
       <StyledChat className="layout">
         <ChatBody>
-          <Sidebar />
+          <Box
+            sx={{
+              display: responsive.displaySidebar,
+              width: responsive.width,
+            }}
+          >
+            <Sidebar />
+          </Box>
           <Box
             sx={{
               justifyContent: 'center',
-
-              '& > p': {
-                fontSize: '2.4rem',
-                color: 'var(--fds-gray-7)',
-                textAlign: 'center',
-                padding: '0 1.2rem',
-              },
+              display: responsive.displayChatView,
             }}
           >
             {id ? <ChatView /> : <p>Chọn cuộc trò chuyện.</p>}

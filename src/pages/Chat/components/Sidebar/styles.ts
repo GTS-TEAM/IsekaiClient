@@ -1,7 +1,7 @@
 import styled from '@emotion/styled/macro';
 
 export const StyledSidebar = styled.aside`
-  width: 36rem;
+  width: 100%;
   background-color: var(--fds-white);
   border-right: 1px solid var(--fds-gray-4);
   height: calc(100vh - var(--headerHeight));

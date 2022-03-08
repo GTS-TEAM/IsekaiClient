@@ -132,6 +132,7 @@ export const MessageWrapStyled = styled.div<MessageStyledProps>`
     p.type === MessageType.SYSTEM
       ? css`
           justify-content: center;
+          text-align: center;
           .features,
           .MuiAvatar-root {
             display: none;
@@ -145,6 +146,10 @@ export const MessageWrapStyled = styled.div<MessageStyledProps>`
           img.img-file {
             border-radius: var(--borderRadius3);
             max-width: 30rem;
+
+            @media screen and (max-width: 767.98px) {
+              max-width: 20rem;
+            }
           }
         `
       : undefined}
@@ -194,6 +199,10 @@ export const Audio = styled.div<{
   align-items: center;
   padding: 0 0.65rem;
   column-gap: 1.2rem;
+
+  @media screen and (max-width: 767.98px) {
+    width: 20rem;
+  }
 
   audio {
     display: none;
@@ -259,9 +268,15 @@ export const Video = styled.div`
   border-radius: var(--borderRadius3);
   overflow: hidden;
   max-width: 30rem;
-  height: 35rem;
+  min-height: 20rem;
   background-color: var(--fds-white);
   position: relative;
+  display: flex;
+  align-items: center;
+
+  @media screen and (max-width: 767.98px) {
+    max-width: 20rem;
+  }
 
   .play {
     position: absolute;

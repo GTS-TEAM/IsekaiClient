@@ -6,7 +6,7 @@ import { authSelector } from 'features/authSlice';
 import { chatSelector, submitMessage } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { ChangeEvent, Suspense, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { AiOutlineGif, AiOutlinePlus, AiOutlineSend } from 'react-icons/ai';
 import { BiSticker } from 'react-icons/bi';
 import { FiFile, FiFileText } from 'react-icons/fi';
@@ -15,6 +15,7 @@ import { MdOutlineEmojiEmotions } from 'react-icons/md';
 import { ConversationItem, ConversationType, FileType, MessageType, User } from 'share/types';
 import { getReceiver } from 'utils/getReceiver';
 import { v4 as uuid } from 'uuid';
+import EmojiPicker from '../EmojiPicker';
 import Gif from '../Gif';
 import {
   ButtonOpenMore,
@@ -25,7 +26,6 @@ import {
   ListFilesPreview,
   StyledTypeMessage,
 } from './styles';
-const EmojiPicker = React.lazy(() => import('../EmojiPicker'));
 
 const TypeMessage: React.FC = () => {
   const [textMessage, setTextMessage] = useState<string>('');
@@ -284,15 +284,13 @@ const TypeMessage: React.FC = () => {
               <MdOutlineEmojiEmotions />
             </InputEmoji>
           </Box>
-          <Suspense fallback={<CircularProgress />}>
-            <EmojiPicker
-              onSelect={(emoji) => {
-                changeTextMessageEmoji(emoji.native);
-              }}
-              setIsShow={setIsShowEmojiPicker}
-              isShow={isShowEmojiPicker}
-            />
-          </Suspense>
+          <EmojiPicker
+            onSelect={(emoji) => {
+              changeTextMessageEmoji(emoji.native);
+            }}
+            setIsShow={setIsShowEmojiPicker}
+            isShow={isShowEmojiPicker}
+          />
         </InputMessage>
 
         {sentLoading ? (

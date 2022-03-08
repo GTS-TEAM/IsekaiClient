@@ -34,7 +34,7 @@ export const getAllConversations = createAsyncThunk<
     thunkApi.dispatch(selectConversation(conversationExist));
   } else {
     if (data.length > 0) {
-      thunkApi.dispatch(selectConversation(data[0]));
+      // thunkApi.dispatch(selectConversation(data[0]));
     }
   }
   return data;
@@ -200,6 +200,9 @@ const chatSlice = createSlice({
     ) => {
       state.conversations = state.conversations.filter((conversation) => conversation.id !== action.payload.conversationId);
     },
+    exitChatView: (state) => {
+      state.currentConversation = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -251,6 +254,7 @@ export const {
   unmountChat,
   addMember,
   leaveGroup,
+  exitChatView,
 } = chatSlice.actions;
 
 export const chatSelector = (state: RootState) => state.chat;
