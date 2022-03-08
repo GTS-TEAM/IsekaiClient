@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { LIMITCHAT } from 'utils/constant';
 import { CommentItem, InfoUser, MessageItem, MusicItem, PostItem, ResLogin, Token, User } from './../share/types';
 
 export const isekaiApi = {
@@ -177,7 +178,7 @@ export const isekaiApi = {
     return axios.get<MessageItem[]>(`conversations/message/${conversation_id}`, {
       params: {
         offset: offset,
-        limit: 20,
+        limit: LIMITCHAT,
       },
     });
   },
@@ -194,12 +195,13 @@ export const isekaiApi = {
     return axios.delete(`conversations/${conversationId}`);
   },
 
-  getAllFiles: (conversationId: string, limit: number, offset: number, type: string) => {
+  getAllFiles: (conversationId: string, limit: number, offset: number, type1: string, type2: string) => {
     return axios.get(`conversations/${conversationId}/files`, {
       params: {
-        limit: 10,
+        limit,
         offset,
-        type,
+        type1,
+        type2,
       },
     });
   },

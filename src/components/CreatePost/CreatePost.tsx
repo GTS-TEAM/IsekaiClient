@@ -1,5 +1,5 @@
 import { Avatar, Stack } from '@mui/material';
-import ModalPost from 'components/ModalPost/ModalPost';
+import ModalPost from 'components/ModalPost';
 import Overlay from 'components/Overlay/Overlay';
 import { useAppDispatch } from 'hooks/hooks';
 import React from 'react';

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
 import { RootState } from 'store';
+import { LIMITCHAT } from 'utils/constant';
 import { v4 as uuid } from 'uuid';
 import { ConversationItem, Member, MemberFields, MessageItem } from './../share/types';
 
@@ -61,7 +62,7 @@ const initialState: {
   conversations: [],
   removedConversations: [],
   currentConversation: null,
-  hasMore: false,
+  hasMore: true,
   isLoading: false,
   error: null,
 };
@@ -132,6 +133,7 @@ const chatSlice = createSlice({
         files?: {
           link: string;
           name: string;
+          type: string;
         }[];
       }>,
     ) => {
@@ -205,10 +207,10 @@ const chatSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getAllMessage.fulfilled, (state, action: PayloadAction<MessageItem[]>) => {
-        if (action.payload.length === 0) {
-          state.hasMore = false;
-        } else {
+        if (action.payload.length >= LIMITCHAT) {
           state.hasMore = true;
+        } else {
+          state.hasMore = false;
         }
         state.messages = [...state.messages, ...action.payload];
         state.isLoading = false;

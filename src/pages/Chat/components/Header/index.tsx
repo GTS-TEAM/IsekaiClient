@@ -17,18 +17,17 @@ import { useNavigate } from 'react-router-dom';
 import { ConversationItem, ConversationType, User } from 'share/types';
 import { convertNameConversation } from 'utils/convertNameConversation';
 import { getReceiver } from 'utils/getReceiver';
-import ModalAddMember from '../ModalAddMember';
 import ModalChangeNameConversation from '../ModalChangeNameConversation';
 import ModalChangeTheme from '../ModalChangeTheme';
+import ModalChooseUser from '../ModalChooseUser/ModalChooseUser';
 import ModalEditNickName from '../ModalEditNickName';
 import ModalViewFiles from '../ModalViewFiles';
 import { RecipientBox, StyledButtonIcon, StyledHeader } from './styles';
 
-const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => any; conservationId: string }> = ({
+const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => any }> = ({
   borderRadius,
   type,
   onClose,
-  conservationId,
 }) => {
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
   const [isShowModalChangeTheme, setIsShowModalChangeTheme] = useState<boolean>(false);
@@ -146,7 +145,12 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
                   </Box>
                 </DropdownItem>
               )}
-              <DropdownItem>
+              <DropdownItem
+                onClick={() => {
+                  setIsShowDropdown(false);
+                  setIsShowModalViewFiles(true);
+                }}
+              >
                 <BiFileBlank />
                 <Box>
                   <h3>Tệp</h3>
@@ -247,12 +251,13 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
           setIsShowModalChangeName(false);
         }}
       />
-      <ModalAddMember
-        isShow={isShowModalAddMember}
-        onClose={() => {
-          setIsShowModalAddMember(false);
-        }}
-      />
+      {isShowModalAddMember && (
+        <ModalChooseUser
+          onClose={() => {
+            setIsShowModalAddMember(false);
+          }}
+        />
+      )}
       <ModalConfirm
         header="Rời khỏi nhóm chat?"
         content="Bạn sẽ không nhận được tin nhắn từ cuộc trò chuyện này nữa và mọi người sẽ thấy bạn rời nhóm."
@@ -281,20 +286,22 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
         }}
         isShow={isShowModalConfirmRemove}
       />
-      <ModalEditNickName
-        isShow={isShowModalEditNickName}
-        onClose={() => {
-          setIsShowModalEditNickName(false);
-        }}
-      />
-      <ModalViewFiles
-        isShow={isShowModalViewFiles}
-        onClose={() => {
-          setIsShowModalViewFiles(false);
-        }}
-      />
+      {isShowModalEditNickName && (
+        <ModalEditNickName
+          onClose={() => {
+            setIsShowModalEditNickName(false);
+          }}
+        />
+      )}
+      {isShowModalViewFiles && (
+        <ModalViewFiles
+          onClose={() => {
+            setIsShowModalViewFiles(false);
+          }}
+        />
+      )}
     </StyledHeader>
   );
 };
 
-export default Header;
+export default React.memo(Header);

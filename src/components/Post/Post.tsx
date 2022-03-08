@@ -4,7 +4,7 @@ import Actions from 'components/Actions/Actions';
 import Comments from 'components/Comments/Comments';
 import GridImg from 'components/GridImg/GridImg';
 import LiveStats from 'components/LiveStats/LiveStats';
-import ModalPost from 'components/ModalPost/ModalPost';
+import ModalPost from 'components/ModalPost';
 import More from 'components/More/More';
 import Overlay from 'components/Overlay/Overlay';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';

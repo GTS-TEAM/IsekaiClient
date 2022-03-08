@@ -9,6 +9,7 @@ export const StyledChatMain = styled.div<{
   padding: 1.2rem;
   column-gap: 1.2rem;
   height: ${(p) => (p.height ? p.height : 'calc(100vh - 3 * 6rem)')};
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   background-color: #f0f2f5;

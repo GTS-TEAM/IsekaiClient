@@ -1,8 +1,11 @@
 import styled from '@emotion/styled/macro';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 export const Body = styled.div``;
 
-export const TabWrapper = styled.div``;
+export const TabWrapper = styled.div`
+  overflow-x: hidden;
+`;
 
 export const TabHeaderWrapper = styled.div`
   display: flex;
@@ -31,6 +34,42 @@ export const Tab = styled.div`
   }
 `;
 
-export const TabContent = styled.div`
+export const SectionMedia = styled(InfiniteScroll)`
+  --col: 3;
+  --gap: 1.2rem;
   padding: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--gap);
+  align-content: flex-start;
+  overflow-y: auto;
+  width: 100%;
+  p {
+    color: var(--fds-gray-8);
+    font-size: 1.4rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  .file-media {
+    width: calc(100% / var(--col) - var(--gap));
+    border-radius: var(--borderRadius2);
+    overflow: hidden;
+  }
+`;
+
+export const SectionFile = styled(InfiniteScroll)`
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.2rem;
+  overflow-y: auto;
+  padding: 1.2rem;
+  align-content: flex-start;
+
+  p {
+    text-align: center;
+    color: var(--fds-gray-8);
+    font-size: 1.4rem;
+  }
 `;

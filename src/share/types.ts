@@ -257,6 +257,14 @@ export interface MessageItem {
   updated_at: string;
   conversation: ConversationItem;
   sender: Member | null;
+  files: {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    link: string;
+    name: string;
+    type: string;
+  }[];
 }
 
 export interface ConversationItem {
@@ -280,12 +288,15 @@ export interface ConversationItem {
 
 export enum MessageType {
   TEXT = 'text',
+  SYSTEM = 'system',
+  GIF = 'gif',
+}
+
+export enum FileType {
   IMAGE = 'image',
   VIDEO = 'video',
   AUDIO = 'audio',
   FILE = 'file',
-  SYSTEM = 'system',
-  GIF = 'gif',
 }
 
 export interface MemberFields {
