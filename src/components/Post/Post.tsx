@@ -152,13 +152,13 @@ const Post: React.FC<Props> = ({ post }) => {
               },
             }}
           >
-            {post.description.includes('https') ? (
+            {post.description.includes('https') && post.image.length <= 0 ? (
               <>
                 <Description ref={descRef} haveReadMore={haveReadMore} isReadMore={isReadMore}>
                   {post.description.slice(0, start)}
-                  <Link to={url} target="_blank">
+                  <a href={url} rel="noreferrer" target="_blank">
                     {url}
-                  </Link>
+                  </a>
                   {post.description.slice(end + 1)}
                 </Description>
                 <LinkPreview url={url} width="auto" />
