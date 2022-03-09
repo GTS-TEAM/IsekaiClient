@@ -21,6 +21,21 @@ export const RecipientBox = styled(Box)<{ popup: boolean }>`
   align-items: center;
   column-gap: 0.8rem;
 
+  & > button {
+    display: none;
+    background-color: transparent;
+
+    svg {
+      width: 2.6rem;
+      height: 2.6rem;
+      color: var(--fds-gray-7);
+    }
+
+    @media screen and (max-width: 767.98px) {
+      display: flex;
+    }
+  }
+
   ${(p) =>
     p.popup
       ? css`
@@ -53,6 +68,7 @@ export const RecipientBox = styled(Box)<{ popup: boolean }>`
 `;
 
 export const StyledButtonIcon = styled(IconButton)`
+  flex-shrink: 0;
   svg {
     width: 2.4rem;
     height: 2.4rem;

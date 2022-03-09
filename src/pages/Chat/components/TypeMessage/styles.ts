@@ -95,17 +95,20 @@ export const ListFilesPreview = styled.ul`
   --gap: 1.2rem;
   display: flex;
   align-items: center;
-  column-gap: var(--gap);
+  flex-wrap: wrap;
+  gap: var(--gap);
 
   img {
     width: 5rem;
     height: 5rem;
     object-fit: cover;
     border-radius: var(--borderRadius2);
+    flex-shrink: 0;
   }
 
   li {
     position: relative;
+    flex-shrink: 0;
   }
 
   .MuiButtonBase-root {
@@ -115,6 +118,7 @@ export const ListFilesPreview = styled.ul`
     background-color: var(--fds-white);
     border: 1px solid var(--fds-gray-4);
     box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
+    z-index: 2;
   }
 `;
 

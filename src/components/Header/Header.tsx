@@ -1,19 +1,21 @@
 import { Avatar, MenuItem, Stack } from '@mui/material';
+import { chatSelector } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React from 'react';
+import { useGoogleLogout } from 'react-google-login';
 import { AiOutlineHome, AiOutlineMessage } from 'react-icons/ai';
 import { FiLogOut, FiUsers } from 'react-icons/fi';
 import { IoNotificationsOutline, IoSettingsOutline } from 'react-icons/io5';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { clientId } from 'share/types';
 import { deleteTokenFromLocalStorage } from '../../api/axoisClient';
 import { authSelector, logout } from '../../features/authSlice';
 import GlobalSearch from './GlobalSearch';
 import { DropdownMenu, HeaderWrap, Logo, Navbar, NavItem, StyledHeader, User } from './Styles';
-import { useGoogleLogout } from 'react-google-login';
-import { clientId } from 'share/types';
 
 const Header = () => {
   const { user } = useAppSelector(authSelector);
+  const { currentConversation } = useAppSelector(chatSelector);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -70,7 +72,7 @@ const Header = () => {
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to="/message">
+              <NavLink to={currentConversation ? `/message/${currentConversation.id}` : '/message'}>
                 <AiOutlineMessage />
               </NavLink>
             </NavItem>
@@ -115,4 +117,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default React.memo(Header);

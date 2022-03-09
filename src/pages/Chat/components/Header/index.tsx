@@ -4,14 +4,14 @@ import { isekaiApi } from 'api/isekaiApi';
 import ErrorAlert from 'components/ErrorAlert';
 import ModalConfirm from 'components/ModalConfirm';
 import { authSelector } from 'features/authSlice';
-import { chatSelector, leaveGroup, removeConversation, updateConversation } from 'features/chatSlice';
+import { chatSelector, exitChatView, leaveGroup, removeConversation, updateConversation } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useMemo, useRef, useState } from 'react';
 import { AiOutlineEdit, AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { BiFileBlank, BiImageAdd } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { IoMdClose, IoMdLogOut } from 'react-icons/io';
+import { IoIosArrowBack, IoMdClose, IoMdLogOut } from 'react-icons/io';
 import { MdOutlineColorLens, MdOutlineRemoveCircleOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { ConversationItem, ConversationType, User } from 'share/types';
@@ -24,7 +24,7 @@ import ModalEditNickName from '../ModalEditNickName';
 import ModalViewFiles from '../ModalViewFiles';
 import { RecipientBox, StyledButtonIcon, StyledHeader } from './styles';
 
-const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => any }> = ({
+const Header: React.FC<{ borderRadius?: string; type?: 'popup' | 'screen'; onClose?: () => any }> = ({
   borderRadius,
   type,
   onClose,
@@ -94,12 +94,23 @@ const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => a
             : undefined
         }
       >
+        {type !== 'popup' && (
+          <button
+            onClick={() => {
+              dispatch(exitChatView());
+              navigate('/message', {
+                replace: true,
+              });
+            }}
+          >
+            <IoIosArrowBack />
+          </button>
+        )}
         {currentConversation?.type === ConversationType.GROUP ? (
           <Avatar src={currentConversation?.avatar as string} alt={currentConversation?.name as string} />
         ) : (
           <Avatar src={receiver?.avatar} alt={receiver?.username.charAt(0).toUpperCase()} />
         )}
-
         <Box>
           <h3>{convertNameConversation(currentConversation as ConversationItem, currentUser as User)}</h3>
           <span>Hoạt Động 10 phút trước</span>

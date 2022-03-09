@@ -3,6 +3,7 @@ import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import React from 'react';
 import { StyledEmoji } from './styles';
+
 const EmojiPicker: React.FC<{
   isShow: boolean;
   onSelect: (emoji: any) => void;

@@ -45,6 +45,7 @@ export const SectionMedia = styled(InfiniteScroll)`
   align-content: flex-start;
   overflow-y: auto;
   width: 100%;
+
   p {
     color: var(--fds-gray-8);
     font-size: 1.4rem;
@@ -56,6 +57,10 @@ export const SectionMedia = styled(InfiniteScroll)`
     width: calc(100% / var(--col) - var(--gap));
     border-radius: var(--borderRadius2);
     overflow: hidden;
+  }
+
+  @media screen and (max-width: 767.98px) {
+    height: 30rem !important;
   }
 `;
 
@@ -71,5 +76,9 @@ export const SectionFile = styled(InfiniteScroll)`
     text-align: center;
     color: var(--fds-gray-8);
     font-size: 1.4rem;
+  }
+
+  @media screen and (max-width: 767.98px) {
+    height: 30rem !important;
   }
 `;
