@@ -1,7 +1,6 @@
 import Layout from 'components/Layout/Layout';
 import RequireAuth from 'components/RequireAuth';
 import Chat from 'pages/Chat';
-import PopupChat from 'pages/Chat/components/PropupChat';
 import Post from 'pages/Detail/Detail';
 import Profile from 'pages/Profile/Profile';
 import SettingAccount from 'pages/SettingAccount';
@@ -14,7 +13,7 @@ function App() {
   return (
     <>
       <Router>
-        <PopupChat conversationId="11091927550-11063811311" />
+        {/* <PopupChat conversationId="11091927550-11063811311" /> */}
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
