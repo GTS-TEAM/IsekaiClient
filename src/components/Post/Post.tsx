@@ -10,7 +10,7 @@ import Overlay from 'components/Overlay/Overlay';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import ReactHtmlParser from 'react-html-parser';
 import { PostItem } from 'share/types';
 import { REGEX_URL } from 'utils/constant';
 import { authSelector } from '../../features/authSlice';
@@ -30,13 +30,6 @@ import { Body, Description, Header, StyledPost } from './Styles';
 interface Props {
   post: PostItem;
 }
-// get start index + end index
-const getStartEnd = (str: string, sub: string) => {
-  return {
-    start: str.indexOf(sub),
-    end: str.indexOf(sub) + sub?.length - 1,
-  };
-};
 
 const Post: React.FC<Props> = ({ post }) => {
   const [isOpenComment, setIsOpenComment] = useState<boolean>(false);
@@ -54,9 +47,13 @@ const Post: React.FC<Props> = ({ post }) => {
 
   const url = useMemo(() => post.description.match(REGEX_URL)?.[0], [post]) as string;
 
-  const { start, end } = useMemo(() => {
-    return getStartEnd(post.description, url);
-  }, [post, url]);
+  const desc = useMemo(() => {
+    let text = '';
+    post.description.match(REGEX_URL)?.forEach((link) => {
+      text = post.description.replace(REGEX_URL, `<a href="${link}" target="_blank" >${link}</a>`);
+    });
+    return text;
+  }, [post]);
 
   const clickOpenMenuHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorElPost(event.currentTarget);
@@ -152,14 +149,10 @@ const Post: React.FC<Props> = ({ post }) => {
               },
             }}
           >
-            {post.description.includes('https') ? (
+            {post.description.includes('http') ? (
               <>
                 <Description ref={descRef} haveReadMore={haveReadMore} isReadMore={isReadMore}>
-                  {post.description.slice(0, start)}
-                  <Link to={url} target="_blank">
-                    {url}
-                  </Link>
-                  {post.description.slice(end + 1)}
+                  {ReactHtmlParser(desc)}
                 </Description>
                 <LinkPreview url={url} width="auto" />
               </>

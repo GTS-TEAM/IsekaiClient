@@ -1,6 +1,7 @@
 import styled from '@emotion/styled/macro';
 import { Stack } from '@mui/material';
 import Modal from 'components/Modal/Modal';
+import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 
 export const StyledModalPost = styled(Modal)`
   background-color: var(--fds-white);
@@ -47,10 +48,12 @@ export const Body = styled.div`
   display: flex;
   flex-direction: column;
   row-gap: 1.6rem;
+  padding: 1.6rem;
+  overflow-y: auto;
+`;
 
-  .MuiBox-root {
-    padding: 1.6rem 1.6rem 0 1.6rem;
-  }
+export const StyledUserBlockPost = styled(UserBlockPost)`
+  /* padding: 1.6rem 1.6rem 0 1.6rem; */
 `;
 
 export const InputArea = styled.textarea`
@@ -63,7 +66,6 @@ export const InputArea = styled.textarea`
   border-radius: var(--borderRadius2);
   border: 1px solid var(--fds-gray-4);
   min-height: 11rem;
-  margin: 0 1.6rem;
 `;
 
 export const Bottom = styled(Stack)`

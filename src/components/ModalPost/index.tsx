@@ -2,7 +2,6 @@ import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { CircularProgress, Stack } from '@mui/material';
 import autosize from 'autosize';
 import Emotion from 'components/Emotion/Emotion';
-import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { IMG } from 'images';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -34,6 +33,7 @@ import {
   Loading,
   Overlay,
   StyledModalPost,
+  StyledUserBlockPost,
   TextBottom,
 } from './Styles';
 
@@ -53,6 +53,8 @@ const ModalPost: React.FC<Props> = ({ className, style, type, postId, onCloseMod
   const { modalPost: uiModalPost } = useAppSelector(uiSelector);
   const posts = useAppSelector(postsSelector);
   const dispatch = useAppDispatch();
+
+  console.log(posts.dataPosts);
 
   const allowBtn = useMemo(
     () =>
@@ -144,20 +146,18 @@ const ModalPost: React.FC<Props> = ({ className, style, type, postId, onCloseMod
         </Close>
       </Header>
       <Body>
-        <UserBlockPost
+        <StyledUserBlockPost
           userImg={user?.avatar || ''}
           userId={user?.id || ''}
           userName={user?.username || ''}
           emoji={posts.dataPosts.emotion?.id}
         />
-        <InputArea>
-          <textarea
-            name="postValue"
-            onChange={postTextChangeHandler}
-            placeholder={`${user?.username} ơi, bạn đang nghĩ gì thế?`}
-            value={posts.dataPosts.postText}
-          ></textarea>
-        </InputArea>
+        <InputArea
+          name="postValue"
+          onChange={postTextChangeHandler}
+          placeholder={`${user?.username} ơi, bạn đang nghĩ gì thế?`}
+          value={posts.dataPosts.postText}
+        ></InputArea>
         {REGEX_URL.test(posts.dataPosts.postText) && <LinkPreview url={posts.dataPosts.postText.match(REGEX_URL)?.[0]} />}
         {posts.dataPosts.image.length !== 0 && (
           <ImgPreviewList sx={{ '--col': `${posts.dataPosts.image.length > 2 ? 2 : posts.dataPosts.image.length}` }}>

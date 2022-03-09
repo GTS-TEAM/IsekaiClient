@@ -11,13 +11,14 @@ interface Props {
   userName: string;
   time?: string;
   emoji?: any;
+  className?: string;
 }
 
-const UserBlockPost: React.FC<Props> = ({ userImg, userId, userName, time, emoji }) => {
+const UserBlockPost: React.FC<Props> = ({ userImg, userId, userName, time, emoji, className }) => {
   const emotion = emotions.find((emotion) => emotion.id === emoji);
 
   return (
-    <StyledUserBlockPost>
+    <StyledUserBlockPost className={className}>
       <Stack direction="row" columnGap="1.6rem" alignItems="center">
         <Link to={`/profile/${userId}`}>
           <Avatar src={userImg} />
