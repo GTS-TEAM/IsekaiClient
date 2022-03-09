@@ -37,6 +37,8 @@ import {
   TextBottom,
 } from './Styles';
 
+console.log('hi');
+
 interface Props {
   className?: string;
   style?: React.CSSProperties;
