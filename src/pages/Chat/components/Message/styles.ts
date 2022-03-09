@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled/macro';
-import { FileType, MessageType } from 'share/types';
+import { MessageType } from 'share/types';
 import { fadeIn } from 'utils/keyframeStyle';
 
 export const StyledMessage = styled.div<{
@@ -8,6 +8,7 @@ export const StyledMessage = styled.div<{
   maxWidtH?: string;
   type: string;
   themeStyle: string | null;
+  screenType?: 'popup' | 'screen';
 }>`
   font-size: 1.4rem;
   font-weight: 500;
@@ -41,6 +42,7 @@ export const StyledMessage = styled.div<{
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease;
+    width: max-content;
   }
 
   &:hover::after {
@@ -62,11 +64,19 @@ export const StyledMessage = styled.div<{
           }
         `
       : undefined}
+
+  ${(p) =>
+    p.screenType === 'popup'
+      ? css`
+          max-width: 20rem;
+        `
+      : undefined}
 `;
 
 interface MessageStyledProps {
   left?: boolean;
   type?: string;
+  screenType?: 'popup' | 'screen';
 }
 export const MessageWrapStyled = styled.div<MessageStyledProps>`
   display: flex;
@@ -139,23 +149,29 @@ export const MessageWrapStyled = styled.div<MessageStyledProps>`
           }
         `
       : undefined}
-      
-  ${(p) =>
-    p.type === MessageType.GIF || p.type === FileType.IMAGE
-      ? css`
-          img.img-file {
-            border-radius: var(--borderRadius3);
-            max-width: 30rem;
-
-            @media screen and (max-width: 767.98px) {
-              max-width: 20rem;
-            }
-          }
-        `
-      : undefined}
 `;
 
-export const File = styled.div`
+export const Img = styled.img<{
+  screenType?: 'popup' | 'screen';
+}>`
+  border-radius: var(--borderRadius3);
+  max-width: 30rem;
+
+  ${(p) =>
+    p.screenType === 'popup'
+      ? css`
+          max-width: 20rem;
+        `
+      : undefined}
+
+  @media screen and (max-width: 767.98px) {
+    max-width: 20rem;
+  }
+`;
+
+export const File = styled.div<{
+  screenType?: 'popup' | 'screen';
+}>`
   display: flex;
   align-items: center;
   column-gap: 1.2rem;
@@ -186,10 +202,22 @@ export const File = styled.div`
     height: 2.4rem;
     color: var(--fds-white);
   }
+
+  @media screen and (max-width: 639.98px) {
+    max-width: 20rem;
+  }
+
+  ${(p) =>
+    p.screenType === 'popup'
+      ? css`
+          max-width: 20rem;
+        `
+      : undefined}
 `;
 
 export const Audio = styled.div<{
   themeStyle: string;
+  screenType?: 'popup' | 'screen';
 }>`
   border-radius: var(--borderRadius3);
   width: 22rem;
@@ -264,7 +292,9 @@ export const Audio = styled.div<{
   }
 `;
 
-export const Video = styled.div`
+export const Video = styled.div<{
+  screenType?: 'popup' | 'screen';
+}>`
   border-radius: var(--borderRadius3);
   overflow: hidden;
   max-width: 30rem;
@@ -360,4 +390,11 @@ export const Video = styled.div`
       display: flex;
     }
   }
+
+  ${(p) =>
+    p.screenType === 'popup'
+      ? css`
+          max-width: 20rem;
+        `
+      : undefined}
 `;

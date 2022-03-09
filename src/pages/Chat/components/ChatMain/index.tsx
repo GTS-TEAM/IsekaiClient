@@ -11,7 +11,8 @@ const ChatMain: FC<{
   heightChatMain?: string;
   maxWidthMessage?: string;
   conversationId: string;
-}> = ({ heightChatMain, maxWidthMessage, conversationId }) => {
+  type?: 'popup' | 'screen';
+}> = ({ heightChatMain, maxWidthMessage, conversationId, type }) => {
   const { messages, hasMore, currentConversation } = useAppSelector(chatSelector);
   const [offset, setOffset] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -50,17 +51,15 @@ const ChatMain: FC<{
             overflow: 'unset',
             scrollBehavior: 'smooth',
           }}
-          // endMessage={
-          //   <EndChat>
-          //     <Avatar />
-          //     <h3>Minh Nguyen</h3>
-          //     <span>Bạn bè</span>
-          //     <span>Các bạn là bạn bè trên Isekai</span>
-          //   </EndChat>
-          // }
         >
           {messages.map((mess: MessageItem) => (
-            <Message key={mess.id} message={mess} maxWidth={maxWidthMessage} theme={currentConversation?.theme as string} />
+            <Message
+              key={mess.id}
+              message={mess}
+              maxWidth={maxWidthMessage}
+              theme={currentConversation?.theme as string}
+              type={type}
+            />
           ))}
           <div
             style={{

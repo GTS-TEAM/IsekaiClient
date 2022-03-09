@@ -15,7 +15,7 @@ const PopupChat: React.FC<{
         <PopupWrap>
           <StyledPopup>
             <Header borderRadius="var(--borderRadius2) var(--borderRadius2) 0 0" type="popup" />
-            <ChatMain conversationId={conversationId} heightChatMain="40rem" />
+            <ChatMain conversationId={conversationId} heightChatMain="40rem" type="popup" />
             <TypeMessage />
           </StyledPopup>
         </PopupWrap>,

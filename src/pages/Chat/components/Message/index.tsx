@@ -8,15 +8,16 @@ import { MdAttachFile, MdFileDownload } from 'react-icons/md';
 import { FileType, MessageItem, MessageType } from 'share/types';
 import { formatDuration } from 'utils/formatDuration';
 import Features from '../Features';
-import { Audio, File, MessageWrapStyled, StyledMessage, Video } from './styles';
+import { Audio, File, Img, MessageWrapStyled, StyledMessage, Video } from './styles';
 
 interface Props {
   message: MessageItem;
   maxWidth?: string;
   theme: string | null;
+  type?: 'popup' | 'screen';
 }
 
-const Message: React.FC<Props> = ({ message, theme }) => {
+const Message: React.FC<Props> = ({ message, theme, type }) => {
   const { user: currentUser } = useAppSelector(authSelector);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -46,7 +47,7 @@ const Message: React.FC<Props> = ({ message, theme }) => {
       {message.type === MessageType.GIF && (
         <MessageWrapStyled left={currentUser?.id === message.sender?.user.id} type={message.type}>
           <Features left={currentUser?.id === message.sender?.user.id} />
-          <img src={message.content} alt="" className="img-file" />
+          <Img src={message.content} alt="" screenType={type} />
           {message.sender && (
             <Avatar src={message.sender.user.avatar} alt={message.sender.nickname || message.sender.user.avatar} />
           )}
@@ -59,7 +60,7 @@ const Message: React.FC<Props> = ({ message, theme }) => {
           <MessageWrapStyled key={file.id} left={currentUser?.id === message.sender?.user.id} type={file.type}>
             <Features left={currentUser?.id === message.sender?.user.id} />
             {file.type === FileType.FILE && (
-              <File style={{ backgroundColor: theme || 'var(--mainColor)' }}>
+              <File style={{ backgroundColor: theme || 'var(--mainColor)' }} screenType={type}>
                 <MdAttachFile />
                 <span>{file.name}</span>
                 <a href={file.link} target="_blank" download rel="noreferrer">
@@ -68,7 +69,7 @@ const Message: React.FC<Props> = ({ message, theme }) => {
               </File>
             )}
             {file.type === FileType.AUDIO && (
-              <Audio themeStyle={theme as string}>
+              <Audio themeStyle={theme as string} screenType={type}>
                 <div
                   className="control"
                   onClick={() => {
@@ -125,7 +126,7 @@ const Message: React.FC<Props> = ({ message, theme }) => {
               </Audio>
             )}
             {file.type === FileType.VIDEO && (
-              <Video>
+              <Video screenType={type}>
                 {!togglePlayVideo && (
                   <BsPlayCircle
                     className="play"
@@ -202,7 +203,7 @@ const Message: React.FC<Props> = ({ message, theme }) => {
                 )}
               </Video>
             )}
-            {file.type === FileType.IMAGE ? <img src={file.link} alt="" className="img-file" /> : null}
+            {file.type === FileType.IMAGE ? <Img src={file.link} alt="" screenType={type} /> : null}
             {message.sender && (
               <Avatar src={message.sender.user.avatar} alt={message.sender.nickname || message.sender.user.avatar} />
             )}

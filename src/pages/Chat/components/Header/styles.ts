@@ -68,6 +68,7 @@ export const RecipientBox = styled(Box)<{ popup: boolean }>`
 `;
 
 export const StyledButtonIcon = styled(IconButton)`
+  flex-shrink: 0;
   svg {
     width: 2.4rem;
     height: 2.4rem;

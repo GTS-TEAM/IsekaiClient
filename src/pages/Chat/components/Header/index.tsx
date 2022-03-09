@@ -24,7 +24,7 @@ import ModalEditNickName from '../ModalEditNickName';
 import ModalViewFiles from '../ModalViewFiles';
 import { RecipientBox, StyledButtonIcon, StyledHeader } from './styles';
 
-const Header: React.FC<{ borderRadius?: string; type?: string; onClose?: () => any }> = ({
+const Header: React.FC<{ borderRadius?: string; type?: 'popup' | 'screen'; onClose?: () => any }> = ({
   borderRadius,
   type,
   onClose,
