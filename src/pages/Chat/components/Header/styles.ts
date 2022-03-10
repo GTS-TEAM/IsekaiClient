@@ -58,6 +58,13 @@ export const RecipientBox = styled(Box)<{ popup: boolean }>`
       font-weight: 500;
       color: var(--fds-gray-7);
       font-size: 1.6rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      line-clamp: 1;
+      -webkit-box-orient: vertical;
+      max-width: 25rem;
     }
 
     span {

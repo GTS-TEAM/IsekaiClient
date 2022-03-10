@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { MessageItem } from 'share/types';
+import { LIMITCHAT } from 'utils/constant';
 import Message from '../Message';
 import { StyledChatMain } from './styles';
 
@@ -13,7 +14,7 @@ const ChatMain: FC<{
   conversationId: string;
   type?: 'popup' | 'screen';
 }> = ({ heightChatMain, maxWidthMessage, conversationId, type }) => {
-  const { messages, hasMore, currentConversation } = useAppSelector(chatSelector);
+  const { messages, hasMoreMessage, currentConversation } = useAppSelector(chatSelector);
   const [offset, setOffset] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
@@ -38,9 +39,9 @@ const ChatMain: FC<{
           dataLength={messages.length}
           next={() => {
             setOffset(offset + 20);
-            dispatch(getAllMessage({ conversation_id: conversationId, offset: offset + 20 }));
+            dispatch(getAllMessage({ conversation_id: conversationId, offset: offset + LIMITCHAT }));
           }}
-          hasMore={hasMore}
+          hasMore={hasMoreMessage}
           inverse={true}
           loader={<CircularProgress sx={{ color: currentConversation?.theme || 'var(--mainColor)' }} />}
           scrollableTarget="scrollableDiv"

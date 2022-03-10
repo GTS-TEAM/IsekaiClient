@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ConversationType, FileType, MessageType, User } from 'share/types';
+import { LIMIT_CONVERSATION } from 'utils/constant';
 import { getReceiver } from 'utils/getReceiver';
 import ModalCreateCovnersation from '../ModalChooseUser/ModalCreateCovnersation';
 import { ButtonNewConversation, SidebarHeader, SidebarItem, SidebarMenu, StyledSidebar } from './styles';
@@ -14,8 +15,9 @@ const Sidebar: React.FC<{
   style?: React.CSSProperties;
 }> = ({ style }) => {
   const { user: currentUser } = useAppSelector(authSelector);
-  const { conversations } = useAppSelector(chatSelector);
+  const { conversations, hasMoreConversation } = useAppSelector(chatSelector);
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
+  const [offset, setOffset] = useState(0);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -25,7 +27,14 @@ const Sidebar: React.FC<{
   };
 
   useEffect(() => {
-    dispatch(getAllConversations({ offset: 0, limit: 20, conversationId: id as string }));
+    const getAllConversationHandler = async () => {
+      const action = await dispatch(getAllConversations({ offset: 0, limit: LIMIT_CONVERSATION }));
+      if (getAllConversations.fulfilled.match(action)) {
+        const conversationExist = action.payload.find((item: any) => item.id === id);
+        dispatch(selectConversation(conversationExist));
+      }
+    };
+    getAllConversationHandler();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
@@ -42,10 +51,18 @@ const Sidebar: React.FC<{
             <AiOutlineUserAdd />
           </ButtonNewConversation>
         </SidebarHeader>
-        <SidebarMenu>
+        <SidebarMenu
+          dataLength={conversations.length}
+          height={'calc(100vh - 2 * var(--headerHeight)) '}
+          next={async () => {
+            setOffset(offset + LIMIT_CONVERSATION);
+            dispatch(getAllConversations({ offset: offset + LIMIT_CONVERSATION, limit: LIMIT_CONVERSATION }));
+          }}
+          hasMore={hasMoreConversation}
+          loader={<p>Loading...</p>}
+        >
           {conversations.map((conversation) => {
             const receiver = getReceiver(conversation, currentUser as User);
-            // const last_message= conversation.last_message?.type===MessageType.GIF?
             const nameSender =
               conversation.last_message?.sender?.user.username === currentUser?.username
                 ? 'Bạn'
