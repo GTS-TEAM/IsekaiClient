@@ -17,6 +17,7 @@ export const chatMiddleware: Middleware = (store) => {
   let socket: Socket;
   return (next) => (action) => {
     const isConnectionEstablished = socket && store.getState().chat.isConnected;
+
     if (startConnecting.match(action)) {
       socket = io(END_POINT, {
         path: '/api/socket.io',
@@ -45,7 +46,7 @@ export const chatMiddleware: Middleware = (store) => {
           return;
         }
         store.dispatch(receiveMessage(message));
-        window.history.replaceState(null, '', `/message/${message.conversation.id}`);
+        // window.history.replaceState(null, '', `/message/${message.conversation.id}`);
       });
     }
     if (submitMessage.match(action) && isConnectionEstablished) {

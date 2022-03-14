@@ -7,7 +7,7 @@ import { authSelector } from 'features/authSlice';
 import { chatSelector, exitChatView, leaveGroup, removeConversation, updateConversation } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { AiOutlineEdit, AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { BiFileBlank, BiImageAdd } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
@@ -44,10 +44,7 @@ const Header: React.FC<{ borderRadius?: string; type?: 'popup' | 'screen'; onClo
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const receiver = useMemo(
-    () => getReceiver(currentConversation as ConversationItem, currentUser as User),
-    [currentConversation, currentUser],
-  );
+  const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
 
   return (
     <StyledHeader borderRadius={borderRadius}>
@@ -291,6 +288,10 @@ const Header: React.FC<{ borderRadius?: string; type?: 'popup' | 'screen'; onClo
         }}
         onConfirm={() => {
           dispatch(removeConversation(currentConversation?.id as string));
+          if (type === 'popup') {
+            onClose && onClose();
+            return;
+          }
           navigate('/message', {
             replace: true,
           });
@@ -315,4 +316,4 @@ const Header: React.FC<{ borderRadius?: string; type?: 'popup' | 'screen'; onClo
   );
 };
 
-export default React.memo(Header);
+export default Header;

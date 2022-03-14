@@ -72,7 +72,7 @@ const Header = () => {
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to={currentConversation ? `/message/${currentConversation.id}` : '/message'}>
+              <NavLink to={'/message'}>
                 <AiOutlineMessage />
               </NavLink>
             </NavItem>

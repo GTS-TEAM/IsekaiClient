@@ -1,5 +1,5 @@
 import { CircularProgress } from '@mui/material';
-import { chatSelector, getAllMessage, unmountMessage } from 'features/chatSlice';
+import { chatSelector, getAllMessage, getAllMessageByReceiverId, unmountMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -21,8 +21,13 @@ const ChatMain: FC<{
 
   useEffect(() => {
     dispatch(unmountMessage());
-    dispatch(getAllMessage({ conversation_id: conversationId, offset: 0 }));
-  }, [conversationId, dispatch]);
+    if (type === 'screen') {
+      dispatch(getAllMessage({ conversation_id: conversationId, offset: 0 }));
+    }
+    if (type === 'popup') {
+      dispatch(getAllMessageByReceiverId({ receiverId: conversationId, offset: 0 }));
+    }
+  }, [conversationId, dispatch, type]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -39,7 +44,12 @@ const ChatMain: FC<{
           dataLength={messages.length}
           next={() => {
             setOffset(offset + 20);
-            dispatch(getAllMessage({ conversation_id: conversationId, offset: offset + LIMITCHAT }));
+            if (type === 'screen') {
+              dispatch(getAllMessage({ conversation_id: conversationId, offset: offset + LIMITCHAT }));
+            }
+            if (type === 'popup') {
+              dispatch(getAllMessageByReceiverId({ receiverId: conversationId, offset: offset + LIMITCHAT }));
+            }
           }}
           hasMore={hasMoreMessage}
           inverse={true}

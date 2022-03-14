@@ -16,6 +16,17 @@ export const getAllMessage = createAsyncThunk<
   return data;
 });
 
+export const getAllMessageByReceiverId = createAsyncThunk<
+  MessageItem[],
+  {
+    receiverId: string;
+    offset: number;
+  }
+>('chat/getAllMessageByReceiverId', async ({ offset, receiverId }) => {
+  const { data } = await isekaiApi.getAllMessageByReceiverId(receiverId, offset);
+  return data;
+});
+
 export const getAllConversations = createAsyncThunk<
   any,
   {
@@ -28,14 +39,6 @@ export const getAllConversations = createAsyncThunk<
 >('chat/getAllConversations', async ({ offset, limit }, thunkApi) => {
   const { data } = await isekaiApi.getAllConversation(limit, offset);
 
-  // const conversationExist = data.find((item: any) => item.id === conversationId);
-  // if (conversationExist) {
-  //   thunkApi.dispatch(selectConversation(conversationExist));
-  // } else {
-  //   if (data.length > 0) {
-  //     // thunkApi.dispatch(selectConversation(data[0]));
-  //   }
-  // }
   return data;
 });
 
@@ -170,7 +173,6 @@ const chatSlice = createSlice({
     ) => {},
     unmountChat: (state) => {
       state.conversations = [];
-      state.currentConversation = null;
       state.isConnected = false;
       state.isEstablishingConnection = false;
       state.messages = [];
@@ -220,6 +222,22 @@ const chatSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(getAllMessage.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.isLoading = false;
+      })
+      .addCase(getAllMessageByReceiverId.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllMessageByReceiverId.fulfilled, (state, action: PayloadAction<MessageItem[]>) => {
+        if (action.payload.length >= LIMITCHAT) {
+          state.hasMoreMessage = true;
+        } else {
+          state.hasMoreMessage = false;
+        }
+        state.messages = [...state.messages, ...action.payload];
+        state.isLoading = false;
+      })
+      .addCase(getAllMessageByReceiverId.rejected, (state, action) => {
         state.error = action.error.message;
         state.isLoading = false;
       })

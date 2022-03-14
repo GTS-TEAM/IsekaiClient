@@ -18,6 +18,5 @@ export const StyledHomepage = styled.div`
 
 export const Feed = styled.div`
   width: 100%;
-  max-width: 60rem;
-  margin: 0 auto;
+  flex: 1;
 `;

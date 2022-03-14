@@ -11,9 +11,9 @@ export const isekaiApi = {
   },
 
   //Gooogle Login api
-  loginGoogle:(token:string) => {
-    return axios.post<ResLogin>('/auth/google',{
-      token
+  loginGoogle: (token: string) => {
+    return axios.post<ResLogin>('/auth/google', {
+      token,
     });
   },
 
@@ -182,6 +182,14 @@ export const isekaiApi = {
       },
     });
   },
+  getAllMessageByReceiverId: (receiverId: string, offset: number) => {
+    return axios.get<MessageItem[]>(`conversations/${receiverId}/messages`, {
+      params: {
+        offset: offset,
+        limit: LIMITCHAT,
+      },
+    });
+  },
   getAllConversation: (limit: number, offset: number) => {
     return axios.get('conversations', {
       params: {
@@ -204,5 +212,9 @@ export const isekaiApi = {
         type2,
       },
     });
+  },
+
+  getListFriend: () => {
+    return axios.get<User[]>('user/list-friends');
   },
 };
