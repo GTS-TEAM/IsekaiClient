@@ -50,9 +50,15 @@ const PopupChat: React.FC = () => {
                     }),
                   );
                 }}
+                currentConversation={popupChat.currentConversation}
               />
-              <ChatMain conversationId={popupChat.receiverId} heightChatMain="40rem" type="popup" />
-              <TypeMessage />
+              <ChatMain
+                conversationId={popupChat.receiverId}
+                heightChatMain="40rem"
+                type="popup"
+                currentConversation={popupChat.currentConversation}
+              />
+              <TypeMessage currentConversation={popupChat.currentConversation} />
             </StyledPopup>
           </PopupWrap>,
           popup,
