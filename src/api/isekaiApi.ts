@@ -1,6 +1,16 @@
 import axios from 'axios';
 import { LIMITCHAT } from 'utils/constant';
-import { CommentItem, InfoUser, MessageItem, MusicItem, PostItem, ResLogin, Token, User } from './../share/types';
+import {
+  CommentItem,
+  ConversationItem,
+  InfoUser,
+  MessageItem,
+  MusicItem,
+  PostItem,
+  ResLogin,
+  Token,
+  User,
+} from './../share/types';
 
 export const isekaiApi = {
   login: (email: string, password: string) => {
@@ -197,6 +207,10 @@ export const isekaiApi = {
         offset,
       },
     });
+  },
+
+  getConversationByReceiverId: (receiverId: string) => {
+    return axios.get<ConversationItem>(`conversations/r/${receiverId}`);
   },
 
   removeConversation: (conversationId: string) => {

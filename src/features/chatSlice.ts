@@ -93,6 +93,7 @@ const chatSlice = createSlice({
     receiveMessage: (state, action: PayloadAction<MessageItem>) => {
       state.messages.unshift(action.payload);
       state.currentConversation = action.payload.conversation;
+      state.popupChat.currentConversation = action.payload.conversation;
       const conversationExistIndex = state.conversations.findIndex(
         (conversation) => conversation.id === action.payload.conversation.id,
       );

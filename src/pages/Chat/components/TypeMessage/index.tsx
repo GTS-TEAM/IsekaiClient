@@ -6,7 +6,7 @@ import { authSelector } from 'features/authSlice';
 import { submitMessage } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { AiOutlineGif, AiOutlinePlus, AiOutlineSend } from 'react-icons/ai';
 import { BiSticker } from 'react-icons/bi';
 import { FiFile, FiFileText } from 'react-icons/fi';
@@ -48,6 +48,11 @@ const TypeMessage: React.FC<{
   >([]);
   const { user: currentUser } = useAppSelector(authSelector);
   const dispatch = useAppDispatch();
+
+  const theme = useMemo(
+    () => (currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)'),
+    [currentConversation?.theme],
+  );
 
   const changeTextMessageEmoji = (value: string) => {
     // two line get position of cursor
@@ -138,12 +143,6 @@ const TypeMessage: React.FC<{
       ];
     });
 
-    // if (currentConversation?.type === ConversationType.GROUP) {
-    //   dispatch(submitMessage({ message: url as string, conversationId: currentConversation.id, type }));
-    // } else {
-    //   const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
-    //   dispatch(submitMessage({ message: url as string, receiverId: receiver?.id, type }));
-    // }
     setSentLoading(false);
   };
 
@@ -176,7 +175,7 @@ const TypeMessage: React.FC<{
               setIsShowDropdown(!isShowDropdown);
             }}
             sx={{
-              backgroundColor: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
+              backgroundColor: theme,
             }}
           >
             <AiOutlinePlus />
@@ -278,7 +277,7 @@ const TypeMessage: React.FC<{
               }}
               sx={{
                 svg: {
-                  color: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
+                  color: theme,
                 },
               }}
             >
@@ -298,7 +297,7 @@ const TypeMessage: React.FC<{
           <CircularProgress
             size={24}
             sx={{
-              color: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
+              color: theme,
             }}
           />
         ) : (
@@ -306,7 +305,7 @@ const TypeMessage: React.FC<{
             onClick={sendMessageHandler}
             sx={{
               svg: {
-                color: currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)',
+                color: theme,
               },
             }}
           >

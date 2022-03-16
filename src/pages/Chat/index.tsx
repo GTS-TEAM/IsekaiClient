@@ -9,16 +9,6 @@ import ChatView from './components/ChatView';
 import Sidebar from './components/Sidebar';
 import { ChatBody, StyledChat } from './styles';
 
-// const END_POINT = 'wss://isekai-api.me';
-
-// const socket = io(END_POINT, {
-//   path: '/api/socket.io',
-//   query: {
-//     token: getTokenFromLocalStorage().access_token,
-//   },
-//   transports: ['websocket'],
-// });
-
 const Chat = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();

@@ -1,7 +1,7 @@
 import { CircularProgress } from '@mui/material';
 import { chatSelector, getAllMessage, getAllMessageByReceiverId, unmountMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ConversationItem, MessageItem } from 'share/types';
 import { LIMITCHAT } from 'utils/constant';
@@ -19,6 +19,8 @@ const ChatMain: FC<{
   const [offset, setOffset] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
+
+  const theme = useMemo(() => currentConversation?.theme, [currentConversation]);
 
   useEffect(() => {
     dispatch(unmountMessage());
@@ -54,7 +56,7 @@ const ChatMain: FC<{
           }}
           hasMore={hasMoreMessage}
           inverse={true}
-          loader={<CircularProgress sx={{ color: currentConversation?.theme || 'var(--mainColor)' }} />}
+          loader={<CircularProgress sx={{ color: theme || 'var(--mainColor)' }} />}
           scrollableTarget="scrollableDiv"
           style={{
             display: 'flex',
@@ -65,13 +67,7 @@ const ChatMain: FC<{
           }}
         >
           {messages.map((mess: MessageItem) => (
-            <Message
-              key={mess.id}
-              message={mess}
-              maxWidth={maxWidthMessage}
-              theme={currentConversation?.theme as string}
-              type={type}
-            />
+            <Message key={mess.id} message={mess} maxWidth={maxWidthMessage} theme={theme as string} type={type} />
           ))}
           <div
             style={{

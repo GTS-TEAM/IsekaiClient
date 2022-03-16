@@ -1,17 +1,18 @@
 import { Box, Button, ClickAwayListener, IconButton } from '@mui/material';
 import ModalWrapper from 'components/NewModal';
 import { Header } from 'components/NewModal/styles';
-import { chatSelector, updateConversation } from 'features/chatSlice';
-import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { updateConversation } from 'features/chatSlice';
+import { useAppDispatch } from 'hooks/hooks';
 import React, { useState } from 'react';
 import { GrFormClose } from 'react-icons/gr';
+import { ConversationItem } from 'share/types';
 import { Body, StyledModal } from './styles';
 
 const ModalChangeNameConversation: React.FC<{
   onClose: () => any;
   isShow: boolean;
-}> = ({ isShow, onClose }) => {
-  const { currentConversation } = useAppSelector(chatSelector);
+  currentConversation: ConversationItem;
+}> = ({ isShow, onClose, currentConversation }) => {
   const dispatch = useAppDispatch();
   const [text, setText] = useState<string>('');
   return isShow ? (

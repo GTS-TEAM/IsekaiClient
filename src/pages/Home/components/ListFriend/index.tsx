@@ -13,51 +13,61 @@ const ListFriend = () => {
   const { user } = useAppSelector(authSelector);
   const dispatch = useAppDispatch();
 
-  const chooseConversation = (friend: User) => {
-    const newConversation: ConversationItem = {
-      id: `${user?.id}-${friend.id}`,
-      members: [
-        {
-          id: v4(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          deleted_conversation_at: null,
-          nickname: null,
-          role: 'member',
-          //@ts-ignore
-          user: {
-            ...friend,
-            last_activity: null,
+  const chooseConversation = async (friend: User) => {
+    try {
+      const { data } = await isekaiApi.getConversationByReceiverId(friend.id);
+      dispatch(
+        selectPopupChat({
+          receiverId: friend.id,
+          currentConversation: data,
+        }),
+      );
+    } catch (error) {
+      const newConversation: ConversationItem = {
+        id: `${user?.id}-${friend.id}`,
+        members: [
+          {
+            id: v4(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            deleted_conversation_at: null,
+            nickname: null,
+            role: 'member',
+            //@ts-ignore
+            user: {
+              ...friend,
+              last_activity: null,
+            },
           },
-        },
-        {
-          id: v4(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          deleted_conversation_at: null,
-          nickname: null,
-          role: 'member',
-          //@ts-ignore
-          user: {
-            ...user,
-            last_activity: null,
+          {
+            id: v4(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            deleted_conversation_at: null,
+            nickname: null,
+            role: 'member',
+            //@ts-ignore
+            user: {
+              ...user,
+              last_activity: null,
+            },
           },
-        },
-      ],
-      type: ConversationType.PRIVATE,
-      last_message: null,
-      avatar: null,
-      name: null,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      theme: '#a56ffd',
-    };
-    dispatch(
-      selectPopupChat({
-        receiverId: friend.id,
-        currentConversation: newConversation,
-      }),
-    );
+        ],
+        type: ConversationType.PRIVATE,
+        last_message: null,
+        avatar: null,
+        name: null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        theme: '#a56ffd',
+      };
+      dispatch(
+        selectPopupChat({
+          receiverId: friend.id,
+          currentConversation: newConversation,
+        }),
+      );
+    }
   };
 
   useEffect(() => {
