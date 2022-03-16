@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { CommentItem, InfoUser, MusicItem, PostItem, ResLogin, Token, User } from './../share/types';
+import { LIMITCHAT } from 'utils/constant';
+import { CommentItem, InfoUser, MessageItem, MusicItem, PostItem, ResLogin, Token, User } from './../share/types';
 
 export const isekaiApi = {
   login: (email: string, password: string) => {
@@ -8,6 +9,14 @@ export const isekaiApi = {
       password,
     });
   },
+
+  //Gooogle Login api
+  loginGoogle: (token: string) => {
+    return axios.post<ResLogin>('/auth/google', {
+      token,
+    });
+  },
+
   register: (email: string, password: string, userName: string) => {
     return axios.post<{
       message: string;
@@ -139,6 +148,20 @@ export const isekaiApi = {
     return axios.post<{ urls: string[] }>('/upload', arrFile);
   },
 
+  uploadSongFile: (arrFile: FormData) => {
+    return axios.post('/music/file', arrFile);
+  },
+
+  uploadSongUrl: (url: string) => {
+    return axios.post('/music/youtube', {
+      url,
+    });
+  },
+
+  uploadVideoOrMusicMessage: (arrFile: FormData) => {
+    return axios.post<{ urls: string[] }>('/upload/video', arrFile);
+  },
+
   getListMusic: () => {
     return axios.get<MusicItem[]>('music');
   },
@@ -149,5 +172,49 @@ export const isekaiApi = {
         q,
       },
     });
+  },
+
+  getAllMessage: (conversation_id: string, offset: number) => {
+    return axios.get<MessageItem[]>(`conversations/message/${conversation_id}`, {
+      params: {
+        offset: offset,
+        limit: LIMITCHAT,
+      },
+    });
+  },
+  getAllMessageByReceiverId: (receiverId: string, offset: number) => {
+    return axios.get<MessageItem[]>(`conversations/${receiverId}/messages`, {
+      params: {
+        offset: offset,
+        limit: LIMITCHAT,
+      },
+    });
+  },
+  getAllConversation: (limit: number, offset: number) => {
+    return axios.get('conversations', {
+      params: {
+        limit,
+        offset,
+      },
+    });
+  },
+
+  removeConversation: (conversationId: string) => {
+    return axios.delete(`conversations/${conversationId}`);
+  },
+
+  getAllFiles: (conversationId: string, limit: number, offset: number, type1: string, type2: string) => {
+    return axios.get(`conversations/${conversationId}/files`, {
+      params: {
+        limit,
+        offset,
+        type1,
+        type2,
+      },
+    });
+  },
+
+  getListFriend: () => {
+    return axios.get<User[]>('user/list-friends');
   },
 };

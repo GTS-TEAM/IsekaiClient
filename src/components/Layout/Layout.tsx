@@ -1,19 +1,11 @@
 import Header from 'components/Header/Header';
 import React from 'react';
-import { Main } from './Styles';
 
-interface Props {
-  sx?: React.CSSProperties;
-  className?: string;
-}
-
-const Layout: React.FC<Props> = ({ children, className, sx }) => {
+const Layout: React.FC = ({ children }) => {
   return (
     <React.Fragment>
       <Header />
-      <Main className={className} style={sx}>
-        {children}
-      </Main>
+      <>{children}</>
     </React.Fragment>
   );
 };

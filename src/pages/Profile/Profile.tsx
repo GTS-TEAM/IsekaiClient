@@ -1,4 +1,5 @@
 import { Stack } from '@mui/material';
+import Container from 'components/Container/Container';
 import CreatePost from 'components/CreatePost/CreatePost';
 import Layout from 'components/Layout/Layout';
 import ListPost from 'components/ListPost/ListPost';
@@ -50,32 +51,34 @@ const Profile = () => {
 
   return (
     <Layout>
-      <StyledProfile>
-        <div>
-          <CoverImg imgBgUrl={user?.background || ''} userId={user?.id || ''} />
-          <ProfileMenu />
-          <User>
-            <h2>{user?.username}</h2>
-            <p>3.2k Bạn bè</p>
-          </User>
-        </div>
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-          <Stack direction="row" columnGap="1.2rem">
-            <Sidebar>
-              <Info bio={user?.bio || ''} userId={user?.id || ''} />
-              <PhotosPreview userId={id || ''} />
-            </Sidebar>
-            <main style={{ flex: '1' }}>
-              {currentUser?.id === user?.id && <CreatePost />}
-              <ListPost
-                posts={timeline.posts}
-                hasMore={timeline.hasMore}
-                onFetchMore={fetchMoreHandler}
-                style={currentUser?.id === user?.id ? { marginTop: '1.2rem' } : { marginTop: 'unset' }}
-              />
-            </main>
-          </Stack>
-        </div>
+      <StyledProfile className="layout">
+        <Container>
+          <div>
+            <CoverImg imgBgUrl={user?.background || ''} userId={user?.id || ''} />
+            <ProfileMenu />
+            <User>
+              <h2>{user?.username}</h2>
+              <p>3.2k Bạn bè</p>
+            </User>
+          </div>
+          <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+            <Stack direction="row" columnGap="1.2rem">
+              <Sidebar>
+                <Info bio={user?.bio || ''} userId={user?.id || ''} />
+                <PhotosPreview userId={id || ''} />
+              </Sidebar>
+              <main style={{ flex: '1' }}>
+                {currentUser?.id === user?.id && <CreatePost />}
+                <ListPost
+                  posts={timeline.posts}
+                  hasMore={timeline.hasMore}
+                  onFetchMore={fetchMoreHandler}
+                  style={currentUser?.id === user?.id ? { marginTop: '1.2rem' } : { marginTop: 'unset' }}
+                />
+              </main>
+            </Stack>
+          </div>
+        </Container>
       </StyledProfile>
     </Layout>
   );

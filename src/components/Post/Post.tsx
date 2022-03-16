@@ -1,15 +1,18 @@
-import { Stack } from '@mui/material';
+import { LinkPreview } from '@dhaiwat10/react-link-preview';
+import { Box, Stack } from '@mui/material';
 import Actions from 'components/Actions/Actions';
 import Comments from 'components/Comments/Comments';
 import GridImg from 'components/GridImg/GridImg';
 import LiveStats from 'components/LiveStats/LiveStats';
-import ModalPost from 'components/ModalPost/ModalPost';
+import ModalPost from 'components/ModalPost';
 import More from 'components/More/More';
 import Overlay from 'components/Overlay/Overlay';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import ReactHtmlParser from 'react-html-parser';
 import { PostItem } from 'share/types';
+import { REGEX_URL } from 'utils/constant';
 import { authSelector } from '../../features/authSlice';
 import {
   addPostEmotion,
@@ -24,7 +27,6 @@ import { closeEditPostModal, openEditPostModal, setPostIdEdit, uiSelector } from
 import { useOverFlowHidden } from '../../hooks/useOverFlowHidden';
 import emotions from '../../utils/emotions';
 import { Body, Description, Header, StyledPost } from './Styles';
-
 interface Props {
   post: PostItem;
 }
@@ -33,12 +35,25 @@ const Post: React.FC<Props> = ({ post }) => {
   const [isOpenComment, setIsOpenComment] = useState<boolean>(false);
   const { user: currentUser } = useAppSelector(authSelector);
   const [anchorElPost, setAnchorElPost] = React.useState<null | HTMLElement>(null);
+  const [isReadMore, setIsReaMore] = useState<boolean>(false);
+  const [haveReadMore, setHaveReadMore] = useState<boolean>(false);
+  const descRef = useRef<HTMLParagraphElement | null>(null);
 
   const { modalPost: uiModalPost } = useAppSelector(uiSelector);
 
   const openPost = Boolean(anchorElPost);
 
   const dispatch = useAppDispatch();
+
+  const url = useMemo(() => post.description.match(REGEX_URL)?.[0], [post]) as string;
+
+  const desc = useMemo(() => {
+    let text = '';
+    post.description.match(REGEX_URL)?.forEach((link) => {
+      text = post.description.replace(REGEX_URL, `<a href="${link}" target="_blank" >${link}</a>`);
+    });
+    return text;
+  }, [post]);
 
   const clickOpenMenuHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorElPost(event.currentTarget);
@@ -78,6 +93,14 @@ const Post: React.FC<Props> = ({ post }) => {
 
   useOverFlowHidden(uiModalPost.isOpenEdit);
 
+  useEffect(() => {
+    if ((descRef.current?.offsetHeight as number) >= 500) {
+      setHaveReadMore(true);
+    } else {
+      setHaveReadMore(false);
+    }
+  }, []);
+
   return (
     <StyledPost>
       <Header>
@@ -106,7 +129,50 @@ const Post: React.FC<Props> = ({ post }) => {
         </Stack>
       </Header>
       <Body>
-        {post.description.length !== 0 && <Description>{post.description}</Description>}
+        {post.description.length !== 0 && (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: '1rem',
+
+              span: {
+                fontSize: '1.4rem',
+                color: 'var(--mainColor)',
+                lineHeight: '1.5',
+                fontWeight: '500',
+                cursor: 'pointer',
+
+                '&:hover': {
+                  textDecoration: 'underline',
+                },
+              },
+            }}
+          >
+            {post.description.includes('http') ? (
+              <>
+                <Description ref={descRef} haveReadMore={haveReadMore} isReadMore={isReadMore}>
+                  {ReactHtmlParser(desc)}
+                </Description>
+                <LinkPreview url={url} width="auto" />
+              </>
+            ) : (
+              <Description ref={descRef} haveReadMore={haveReadMore} isReadMore={isReadMore}>
+                {post.description}
+              </Description>
+            )}
+
+            {haveReadMore && !isReadMore && (
+              <span
+                onClick={() => {
+                  setIsReaMore(true);
+                }}
+              >
+                Đọc thêm
+              </span>
+            )}
+          </Box>
+        )}
         {post.image.length === 0 ? null : <GridImg post={post} />}
         <LiveStats
           totalLike={post.likeCount}

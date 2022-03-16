@@ -29,7 +29,7 @@ const Actions: React.FC<ActionsProps> = ({ onToggleComment, post, className, onL
       <div className="share">
         <Stack direction="row" alignItems="center" columnGap="1rem" justifyContent="center">
           <AiOutlineShareAlt />
-          <span>Chia sẽ</span>
+          <span>Chia sẻ</span>
         </Stack>
       </div>
     </StyledActions>

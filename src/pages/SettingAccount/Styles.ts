@@ -1,6 +1,10 @@
 import styled from '@emotion/styled';
 import { Button, Stack } from '@mui/material';
 
+export const StyledSettingAccount = styled.div`
+  padding: 1.8rem;
+`;
+
 export const SettingAccountContainer = styled.div`
   padding: 3rem;
   border-radius: 6px;

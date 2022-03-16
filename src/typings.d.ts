@@ -9,3 +9,7 @@ declare module '*.svg' {
   export default src;
 }
 declare namespace _ {}
+declare module '@emotion/babel-plugin';
+declare module 'emoji-mart';
+declare module '@dhaiwat10/react-link-preview';
+declare module 'react-html-parser';

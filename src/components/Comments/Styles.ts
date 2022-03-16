@@ -76,5 +76,8 @@ export const CommentMain = styled.div`
     font-size: 1.3rem;
     color: var(--textColorGray);
     max-width: 30rem;
+    white-space: normal;
+    word-break: break-all;
+    white-space: pre-line;
   }
 `;

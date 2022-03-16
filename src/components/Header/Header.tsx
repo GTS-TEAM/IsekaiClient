@@ -1,20 +1,30 @@
 import { Avatar, MenuItem, Stack } from '@mui/material';
+import { chatSelector } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React from 'react';
+import { useGoogleLogout } from 'react-google-login';
 import { AiOutlineHome, AiOutlineMessage } from 'react-icons/ai';
 import { FiLogOut, FiUsers } from 'react-icons/fi';
 import { IoNotificationsOutline, IoSettingsOutline } from 'react-icons/io5';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { clientId } from 'share/types';
 import { deleteTokenFromLocalStorage } from '../../api/axoisClient';
 import { authSelector, logout } from '../../features/authSlice';
 import GlobalSearch from './GlobalSearch';
 import { DropdownMenu, HeaderWrap, Logo, Navbar, NavItem, StyledHeader, User } from './Styles';
+
 const Header = () => {
   const { user } = useAppSelector(authSelector);
+  const { currentConversation } = useAppSelector(chatSelector);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  //sigout if login with google
+  const { signOut } = useGoogleLogout({
+    clientId,
+  });
 
   const handleClickOpenDropdown = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
@@ -24,6 +34,7 @@ const Header = () => {
   };
 
   const clickLogoutHandler = () => {
+    signOut();
     dispatch(logout());
     handleCloseDropdown();
     deleteTokenFromLocalStorage();
@@ -61,7 +72,7 @@ const Header = () => {
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to="/message">
+              <NavLink to={'/message'}>
                 <AiOutlineMessage />
               </NavLink>
             </NavItem>
@@ -106,4 +117,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default React.memo(Header);

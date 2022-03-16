@@ -146,6 +146,12 @@ export const StyledControl = styled.div`
     font-size: 1.4rem;
     font-weight: 500;
     line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
   .uploader,
   .song-author {
@@ -206,10 +212,61 @@ export const ButtonUpload = styled(Button)`
   height: 4rem;
   color: var(--fds-white);
   font-size: 1.4rem;
-  text-transform: capitalize;
+  text-transform: unset;
   border-radius: var(--borderRadius1);
 
   &:hover {
     background-color: var(--mainColor);
+  }
+`;
+
+export const FormUpload = styled.form`
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.2rem;
+`;
+
+export const InputField = styled.div`
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+
+  input {
+    height: 4rem;
+    padding: 0 1.2rem;
+    width: 100%;
+    border: 1px solid var(--fds-gray-6);
+    background-color: var(--fds-gray-6);
+    border-radius: var(--borderRadius1);
+    font-size: 1.4rem;
+  }
+
+  button {
+    flex-shrink: 0;
+  }
+
+  .text-error {
+    color: red;
+    font-size: 1.2rem;
+  }
+
+  .input-dummy {
+    background-color: var(--fds-gray-6);
+    border-radius: var(--borderRadius1);
+    flex: 1;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    padding: 0 1.2rem;
+    p {
+      font-size: 1.4rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      line-clamp: 1;
+      -webkit-box-orient: vertical;
+      line-height: 1.5;
+    }
   }
 `;

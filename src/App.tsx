@@ -1,55 +1,76 @@
 import Layout from 'components/Layout/Layout';
-import RequireAuth from 'components/RequireAuth/RequireAuth';
+import RequireAuth from 'components/RequireAuth';
+import Chat from 'pages/Chat';
+import PopupChat from 'pages/Chat/components/PropupChat';
 import Post from 'pages/Detail/Detail';
 import Profile from 'pages/Profile/Profile';
-import SettingAccount from 'pages/SettingAccount/SettingAccount';
+import SettingAccount from 'pages/SettingAccount';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
-import Homepage from './pages/Home/Homepage';
-import Landing from './pages/Landing/Landing';
+import Homepage from './pages/Home';
+import Landing from './pages/Landing';
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route
-          path="/home"
-          element={
-            <RequireAuth>
-              <Layout>
-                <Homepage />
-              </Layout>
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/profile/:id"
-          element={
-            <RequireAuth>
-              <Profile />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/post"
-          element={
-            <RequireAuth>
-              <Post />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/setting"
-          element={
-            <RequireAuth>
-              <SettingAccount />
-            </RequireAuth>
-          }
-        />
-        {/* 
+    <>
+      <Router>
+        <PopupChat />
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/home"
+            element={
+              <RequireAuth>
+                <Layout>
+                  <Homepage />
+                </Layout>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/profile/:id"
+            element={
+              <RequireAuth>
+                <Profile />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/post"
+            element={
+              <RequireAuth>
+                <Post />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/setting"
+            element={
+              <RequireAuth>
+                <SettingAccount />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/message"
+            element={
+              <RequireAuth>
+                <Chat />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/message/:id"
+            element={
+              <RequireAuth>
+                <Chat />
+              </RequireAuth>
+            }
+          />
+          <Route path="*" element={<p>Not found</p>} />
+          {/* 
         <Route path="/login/identify">
           {token.access_token ? <Redirect to="/" /> : <BasicCard />}
         </Route>
@@ -68,8 +89,9 @@ function App() {
         <Route path="/signup/validate">
           <BasicCard />
         </Route> */}
-      </Routes>
-    </Router>
+        </Routes>
+      </Router>
+    </>
   );
 }
 

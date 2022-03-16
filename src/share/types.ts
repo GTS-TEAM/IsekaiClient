@@ -13,6 +13,7 @@ export interface User {
   address?: string;
 }
 
+export const clientId = '113229342458-nffji5842i81t7sp50g08k4q044c8tj5.apps.googleusercontent.com';
 export interface PostItem {
   id: string;
   description: string;
@@ -204,11 +205,6 @@ export interface NameLocationRes {
   };
 }
 
-export enum DefaultLocation {
-  lon = Number(localStorage.getItem('longitude')) || 105.8412,
-  lat = Number(localStorage.getItem('latitude')) || 21.0245,
-}
-
 export interface MusicItem {
   id: string;
   name: string;
@@ -217,4 +213,99 @@ export interface MusicItem {
   url: string;
   create_at: string;
   uploader: User;
+}
+
+export enum ConversationType {
+  PRIVATE = 'private',
+  GROUP = 'group',
+}
+
+export enum ChatEvent {
+  MESSAGE = 'message',
+  CREATEGROUP = 'create-group',
+  ADDMEMBER = 'add-members-to-group',
+  LEAVEGROUP = 'leave-group',
+}
+
+export interface Member {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  nickname: null | string;
+  role: string;
+  deleted_conversation_at: null | string;
+  user: {
+    id: string;
+    updated_at: string;
+    username: string;
+    roles: string;
+    avatar: string;
+    background: null | string;
+    bio?: string | null;
+    phone?: string | null;
+    date?: string | null;
+    address?: string | null;
+    last_activity: string | null;
+  };
+}
+
+export interface MessageItem {
+  content: string;
+  id: string;
+  type: string;
+  created_at: string;
+  updated_at: string;
+  conversation: ConversationItem;
+  sender: Member | null;
+  files: {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    link: string;
+    name: string;
+    type: string;
+  }[];
+}
+
+export interface ConversationItem {
+  id: string;
+  avatar: string | null;
+  members: Member[];
+  type: string;
+  last_message: {
+    content: string;
+    created_at: string;
+    updated_at: string;
+    id: string;
+    type: string;
+    sender: Member | null;
+  } | null;
+  name: string | null;
+  created_at: string;
+  updated_at: string;
+  theme: string | null;
+}
+
+export enum MessageType {
+  TEXT = 'text',
+  SYSTEM = 'system',
+  GIF = 'gif',
+}
+
+export enum FileType {
+  IMAGE = 'image',
+  VIDEO = 'video',
+  AUDIO = 'audio',
+  FILE = 'file',
+}
+
+export interface MemberFields {
+  id: string;
+  nickname?: string;
+  role?: string;
+}
+
+export interface PopupItem {
+  currentConversation: ConversationItem;
+  receiverId: string;
 }
