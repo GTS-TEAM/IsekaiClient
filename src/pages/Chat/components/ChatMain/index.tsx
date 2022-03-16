@@ -3,7 +3,7 @@ import { chatSelector, getAllMessage, getAllMessageByReceiverId, unmountMessage 
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { MessageItem } from 'share/types';
+import { ConversationItem, MessageItem } from 'share/types';
 import { LIMITCHAT } from 'utils/constant';
 import Message from '../Message';
 import { StyledChatMain } from './styles';
@@ -13,8 +13,9 @@ const ChatMain: FC<{
   maxWidthMessage?: string;
   conversationId: string;
   type?: 'popup' | 'screen';
-}> = ({ heightChatMain, maxWidthMessage, conversationId, type }) => {
-  const { messages, hasMoreMessage, currentConversation } = useAppSelector(chatSelector);
+  currentConversation: ConversationItem;
+}> = ({ heightChatMain, maxWidthMessage, conversationId, type, currentConversation }) => {
+  const { messages, hasMoreMessage } = useAppSelector(chatSelector);
   const [offset, setOffset] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();

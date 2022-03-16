@@ -4,7 +4,7 @@ import { isekaiApi } from 'api/isekaiApi';
 import ErrorAlert from 'components/ErrorAlert';
 import ModalConfirm from 'components/ModalConfirm';
 import { authSelector } from 'features/authSlice';
-import { chatSelector, exitChatView, leaveGroup, removeConversation, updateConversation } from 'features/chatSlice';
+import { exitChatView, leaveGroup, removeConversation, updateConversation } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useRef, useState } from 'react';
@@ -24,11 +24,12 @@ import ModalEditNickName from '../ModalEditNickName';
 import ModalViewFiles from '../ModalViewFiles';
 import { RecipientBox, StyledButtonIcon, StyledHeader } from './styles';
 
-const Header: React.FC<{ borderRadius?: string; type?: 'popup' | 'screen'; onClose?: () => any }> = ({
-  borderRadius,
-  type,
-  onClose,
-}) => {
+const Header: React.FC<{
+  borderRadius?: string;
+  type?: 'popup' | 'screen';
+  onClose?: () => any;
+  currentConversation: ConversationItem;
+}> = ({ borderRadius, type, onClose, currentConversation }) => {
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
   const [isShowModalChangeTheme, setIsShowModalChangeTheme] = useState<boolean>(false);
   const [isShowModalChangeName, setIsShowModalChangeName] = useState<boolean>(false);
@@ -38,7 +39,6 @@ const Header: React.FC<{ borderRadius?: string; type?: 'popup' | 'screen'; onClo
   const [isShowModalEditNickName, setIsShowModalEditNickName] = useState<boolean>(false);
   const [isShowModalViewFiles, setIsShowModalViewFiles] = useState<boolean>(false);
   const [isShowError, setIsShowError] = useState<boolean>(false);
-  const { currentConversation } = useAppSelector(chatSelector);
   const { user: currentUser } = useAppSelector(authSelector);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
