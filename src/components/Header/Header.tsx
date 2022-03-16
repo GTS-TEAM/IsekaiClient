@@ -1,5 +1,4 @@
 import { Avatar, MenuItem, Stack } from '@mui/material';
-import { chatSelector } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React from 'react';
 import { useGoogleLogout } from 'react-google-login';
