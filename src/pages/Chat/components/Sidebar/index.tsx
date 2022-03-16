@@ -27,15 +27,7 @@ const Sidebar: React.FC<{
   };
 
   useEffect(() => {
-    const getAllConversationHandler = async () => {
-      const action = await dispatch(getAllConversations({ offset: 0, limit: LIMIT_CONVERSATION }));
-      if (getAllConversations.fulfilled.match(action)) {
-        const conversationExist = action.payload.find((item: any) => item.id === id);
-        dispatch(selectConversation(conversationExist));
-      }
-    };
-    getAllConversationHandler();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    dispatch(getAllConversations({ offset: 0, limit: LIMIT_CONVERSATION }));
   }, [dispatch]);
 
   return (

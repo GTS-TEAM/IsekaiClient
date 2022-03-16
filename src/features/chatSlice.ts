@@ -38,7 +38,7 @@ export const getAllConversations = createAsyncThunk<
   }
 >('chat/getAllConversations', async ({ offset, limit }, thunkApi) => {
   const { data } = await isekaiApi.getAllConversation(limit, offset);
-
+  thunkApi.dispatch(selectConversation(data[0]));
   return data;
 });
 
