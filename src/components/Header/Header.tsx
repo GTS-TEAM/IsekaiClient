@@ -15,7 +15,6 @@ import { DropdownMenu, HeaderWrap, Logo, Navbar, NavItem, StyledHeader, User } f
 
 const Header = () => {
   const { user } = useAppSelector(authSelector);
-  const { currentConversation } = useAppSelector(chatSelector);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
