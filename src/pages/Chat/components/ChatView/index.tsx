@@ -10,7 +10,7 @@ const ChatView = () => {
   return (
     <>
       <Header />
-      <ChatMain conversationId={conversationId as string} />
+      <ChatMain conversationId={conversationId as string} type="screen" />
       <TypeMessage />
     </>
   );

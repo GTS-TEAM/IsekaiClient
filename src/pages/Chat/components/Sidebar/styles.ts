@@ -1,4 +1,5 @@
 import styled from '@emotion/styled/macro';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 export const StyledSidebar = styled.aside`
   width: 100%;
@@ -51,12 +52,11 @@ export const ButtonNewConversation = styled.button`
   }
 `;
 
-export const SidebarMenu = styled.div`
+export const SidebarMenu = styled(InfiniteScroll)`
   display: flex;
   flex-direction: column;
   padding: 0.8rem 0;
   overflow-y: auto;
-  height: calc(100vh - 2 * var(--headerHeight));
 `;
 
 export const SidebarItem = styled.div`
@@ -87,5 +87,11 @@ export const SidebarItem = styled.div`
     font-weight: 500;
     color: var(--fds-gray-7);
     line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
   }
 `;

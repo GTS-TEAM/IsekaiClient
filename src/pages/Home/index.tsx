@@ -9,6 +9,7 @@ import { getTimeline, postsSelector, unmountTimeline } from 'features/postsSlice
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListMusic } from '../../features/musicSlice';
+import ListFriend from './components/ListFriend';
 import { Feed, StyledHomepage } from './Styles';
 
 const Homepage = () => {
@@ -51,6 +52,9 @@ const Homepage = () => {
           <CreatePost />
           <ListPost posts={timeline.posts} hasMore={timeline.hasMore} onFetchMore={fetchMoreHandler} />
         </Feed>
+        <div className="w-25">
+          <ListFriend />
+        </div>
       </Container>
     </StyledHomepage>
   );
