@@ -1,14 +1,14 @@
 import styled from '@emotion/styled/macro';
 
 export const PopupWrap = styled.div`
-  position: fixed;
   display: flex;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  z-index: 100;
   bottom: 0;
-  z-index: 99;
   right: 8rem;
   column-gap: 1.2rem;
-  height: 50rem;
-  max-width: 35rem;
 `;
 
 export const StyledPopup = styled.div`
@@ -19,4 +19,8 @@ export const StyledPopup = styled.div`
   border: 1px solid var(--fds-gray-4);
   box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
   position: relative;
+  height: 100%;
+  width: 100%;
+  max-width: 35rem;
+  height: 50rem;
 `;

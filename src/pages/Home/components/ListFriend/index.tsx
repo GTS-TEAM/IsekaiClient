@@ -1,9 +1,8 @@
 import { Avatar } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
 import { authSelector } from 'features/authSlice';
-import { chatSelector, selectConversation } from 'features/chatSlice';
+import { selectPopupChat } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import PopupChat from 'pages/Chat/components/PropupChat';
 import React, { useEffect, useState } from 'react';
 import { ConversationItem, ConversationType, User } from 'share/types';
 import { v4 } from 'uuid';
@@ -11,13 +10,10 @@ import { StyledFriend, StyledListFriend } from './styles';
 
 const ListFriend = () => {
   const [friends, setFriends] = useState<User[]>([]);
-  const [activePopup, setActivePopup] = useState('');
   const { user } = useAppSelector(authSelector);
-  const { currentConversation } = useAppSelector(chatSelector);
   const dispatch = useAppDispatch();
 
   const chooseConversation = (friend: User) => {
-    setActivePopup(friend.id);
     const newConversation: ConversationItem = {
       id: `${user?.id}-${friend.id}`,
       members: [
@@ -56,7 +52,12 @@ const ListFriend = () => {
       updated_at: new Date().toISOString(),
       theme: '#a56ffd',
     };
-    dispatch(selectConversation(newConversation));
+    dispatch(
+      selectPopupChat({
+        receiverId: friend.id,
+        currentConversation: newConversation,
+      }),
+    );
   };
 
   useEffect(() => {
@@ -84,14 +85,6 @@ const ListFriend = () => {
                 <span>{friend.username}</span>
               </StyledFriend>
             </li>
-            {activePopup === friend.id && (
-              <PopupChat
-                conversationId={friend.id}
-                onClose={() => {
-                  setActivePopup('');
-                }}
-              />
-            )}
           </React.Fragment>
         ))}
       </ul>

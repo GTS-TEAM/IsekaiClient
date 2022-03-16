@@ -1,6 +1,7 @@
 import Layout from 'components/Layout/Layout';
 import RequireAuth from 'components/RequireAuth';
 import Chat from 'pages/Chat';
+import PopupChat from 'pages/Chat/components/PropupChat';
 import Post from 'pages/Detail/Detail';
 import Profile from 'pages/Profile/Profile';
 import SettingAccount from 'pages/SettingAccount';
@@ -13,6 +14,7 @@ function App() {
   return (
     <>
       <Router>
+        <PopupChat />
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />

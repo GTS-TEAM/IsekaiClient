@@ -58,6 +58,10 @@ const initialState: {
   hasMoreMessage: boolean;
   hasMoreConversation: boolean;
   currentConversation: null | ConversationItem;
+  popupChat: {
+    receiverId: string;
+    currentConversation: ConversationItem | null;
+  };
 } = {
   isEstablishingConnection: false,
   isConnected: false,
@@ -69,6 +73,10 @@ const initialState: {
   hasMoreConversation: true,
   isLoading: false,
   error: null,
+  popupChat: {
+    receiverId: '',
+    currentConversation: null,
+  },
 };
 
 const chatSlice = createSlice({
@@ -158,6 +166,9 @@ const chatSlice = createSlice({
     },
     selectConversation: (state, action) => {
       state.currentConversation = action.payload;
+    },
+    selectPopupChat: (state, action) => {
+      state.popupChat = action.payload;
     },
     updateConversation: (
       state,
@@ -281,6 +292,7 @@ export const {
   addMember,
   leaveGroup,
   exitChatView,
+  selectPopupChat,
 } = chatSlice.actions;
 
 export const chatSelector = (state: RootState) => state.chat;

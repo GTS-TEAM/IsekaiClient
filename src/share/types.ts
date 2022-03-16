@@ -304,3 +304,8 @@ export interface MemberFields {
   nickname?: string;
   role?: string;
 }
+
+export interface PopupItem {
+  currentConversation: ConversationItem;
+  receiverId: string;
+}
