@@ -3,7 +3,7 @@ import { isekaiApi } from 'api/isekaiApi';
 import autosize from 'autosize';
 import ErrorAlert from 'components/ErrorAlert';
 import { authSelector } from 'features/authSlice';
-import { chatSelector, submitMessage } from 'features/chatSlice';
+import { submitMessage } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
@@ -27,7 +27,9 @@ import {
   StyledTypeMessage,
 } from './styles';
 
-const TypeMessage: React.FC = () => {
+const TypeMessage: React.FC<{
+  currentConversation: ConversationItem;
+}> = ({ currentConversation }) => {
   const [textMessage, setTextMessage] = useState<string>('');
   const [isShowEmojiPicker, setIsShowEmojiPicker] = useState(false);
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
@@ -44,7 +46,6 @@ const TypeMessage: React.FC = () => {
       type: string;
     }[]
   >([]);
-  const { currentConversation } = useAppSelector(chatSelector);
   const { user: currentUser } = useAppSelector(authSelector);
   const dispatch = useAppDispatch();
 
