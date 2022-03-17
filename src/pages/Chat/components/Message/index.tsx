@@ -2,7 +2,7 @@ import { Avatar, Slider } from '@mui/material';
 import { authSelector } from 'features/authSlice';
 import { useAppSelector } from 'hooks/hooks';
 import moment from 'moment';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { BsFillVolumeDownFill, BsFillVolumeMuteFill, BsPauseFill, BsPlayCircle, BsPlayFill } from 'react-icons/bs';
 import { MdAttachFile, MdFileDownload } from 'react-icons/md';
 import { FileType, MessageItem, MessageType } from 'share/types';
@@ -30,35 +30,40 @@ const Message: React.FC<Props> = ({ message, theme, type }) => {
   const [volumeVideo, setVolumeVideo] = useState<number>(0);
   const [currentVolumeVideo, setCurrentVolumeVideo] = useState<number>(0);
 
+  const left = useMemo(() => currentUser?.id === message.sender?.user.id, [currentUser?.id, message.sender?.user.id]);
+
+  const avatar = useMemo(() => message.sender?.user.avatar, [message.sender?.user.avatar]);
+
+  const alt = useMemo(
+    () => message.sender?.nickname || message.sender?.user.username,
+    [message.sender?.nickname, message.sender?.user.username],
+  );
+
   return (
     <>
       {message.content.trim().length > 0 && (message.type === MessageType.TEXT || message.type === MessageType.SYSTEM) ? (
-        <MessageWrapStyled left={currentUser?.id === message.sender?.user.id} type={message.type}>
-          <Features left={currentUser?.id === message.sender?.user.id} />
+        <MessageWrapStyled left={left} type={message.type}>
+          <Features left={left} />
           <StyledMessage type={message.type} themeStyle={theme} timeCreated={moment(message.created_at).format('HH:MM')}>
             {message.content}
           </StyledMessage>
-          {message.sender && (
-            <Avatar src={message.sender.user.avatar} alt={message.sender.nickname || message.sender.user.avatar} />
-          )}
+          {message.sender && <Avatar src={avatar} alt={alt} />}
         </MessageWrapStyled>
       ) : null}
 
       {message.type === MessageType.GIF && (
-        <MessageWrapStyled left={currentUser?.id === message.sender?.user.id} type={message.type}>
-          <Features left={currentUser?.id === message.sender?.user.id} />
+        <MessageWrapStyled left={left} type={message.type}>
+          <Features left={left} />
           <Img src={message.content} alt="" screenType={type} />
-          {message.sender && (
-            <Avatar src={message.sender.user.avatar} alt={message.sender.nickname || message.sender.user.avatar} />
-          )}
+          {message.sender && <Avatar src={avatar} alt={alt} />}
         </MessageWrapStyled>
       )}
 
       {message.files &&
         message.files.length > 0 &&
         message.files.map((file) => (
-          <MessageWrapStyled key={file.id} left={currentUser?.id === message.sender?.user.id} type={file.type}>
-            <Features left={currentUser?.id === message.sender?.user.id} />
+          <MessageWrapStyled key={file.id} left={left} type={file.type}>
+            <Features left={left} />
             {file.type === FileType.FILE && (
               <File style={{ backgroundColor: theme || 'var(--mainColor)' }} screenType={type}>
                 <MdAttachFile />
@@ -204,9 +209,7 @@ const Message: React.FC<Props> = ({ message, theme, type }) => {
               </Video>
             )}
             {file.type === FileType.IMAGE ? <Img src={file.link} alt="" screenType={type} /> : null}
-            {message.sender && (
-              <Avatar src={message.sender.user.avatar} alt={message.sender.nickname || message.sender.user.avatar} />
-            )}
+            {message.sender && <Avatar src={avatar} alt={alt} />}
           </MessageWrapStyled>
         ))}
     </>

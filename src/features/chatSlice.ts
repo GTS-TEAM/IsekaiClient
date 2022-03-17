@@ -38,7 +38,7 @@ export const getAllConversations = createAsyncThunk<
   }
 >('chat/getAllConversations', async ({ offset, limit }, thunkApi) => {
   const { data } = await isekaiApi.getAllConversation(limit, offset);
-
+  thunkApi.dispatch(selectConversation(data[0]));
   return data;
 });
 
@@ -93,6 +93,7 @@ const chatSlice = createSlice({
     receiveMessage: (state, action: PayloadAction<MessageItem>) => {
       state.messages.unshift(action.payload);
       state.currentConversation = action.payload.conversation;
+      state.popupChat.currentConversation = action.payload.conversation;
       const conversationExistIndex = state.conversations.findIndex(
         (conversation) => conversation.id === action.payload.conversation.id,
       );
