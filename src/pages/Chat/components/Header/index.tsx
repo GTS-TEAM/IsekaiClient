@@ -252,18 +252,21 @@ const Header: React.FC<{
           setIsShowModalChangeTheme(false);
         }}
         isShow={isShowModalChangeTheme}
+        currentConversation={currentConversation}
       />
       <ModalChangeNameConversation
         isShow={isShowModalChangeName}
         onClose={() => {
           setIsShowModalChangeName(false);
         }}
+        currentConversation={currentConversation}
       />
       {isShowModalAddMember && (
         <ModalChooseUser
           onClose={() => {
             setIsShowModalAddMember(false);
           }}
+          currentConversation={currentConversation}
         />
       )}
       <ModalConfirm
@@ -303,6 +306,7 @@ const Header: React.FC<{
           onClose={() => {
             setIsShowModalEditNickName(false);
           }}
+          currentConversation={currentConversation}
         />
       )}
       {isShowModalViewFiles && (
@@ -310,6 +314,7 @@ const Header: React.FC<{
           onClose={() => {
             setIsShowModalViewFiles(false);
           }}
+          currentConversation={currentConversation}
         />
       )}
     </StyledHeader>

@@ -46,7 +46,6 @@ export const chatMiddleware: Middleware = (store) => {
           return;
         }
         store.dispatch(receiveMessage(message));
-        // window.history.replaceState(null, '', `/message/${message.conversation.id}`);
       });
     }
     if (submitMessage.match(action) && isConnectionEstablished) {

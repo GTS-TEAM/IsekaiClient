@@ -1,19 +1,20 @@
 import { Avatar, Box, ClickAwayListener, IconButton } from '@mui/material';
 import ModalWrapper from 'components/NewModal';
 import { Header } from 'components/NewModal/styles';
-import { chatSelector, updateConversation } from 'features/chatSlice';
-import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { updateConversation } from 'features/chatSlice';
+import { useAppDispatch } from 'hooks/hooks';
 import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { BsCheck2 } from 'react-icons/bs';
 import { GrFormClose } from 'react-icons/gr';
 import { IoCloseOutline } from 'react-icons/io5';
+import { ConversationItem } from 'share/types';
 import { Body, ListMember, MemberItem, StyledModal } from './styles';
 
 const ModalEditNickName: React.FC<{
   onClose: () => any;
-}> = ({ onClose }) => {
-  const { currentConversation } = useAppSelector(chatSelector);
+  currentConversation: ConversationItem;
+}> = ({ onClose, currentConversation }) => {
   const [activeMemberEdit, setActiveMemberEdit] = useState<string>('');
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [textInput, setTextInput] = useState<string>('');
