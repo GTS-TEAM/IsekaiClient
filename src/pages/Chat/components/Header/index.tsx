@@ -29,7 +29,8 @@ const Header: React.FC<{
   type?: 'popup' | 'screen';
   onClose?: () => any;
   currentConversation: ConversationItem;
-}> = ({ borderRadius, type, onClose, currentConversation }) => {
+  theme: string;
+}> = ({ borderRadius, type, onClose, currentConversation, theme }) => {
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
   const [isShowModalChangeTheme, setIsShowModalChangeTheme] = useState<boolean>(false);
   const [isShowModalChangeName, setIsShowModalChangeName] = useState<boolean>(false);

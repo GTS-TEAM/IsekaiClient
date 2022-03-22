@@ -1,22 +1,14 @@
 import styled from '@emotion/styled/macro';
 import { Stack } from '@mui/material';
-import Modal from 'components/Modal/Modal';
+import { Modal } from 'components/Modal/styles';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
+import { fadeIn } from './../../utils/keyframeStyle';
 
-export const StyledModalPost = styled(Modal)`
+export const StyledModal = styled(Modal)`
   background-color: var(--fds-white);
   border-radius: var(--borderRadius2);
   width: 100%;
-  max-width: 50rem;
-`;
-
-export const Header = styled.div`
-  padding: 1.6rem;
-  text-align: center;
-  font-weight: 700;
-  color: var(--fds-gray-9);
-  font-size: 2.4rem;
-  border: 1px solid var(--fds-gray-4);
+  max-width: 55rem;
 `;
 
 export const Close = styled.div`
@@ -47,41 +39,49 @@ export const Body = styled.div`
   max-height: 40rem;
   display: flex;
   flex-direction: column;
-  row-gap: 1.6rem;
-  padding: 1.6rem;
+  row-gap: 1.2rem;
+  padding: 1.2rem;
   overflow-y: auto;
 `;
 
 export const StyledUserBlockPost = styled(UserBlockPost)`
-  /* padding: 1.6rem 1.6rem 0 1.6rem; */
+  & > div {
+    column-gap: 1.2rem !important;
+  }
+
+  h3 {
+    color: var(--fds-gray-10);
+  }
 `;
 
 export const InputArea = styled.textarea`
   resize: none;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   color: var(--fds-gray-8);
   font-family: inherit;
-  padding: 1.6rem;
+  padding: 1.2rem;
   background-color: var(--grayColor1);
   border-radius: var(--borderRadius2);
   border: 1px solid var(--fds-gray-4);
   min-height: 11rem;
+  animation: ${fadeIn} 0.3s ease;
 `;
 
 export const Bottom = styled(Stack)`
-  padding: 1.6rem;
+  padding: 1.2rem;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   border-top: 1px solid var(--fds-gray-4);
   background-color: var(--fds-white);
   flex-shrink: 0;
-`;
+  border-radius: 0 0 var(--borderRadius2) var(--borderRadius2);
 
-export const TextBottom = styled.p`
-  font-size: 1.6rem;
-  color: var(--fds-gray-8);
-  font-weight: 500;
+  h3 {
+    color: var(--fds-gray-10);
+    font-size: 1.6rem;
+    font-weight: 500;
+  }
 `;
 
 export const Actions = styled(Stack)`
@@ -160,6 +160,7 @@ export const ImgPreview = styled.div`
   justify-content: center;
   width: calc(100% / var(--col) - var(--gap));
   background-color: #000;
+  animation: ${fadeIn} 0.3s ease;
 
   img {
     margin: 0 auto;
@@ -183,6 +184,7 @@ export const InputPhoto = styled.div`
   border: 1px solid var(--fds-gray-4);
   color: var(--fds-gray-8);
   cursor: pointer;
+  animation: ${fadeIn} 0.3s ease;
 
   input {
     position: absolute;

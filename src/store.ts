@@ -8,12 +8,11 @@ import storage from 'redux-persist/lib/storage';
 import authSlice from './features/authSlice';
 import chatSlice from './features/chatSlice';
 import postsSlice from './features/postsSlice';
-import uiSlice from './features/uiSlice';
 
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['posts', 'auth', 'ui', 'user', 'music', 'weather', 'chat'],
+  blacklist: ['posts', 'auth', 'user', 'music', 'weather', 'chat'],
 };
 
 const authPersistConfig = {
@@ -31,7 +30,6 @@ const weatherPersistConfig = {
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authSlice),
   posts: postsSlice,
-  ui: uiSlice,
   user: userSlice,
   music: musicSlice,
   weather: persistReducer(weatherPersistConfig, weatherSlice),

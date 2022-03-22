@@ -6,26 +6,15 @@ import GridImg from 'components/GridImg/GridImg';
 import LiveStats from 'components/LiveStats/LiveStats';
 import ModalPost from 'components/ModalPost';
 import More from 'components/More/More';
-import Overlay from 'components/Overlay/Overlay';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import { PostItem } from 'share/types';
 import { REGEX_URL } from 'utils/constant';
 import { authSelector } from '../../features/authSlice';
-import {
-  addPostEmotion,
-  addPostFullImg,
-  changePostText,
-  clearPostEmotion,
-  clearPostImg,
-  deletePost,
-  likePost,
-} from '../../features/postsSlice';
-import { closeEditPostModal, openEditPostModal, setPostIdEdit, uiSelector } from '../../features/uiSlice';
+import { deletePost, likePost } from '../../features/postsSlice';
 import { useOverFlowHidden } from '../../hooks/useOverFlowHidden';
-import emotions from '../../utils/emotions';
 import { Body, Description, Header, StyledPost } from './Styles';
 interface Props {
   post: PostItem;
@@ -37,15 +26,26 @@ const Post: React.FC<Props> = ({ post }) => {
   const [anchorElPost, setAnchorElPost] = React.useState<null | HTMLElement>(null);
   const [isReadMore, setIsReaMore] = useState<boolean>(false);
   const [haveReadMore, setHaveReadMore] = useState<boolean>(false);
+  const [isOpenModalEdit, setIsOpenModalEdit] = useState<boolean>(false);
+  const [haveChooseImg, setHaveChooseImg] = useState<boolean>(false);
+  const [haveChooseEmoji, setHaveChooseEmoji] = useState<boolean>(false);
   const descRef = useRef<HTMLParagraphElement | null>(null);
-
-  const { modalPost: uiModalPost } = useAppSelector(uiSelector);
 
   const openPost = Boolean(anchorElPost);
 
   const dispatch = useAppDispatch();
 
   const url = useMemo(() => post.description.match(REGEX_URL)?.[0], [post]) as string;
+
+  const imgsPost = useMemo(
+    () =>
+      post.image.map((item) => {
+        return {
+          url: item,
+        };
+      }),
+    [post],
+  );
 
   const desc = useMemo(() => {
     let text = '';
@@ -62,20 +62,9 @@ const Post: React.FC<Props> = ({ post }) => {
     setAnchorElPost(null);
   };
 
-  const closeModalCreatePostHandler = () => {
-    dispatch(closeEditPostModal());
-    dispatch(clearPostEmotion());
-    dispatch(clearPostImg());
-    dispatch(changePostText(''));
-  };
-
   const clickEditHandler = () => {
+    setIsOpenModalEdit(true);
     clickCloseMenuHandler();
-    dispatch(setPostIdEdit(post.id));
-    dispatch(openEditPostModal(post.id));
-    dispatch(changePostText(post.description));
-    dispatch(addPostFullImg(post.image));
-    dispatch(addPostEmotion(emotions.find((emotion) => emotion.id === post.emoji)));
   };
 
   const clickRemoveHandler = () => {
@@ -91,7 +80,13 @@ const Post: React.FC<Props> = ({ post }) => {
     dispatch(likePost(post.id));
   };
 
-  useOverFlowHidden(uiModalPost.isOpenEdit);
+  useOverFlowHidden(isOpenModalEdit);
+
+  const closeModalHandler = useCallback(() => {
+    setIsOpenModalEdit(false);
+    setHaveChooseEmoji(false);
+    setHaveChooseImg(false);
+  }, []);
 
   useEffect(() => {
     if ((descRef.current?.offsetHeight as number) >= 500) {
@@ -110,7 +105,7 @@ const Post: React.FC<Props> = ({ post }) => {
             userId={post.user.id}
             userName={post.user.username}
             time={post.created_at}
-            emoji={post.emoji}
+            emoji={post?.emoji}
           />
           {post.user.id === currentUser?.id && (
             <More
@@ -184,9 +179,18 @@ const Post: React.FC<Props> = ({ post }) => {
       </Body>
       <Actions post={post} onToggleComment={toggleOpenCommentHandler} className="actions" onLike={likePostHandler} />
       {isOpenComment && <Comments postId={post.id} amountComment={post.commentCount} />}
-      {uiModalPost.isOpenEdit && post.id === uiModalPost.idPostEdit && <Overlay onClose={closeModalCreatePostHandler} />}
-      {uiModalPost.isOpenEdit && post.id === uiModalPost.idPostEdit && (
-        <ModalPost type="edit" postId={post.id} onCloseModal={closeModalCreatePostHandler} />
+      {isOpenModalEdit && (
+        <ModalPost
+          type="edit"
+          postId={post.id}
+          onCloseModal={closeModalHandler}
+          imgsPost={imgsPost}
+          contentPost={post.description}
+          haveChooseEmoji={haveChooseEmoji}
+          haveChooseImg={haveChooseImg}
+          setHaveChooseEmoji={setHaveChooseEmoji}
+          setHaveChooseImg={setHaveChooseImg}
+        />
       )}
     </StyledPost>
   );

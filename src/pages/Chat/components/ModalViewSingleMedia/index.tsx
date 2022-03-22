@@ -1,11 +1,11 @@
 import { ClickAwayListener, Slider } from '@mui/material';
+import ModalWrapper from 'components/Modal';
 import React, { useRef, useState } from 'react';
 import { BsFillVolumeDownFill, BsFillVolumeMuteFill, BsPauseFill, BsPlayCircle } from 'react-icons/bs';
 import { HiOutlineFolderDownload } from 'react-icons/hi';
 import { IoCloseOutline } from 'react-icons/io5';
 import { FileType } from 'share/types';
 import { formatDuration } from 'utils/formatDuration';
-import ModalWrapper from '../../../../components/NewModal';
 import { StyledButton, StyledImg, Video } from './styles';
 const ModalViewSingleMedial: React.FC<{
   file: {

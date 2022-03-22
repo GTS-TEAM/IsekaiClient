@@ -1,4 +1,3 @@
-import Overlay from 'components/Overlay/Overlay';
 import React, { useEffect, useState } from 'react';
 import { IoIosMenu } from 'react-icons/io';
 import { Link } from 'react-router-dom';
@@ -63,7 +62,7 @@ const Header = () => {
           <IoIosMenu />
         </div>
       </div>
-      {activeSidebar && <Overlay onClose={clickCloseSidebarHandler} />}
+      {/* {activeSidebar && <Overlay onClose={clickCloseSidebarHandler} />} */}
       <Sidebar onClose={clickCloseSidebarHandler} active={activeSidebar} />
     </header>
   );

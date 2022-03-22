@@ -1,6 +1,3 @@
-import { uiSelector } from 'features/uiSlice';
-import { useAppSelector } from 'hooks/hooks';
-import { useOverFlowHidden } from 'hooks/useOverFlowHidden';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PostItem } from 'share/types';
@@ -11,7 +8,6 @@ interface Props {
 }
 
 const GridImg: React.FC<Props> = ({ post }) => {
-  const { modalPost: uiModalPost } = useAppSelector(uiSelector);
   const navigate = useNavigate();
 
   const clickImgHandler = (d: { index: number }) => {
@@ -20,8 +16,6 @@ const GridImg: React.FC<Props> = ({ post }) => {
       search: `?id=${post.id}&index=${d.index}`,
     });
   };
-
-  useOverFlowHidden(uiModalPost.isOpenViewPost);
 
   return (
     <div>

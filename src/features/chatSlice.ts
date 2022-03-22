@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
 import { RootState } from 'store';
 import { LIMITCHAT, LIMIT_CONVERSATION } from 'utils/constant';
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid, v4 } from 'uuid';
 import { ConversationItem, Member, MemberFields, MessageItem } from './../share/types';
 
 export const getAllMessage = createAsyncThunk<
@@ -39,6 +39,7 @@ export const getAllConversations = createAsyncThunk<
 >('chat/getAllConversations', async ({ offset, limit }, thunkApi) => {
   const { data } = await isekaiApi.getAllConversation(limit, offset);
   thunkApi.dispatch(selectConversation(data[0]));
+  thunkApi.dispatch(setCurrentConversationSeen(data[0]));
   return data;
 });
 
@@ -58,6 +59,7 @@ const initialState: {
   hasMoreMessage: boolean;
   hasMoreConversation: boolean;
   currentConversation: null | ConversationItem;
+  currentConversationSeen: null | ConversationItem;
   popupChat: {
     receiverId: string;
     currentConversation: ConversationItem | null;
@@ -77,6 +79,7 @@ const initialState: {
     receiverId: '',
     currentConversation: null,
   },
+  currentConversationSeen: null,
 };
 
 const chatSlice = createSlice({
@@ -92,7 +95,14 @@ const chatSlice = createSlice({
     },
     receiveMessage: (state, action: PayloadAction<MessageItem>) => {
       state.messages.unshift(action.payload);
-      state.currentConversation = action.payload.conversation;
+      state.currentConversation = {
+        ...action.payload.conversation,
+        seen: action.payload.conversation.seen,
+      };
+      state.currentConversationSeen = {
+        ...action.payload.conversation,
+        seen: action.payload.conversation.seen,
+      };
       state.popupChat.currentConversation = action.payload.conversation;
       const conversationExistIndex = state.conversations.findIndex(
         (conversation) => conversation.id === action.payload.conversation.id,
@@ -112,6 +122,7 @@ const chatSlice = createSlice({
           theme: action.payload.conversation.theme,
           name: action.payload.conversation.name,
           avatar: action.payload.conversation.avatar,
+          seen: [],
         };
       } else {
         state.conversations.push({
@@ -131,6 +142,7 @@ const chatSlice = createSlice({
             sender: action.payload.sender,
           },
           theme: action.payload.conversation.theme,
+          seen: [],
         });
       }
 
@@ -218,6 +230,29 @@ const chatSlice = createSlice({
     exitChatView: (state) => {
       state.currentConversation = null;
     },
+    seenMessage: (state, action) => {
+      console.log(action.payload);
+    },
+    receiveSeenMessage: (state, action) => {
+      const indexConversationExist = state.conversations.findIndex(
+        (conversation) => conversation.id === action.payload.conversation.id,
+      );
+
+      const conversationExist = state.conversations[indexConversationExist];
+      if (conversationExist) {
+        state.conversations[indexConversationExist].seen.push({
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          id: v4(),
+          messageId: action.payload.message.id,
+          user: action.payload.user,
+        });
+        state.currentConversationSeen = state.conversations[indexConversationExist];
+      }
+    },
+    setCurrentConversationSeen: (state, action) => {
+      state.currentConversationSeen = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -294,6 +329,9 @@ export const {
   leaveGroup,
   exitChatView,
   selectPopupChat,
+  seenMessage,
+  receiveSeenMessage,
+  setCurrentConversationSeen,
 } = chatSlice.actions;
 
 export const chatSelector = (state: RootState) => state.chat;

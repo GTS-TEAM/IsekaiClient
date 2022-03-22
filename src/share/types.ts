@@ -51,7 +51,7 @@ export interface ResLogin {
 export interface ImgUpload {
   id: string;
   url: string;
-  file: File;
+  file?: File;
 }
 
 export interface EmotionItem {
@@ -225,6 +225,7 @@ export enum ChatEvent {
   CREATEGROUP = 'create-group',
   ADDMEMBER = 'add-members-to-group',
   LEAVEGROUP = 'leave-group',
+  SEEN_MESSAGE = 'seen-message',
 }
 
 export interface Member {
@@ -284,6 +285,13 @@ export interface ConversationItem {
   created_at: string;
   updated_at: string;
   theme: string | null;
+  seen: {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    messageId: string;
+    user: User;
+  }[];
 }
 
 export enum MessageType {

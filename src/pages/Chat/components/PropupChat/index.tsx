@@ -49,14 +49,16 @@ const PopupItem = () => {
           );
         }}
         currentConversation={popupChat.currentConversation as ConversationItem}
+        theme=""
       />
       <ChatMain
         conversationId={popupChat.receiverId}
         heightChatMain="40rem"
         type="popup"
         currentConversation={popupChat.currentConversation as ConversationItem}
+        theme=""
       />
-      <TypeMessage currentConversation={popupChat.currentConversation as ConversationItem} />
+      <TypeMessage currentConversation={popupChat.currentConversation as ConversationItem} theme="" />
     </StyledPopup>
   );
 };

@@ -1,7 +1,7 @@
 import { CircularProgress } from '@mui/material';
 import { chatSelector, getAllMessage, getAllMessageByReceiverId, unmountMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ConversationItem, MessageItem } from 'share/types';
 import { LIMITCHAT } from 'utils/constant';
@@ -14,13 +14,22 @@ const ChatMain: FC<{
   conversationId: string;
   type?: 'popup' | 'screen';
   currentConversation: ConversationItem;
-}> = ({ heightChatMain, maxWidthMessage, conversationId, type, currentConversation }) => {
+  theme: string;
+}> = ({ heightChatMain, maxWidthMessage, conversationId, type, currentConversation, theme }) => {
   const { messages, hasMoreMessage } = useAppSelector(chatSelector);
   const [offset, setOffset] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
 
-  const theme = useMemo(() => currentConversation?.theme, [currentConversation]);
+  const mySelfSeen = useCallback(
+    (currentUserId: string) => {
+      if (currentConversation?.seen?.length === 1) {
+        return currentConversation?.seen?.some((item) => item.user.id === currentUserId);
+      }
+      return false;
+    },
+    [currentConversation?.seen],
+  );
 
   useEffect(() => {
     dispatch(unmountMessage());
@@ -56,7 +65,7 @@ const ChatMain: FC<{
           }}
           hasMore={hasMoreMessage}
           inverse={true}
-          loader={<CircularProgress sx={{ color: theme || 'var(--mainColor)' }} />}
+          loader={<CircularProgress sx={{ color: theme }} />}
           scrollableTarget="scrollableDiv"
           style={{
             display: 'flex',
@@ -67,7 +76,9 @@ const ChatMain: FC<{
           }}
         >
           {messages.map((mess: MessageItem) => (
-            <Message key={mess.id} message={mess} maxWidth={maxWidthMessage} theme={theme as string} type={type} />
+            <React.Fragment key={mess.id}>
+              <Message message={mess} maxWidth={maxWidthMessage} theme={theme} type={type} />
+            </React.Fragment>
           ))}
           <div
             style={{

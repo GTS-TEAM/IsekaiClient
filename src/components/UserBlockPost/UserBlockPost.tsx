@@ -1,6 +1,6 @@
 import { Avatar, Stack, Typography } from '@mui/material';
 import moment from 'moment';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import emotions from 'utils/emotions';
 import { StyledUserBlockPost } from './Styles';
@@ -10,12 +10,12 @@ interface Props {
   userId: string;
   userName: string;
   time?: string;
-  emoji?: any;
+  emoji?: string | number | null;
   className?: string;
 }
 
 const UserBlockPost: React.FC<Props> = ({ userImg, userId, userName, time, emoji, className }) => {
-  const emotion = emotions.find((emotion) => emotion.id === emoji);
+  const emotion = useMemo(() => emotions.find((emotion) => emotion.id === emoji), [emoji]);
 
   return (
     <StyledUserBlockPost className={className}>
@@ -27,7 +27,7 @@ const UserBlockPost: React.FC<Props> = ({ userImg, userId, userName, time, emoji
           <Stack direction="row" columnGap="0.5rem" alignItems="center">
             <Link to={`/profile/${userId}`}>
               <Stack direction="row" columnGap="0.5rem" alignItems="center">
-                <Typography variant="h2" fontSize="1.4rem" fontWeight="500">
+                <Typography variant="h3" fontSize="1.4rem" fontWeight="500">
                   {userName}
                 </Typography>
               </Stack>
@@ -50,4 +50,4 @@ const UserBlockPost: React.FC<Props> = ({ userImg, userId, userName, time, emoji
   );
 };
 
-export default UserBlockPost;
+export default React.memo(UserBlockPost);
