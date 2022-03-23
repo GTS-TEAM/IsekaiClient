@@ -35,4 +35,19 @@ export const Sidebar = styled.aside`
   display: flex;
   flex-direction: column;
   row-gap: 1.2rem;
+  @media screen and (max-width: 1054px) {
+    display: none;
+  }
+`;
+
+export const SidebarIn = styled(Sidebar)`
+  display: none;
+  @media screen and (max-width: 1054px) {
+    width: 100%;
+    max-width: 38.8rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.2rem;
+    margin: 0 auto;
+  }
 `;

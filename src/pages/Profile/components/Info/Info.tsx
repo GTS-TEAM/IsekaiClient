@@ -1,9 +1,10 @@
+import { BioHeader, Body, ButtonEdit, StyledInfo, Text } from './Styles';
+import React, { useState } from 'react';
+
+import InputBio from './InputBio';
 import { Typography } from '@mui/material';
 import { authSelector } from 'features/authSlice';
-import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import InputBio from './InputBio';
-import { BioHeader, Body, ButtonEdit, StyledInfo, Text } from './Styles';
 
 interface Props {
   bio: string;
