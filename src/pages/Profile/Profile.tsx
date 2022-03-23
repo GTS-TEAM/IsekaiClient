@@ -1,18 +1,19 @@
-import { Stack } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Sidebar, SidebarIn, StyledProfile, User } from './Styles';
+import { getUser, unMountUser, userSelector } from 'features/userSlice';
+import { getUserPosts, postsSelector, unmountTimeline } from 'features/postsSlice';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+
+import CoverImg from './components/CoverImg/CoverImg';
 import CreatePost from 'components/CreatePost/CreatePost';
+import Info from './components/Info/Info';
 import Layout from 'components/Layout/Layout';
 import ListPost from 'components/ListPost/ListPost';
-import { authSelector } from 'features/authSlice';
-import { getUserPosts, postsSelector, unmountTimeline } from 'features/postsSlice';
-import { getUser, unMountUser, userSelector } from 'features/userSlice';
-import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import CoverImg from './components/CoverImg/CoverImg';
-import Info from './components/Info/Info';
 import PhotosPreview from './components/Photos/PhotosPreview';
 import ProfileMenu from './components/ProfileMenu/ProfileMenu';
-import { Sidebar, StyledProfile, User } from './Styles';
+import { Stack } from '@mui/material';
+import { authSelector } from 'features/authSlice';
+import { useParams } from 'react-router-dom';
 
 const Profile = () => {
   const { id } = useParams();
@@ -60,12 +61,16 @@ const Profile = () => {
           </User>
         </div>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-          <Stack direction="row" columnGap="1.2rem">
+          <Stack direction={{ xs: 'column', sm: 'row' }} columnGap="1.2rem" spacing={{ xs: 1, sm: 2, md: 4 }}>
             <Sidebar>
               <Info bio={user?.bio || ''} userId={user?.id || ''} />
               <PhotosPreview userId={id || ''} />
             </Sidebar>
-            <main style={{ flex: '1' }}>
+            <main className="main-container">
+              <SidebarIn>
+                <Info bio={user?.bio || ''} userId={user?.id || ''} />
+                <PhotosPreview userId={id || ''} />
+              </SidebarIn>
               {currentUser?.id === user?.id && <CreatePost />}
               <ListPost
                 posts={timeline.posts}
