@@ -2,14 +2,12 @@ import { Box, CircularProgress, ClickAwayListener, IconButton } from '@mui/mater
 import { isekaiApi } from 'api/isekaiApi';
 import ModalWrapper from 'components/NewModal';
 import { Header, Modal } from 'components/NewModal/styles';
-import { chatSelector } from 'features/chatSlice';
-import { useAppSelector } from 'hooks/hooks';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FiFileText } from 'react-icons/fi';
 import { GrFormClose } from 'react-icons/gr';
 import { HiOutlineFolderDownload } from 'react-icons/hi';
 import { MdOutlineQueueMusic } from 'react-icons/md';
-import { FileType } from 'share/types';
+import { ConversationItem, FileType } from 'share/types';
 import ModalViewSingleMedial from '../ModalViewSingleMedia';
 import { Body, SectionFile, SectionMedia, Tab, TabHeaderWrapper, TabWrapper } from './styles';
 
@@ -22,10 +20,10 @@ const LIMITED = 10;
 
 const ModalViewFiles: React.FC<{
   onClose: () => any;
-}> = ({ onClose }) => {
+  currentConversation: ConversationItem;
+}> = ({ onClose, currentConversation }) => {
   const [activeTab, setActiveTab] = useState(Sections.MEDIA);
   const tabHeaderWrapperRef = useRef<HTMLDivElement | null>(null);
-  const { currentConversation } = useAppSelector(chatSelector);
   const [files, setFiles] = useState<any>([]);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState<boolean>(false);

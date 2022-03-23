@@ -4,10 +4,10 @@ import { isekaiApi } from 'api/isekaiApi';
 import ErrorAlert from 'components/ErrorAlert';
 import ModalConfirm from 'components/ModalConfirm';
 import { authSelector } from 'features/authSlice';
-import { chatSelector, exitChatView, leaveGroup, removeConversation, updateConversation } from 'features/chatSlice';
+import { exitChatView, leaveGroup, removeConversation, updateConversation } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { AiOutlineEdit, AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { BiFileBlank, BiImageAdd } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
@@ -24,11 +24,12 @@ import ModalEditNickName from '../ModalEditNickName';
 import ModalViewFiles from '../ModalViewFiles';
 import { RecipientBox, StyledButtonIcon, StyledHeader } from './styles';
 
-const Header: React.FC<{ borderRadius?: string; type?: 'popup' | 'screen'; onClose?: () => any }> = ({
-  borderRadius,
-  type,
-  onClose,
-}) => {
+const Header: React.FC<{
+  borderRadius?: string;
+  type?: 'popup' | 'screen';
+  onClose?: () => any;
+  currentConversation: ConversationItem;
+}> = ({ borderRadius, type, onClose, currentConversation }) => {
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
   const [isShowModalChangeTheme, setIsShowModalChangeTheme] = useState<boolean>(false);
   const [isShowModalChangeName, setIsShowModalChangeName] = useState<boolean>(false);
@@ -38,16 +39,12 @@ const Header: React.FC<{ borderRadius?: string; type?: 'popup' | 'screen'; onClo
   const [isShowModalEditNickName, setIsShowModalEditNickName] = useState<boolean>(false);
   const [isShowModalViewFiles, setIsShowModalViewFiles] = useState<boolean>(false);
   const [isShowError, setIsShowError] = useState<boolean>(false);
-  const { currentConversation } = useAppSelector(chatSelector);
   const { user: currentUser } = useAppSelector(authSelector);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const receiver = useMemo(
-    () => getReceiver(currentConversation as ConversationItem, currentUser as User),
-    [currentConversation, currentUser],
-  );
+  const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
 
   return (
     <StyledHeader borderRadius={borderRadius}>
@@ -255,18 +252,21 @@ const Header: React.FC<{ borderRadius?: string; type?: 'popup' | 'screen'; onClo
           setIsShowModalChangeTheme(false);
         }}
         isShow={isShowModalChangeTheme}
+        currentConversation={currentConversation}
       />
       <ModalChangeNameConversation
         isShow={isShowModalChangeName}
         onClose={() => {
           setIsShowModalChangeName(false);
         }}
+        currentConversation={currentConversation}
       />
       {isShowModalAddMember && (
         <ModalChooseUser
           onClose={() => {
             setIsShowModalAddMember(false);
           }}
+          currentConversation={currentConversation}
         />
       )}
       <ModalConfirm
@@ -291,6 +291,10 @@ const Header: React.FC<{ borderRadius?: string; type?: 'popup' | 'screen'; onClo
         }}
         onConfirm={() => {
           dispatch(removeConversation(currentConversation?.id as string));
+          if (type === 'popup') {
+            onClose && onClose();
+            return;
+          }
           navigate('/message', {
             replace: true,
           });
@@ -302,6 +306,7 @@ const Header: React.FC<{ borderRadius?: string; type?: 'popup' | 'screen'; onClo
           onClose={() => {
             setIsShowModalEditNickName(false);
           }}
+          currentConversation={currentConversation}
         />
       )}
       {isShowModalViewFiles && (
@@ -309,10 +314,11 @@ const Header: React.FC<{ borderRadius?: string; type?: 'popup' | 'screen'; onClo
           onClose={() => {
             setIsShowModalViewFiles(false);
           }}
+          currentConversation={currentConversation}
         />
       )}
     </StyledHeader>
   );
 };
 
-export default React.memo(Header);
+export default Header;

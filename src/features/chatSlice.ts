@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
 import { RootState } from 'store';
-import { LIMITCHAT } from 'utils/constant';
+import { LIMITCHAT, LIMIT_CONVERSATION } from 'utils/constant';
 import { v4 as uuid } from 'uuid';
 import { ConversationItem, Member, MemberFields, MessageItem } from './../share/types';
 
@@ -16,27 +16,29 @@ export const getAllMessage = createAsyncThunk<
   return data;
 });
 
+export const getAllMessageByReceiverId = createAsyncThunk<
+  MessageItem[],
+  {
+    receiverId: string;
+    offset: number;
+  }
+>('chat/getAllMessageByReceiverId', async ({ offset, receiverId }) => {
+  const { data } = await isekaiApi.getAllMessageByReceiverId(receiverId, offset);
+  return data;
+});
+
 export const getAllConversations = createAsyncThunk<
   any,
   {
     offset: number;
     limit: number;
-    conversationId: string;
   },
   {
     state: RootState;
   }
->('chat/getAllConversations', async ({ offset, limit, conversationId }, thunkApi) => {
+>('chat/getAllConversations', async ({ offset, limit }, thunkApi) => {
   const { data } = await isekaiApi.getAllConversation(limit, offset);
-
-  const conversationExist = data.find((item: any) => item.id === conversationId);
-  if (conversationExist) {
-    thunkApi.dispatch(selectConversation(conversationExist));
-  } else {
-    if (data.length > 0) {
-      // thunkApi.dispatch(selectConversation(data[0]));
-    }
-  }
+  thunkApi.dispatch(selectConversation(data[0]));
   return data;
 });
 
@@ -53,8 +55,13 @@ const initialState: {
   error: null | string | undefined;
   conversations: ConversationItem[];
   removedConversations: ConversationItem[];
-  hasMore: boolean;
+  hasMoreMessage: boolean;
+  hasMoreConversation: boolean;
   currentConversation: null | ConversationItem;
+  popupChat: {
+    receiverId: string;
+    currentConversation: ConversationItem | null;
+  };
 } = {
   isEstablishingConnection: false,
   isConnected: false,
@@ -62,9 +69,14 @@ const initialState: {
   conversations: [],
   removedConversations: [],
   currentConversation: null,
-  hasMore: true,
+  hasMoreMessage: true,
+  hasMoreConversation: true,
   isLoading: false,
   error: null,
+  popupChat: {
+    receiverId: '',
+    currentConversation: null,
+  },
 };
 
 const chatSlice = createSlice({
@@ -81,6 +93,7 @@ const chatSlice = createSlice({
     receiveMessage: (state, action: PayloadAction<MessageItem>) => {
       state.messages.unshift(action.payload);
       state.currentConversation = action.payload.conversation;
+      state.popupChat.currentConversation = action.payload.conversation;
       const conversationExistIndex = state.conversations.findIndex(
         (conversation) => conversation.id === action.payload.conversation.id,
       );
@@ -150,10 +163,13 @@ const chatSlice = createSlice({
     },
     unmountMessage: (state) => {
       state.messages = [];
-      state.hasMore = false;
+      state.hasMoreMessage = false;
     },
     selectConversation: (state, action) => {
       state.currentConversation = action.payload;
+    },
+    selectPopupChat: (state, action) => {
+      state.popupChat = action.payload;
     },
     updateConversation: (
       state,
@@ -169,7 +185,6 @@ const chatSlice = createSlice({
     ) => {},
     unmountChat: (state) => {
       state.conversations = [];
-      state.currentConversation = null;
       state.isConnected = false;
       state.isEstablishingConnection = false;
       state.messages = [];
@@ -211,9 +226,9 @@ const chatSlice = createSlice({
       })
       .addCase(getAllMessage.fulfilled, (state, action: PayloadAction<MessageItem[]>) => {
         if (action.payload.length >= LIMITCHAT) {
-          state.hasMore = true;
+          state.hasMoreMessage = true;
         } else {
-          state.hasMore = false;
+          state.hasMoreMessage = false;
         }
         state.messages = [...state.messages, ...action.payload];
         state.isLoading = false;
@@ -222,11 +237,34 @@ const chatSlice = createSlice({
         state.error = action.error.message;
         state.isLoading = false;
       })
+      .addCase(getAllMessageByReceiverId.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllMessageByReceiverId.fulfilled, (state, action: PayloadAction<MessageItem[]>) => {
+        if (action.payload.length >= LIMITCHAT) {
+          state.hasMoreMessage = true;
+        } else {
+          state.hasMoreMessage = false;
+        }
+        state.messages = [...state.messages, ...action.payload];
+        state.isLoading = false;
+      })
+      .addCase(getAllMessageByReceiverId.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.isLoading = false;
+      })
       .addCase(getAllConversations.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(getAllConversations.fulfilled, (state, action: PayloadAction<ConversationItem[]>) => {
-        state.conversations = action.payload;
+        if (action.payload.length >= LIMIT_CONVERSATION) {
+          state.hasMoreConversation = true;
+        } else {
+          state.hasMoreConversation = false;
+        }
+
+        state.conversations = [...state.conversations, ...action.payload];
+        state.isLoading = false;
       })
       .addCase(removeConversation.fulfilled, (state, action) => {
         const removedConversation = state.conversations.find((conversation) => conversation.id === action.payload);
@@ -255,6 +293,7 @@ export const {
   addMember,
   leaveGroup,
   exitChatView,
+  selectPopupChat,
 } = chatSlice.actions;
 
 export const chatSelector = (state: RootState) => state.chat;

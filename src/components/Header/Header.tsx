@@ -1,5 +1,4 @@
 import { Avatar, MenuItem, Stack } from '@mui/material';
-import { chatSelector } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React from 'react';
 import { useGoogleLogout } from 'react-google-login';
@@ -15,7 +14,6 @@ import { DropdownMenu, HeaderWrap, Logo, Navbar, NavItem, StyledHeader, User } f
 
 const Header = () => {
   const { user } = useAppSelector(authSelector);
-  const { currentConversation } = useAppSelector(chatSelector);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -72,7 +70,7 @@ const Header = () => {
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to={currentConversation ? `/message/${currentConversation.id}` : '/message'}>
+              <NavLink to={'/message'}>
                 <AiOutlineMessage />
               </NavLink>
             </NavItem>

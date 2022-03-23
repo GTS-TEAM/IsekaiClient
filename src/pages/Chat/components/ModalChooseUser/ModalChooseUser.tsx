@@ -2,22 +2,22 @@ import { Avatar, Box, Button, Checkbox, ClickAwayListener, FormControlLabel, Ico
 import { isekaiApi } from 'api/isekaiApi';
 import ModalWrapper from 'components/NewModal';
 import { Header } from 'components/NewModal/styles';
-import { addMember, chatSelector } from 'features/chatSlice';
-import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { addMember } from 'features/chatSlice';
+import { useAppDispatch } from 'hooks/hooks';
 import React, { useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 import { GrFormClose } from 'react-icons/gr';
 import { IoCloseOutline } from 'react-icons/io5';
-import { Member, User } from 'share/types';
+import { ConversationItem, Member, User } from 'share/types';
 import { v4 as uuidv4 } from 'uuid';
 import { Body, ItemResult, ListChoose, ListResult, StyledModal } from './styles';
 
 const ModalChooseUser: React.FC<{
   onClose: () => any;
-}> = ({ onClose }) => {
+  currentConversation: ConversationItem;
+}> = ({ onClose, currentConversation }) => {
   const [result, setResult] = useState<User[] | null>(null);
   const [chooses, setChooses] = useState<User[]>([]);
-  const { currentConversation } = useAppSelector(chatSelector);
   const dispatch = useAppDispatch();
 
   const handleSearch = async (text: string) => {

@@ -1,6 +1,16 @@
 import axios from 'axios';
 import { LIMITCHAT } from 'utils/constant';
-import { CommentItem, InfoUser, MessageItem, MusicItem, PostItem, ResLogin, Token, User } from './../share/types';
+import {
+  CommentItem,
+  ConversationItem,
+  InfoUser,
+  MessageItem,
+  MusicItem,
+  PostItem,
+  ResLogin,
+  Token,
+  User,
+} from './../share/types';
 
 export const isekaiApi = {
   login: (email: string, password: string) => {
@@ -11,9 +21,9 @@ export const isekaiApi = {
   },
 
   //Gooogle Login api
-  loginGoogle:(token:string) => {
-    return axios.post<ResLogin>('/auth/google',{
-      token
+  loginGoogle: (token: string) => {
+    return axios.post<ResLogin>('/auth/google', {
+      token,
     });
   },
 
@@ -182,6 +192,14 @@ export const isekaiApi = {
       },
     });
   },
+  getAllMessageByReceiverId: (receiverId: string, offset: number) => {
+    return axios.get<MessageItem[]>(`conversations/${receiverId}/messages`, {
+      params: {
+        offset: offset,
+        limit: LIMITCHAT,
+      },
+    });
+  },
   getAllConversation: (limit: number, offset: number) => {
     return axios.get('conversations', {
       params: {
@@ -189,6 +207,10 @@ export const isekaiApi = {
         offset,
       },
     });
+  },
+
+  getConversationByReceiverId: (receiverId: string) => {
+    return axios.get<ConversationItem>(`conversations/r/${receiverId}`);
   },
 
   removeConversation: (conversationId: string) => {
@@ -204,5 +226,9 @@ export const isekaiApi = {
         type2,
       },
     });
+  },
+
+  getListFriend: () => {
+    return axios.get<User[]>('user/list-friends');
   },
 };

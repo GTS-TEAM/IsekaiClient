@@ -1,9 +1,10 @@
 import { CircularProgress } from '@mui/material';
-import { chatSelector, getAllMessage, unmountMessage } from 'features/chatSlice';
+import { chatSelector, getAllMessage, getAllMessageByReceiverId, unmountMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { MessageItem } from 'share/types';
+import { ConversationItem, MessageItem } from 'share/types';
+import { LIMITCHAT } from 'utils/constant';
 import Message from '../Message';
 import { StyledChatMain } from './styles';
 
@@ -12,16 +13,24 @@ const ChatMain: FC<{
   maxWidthMessage?: string;
   conversationId: string;
   type?: 'popup' | 'screen';
-}> = ({ heightChatMain, maxWidthMessage, conversationId, type }) => {
-  const { messages, hasMore, currentConversation } = useAppSelector(chatSelector);
+  currentConversation: ConversationItem;
+}> = ({ heightChatMain, maxWidthMessage, conversationId, type, currentConversation }) => {
+  const { messages, hasMoreMessage } = useAppSelector(chatSelector);
   const [offset, setOffset] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
 
+  const theme = useMemo(() => currentConversation?.theme, [currentConversation]);
+
   useEffect(() => {
     dispatch(unmountMessage());
-    dispatch(getAllMessage({ conversation_id: conversationId, offset: 0 }));
-  }, [conversationId, dispatch]);
+    if (type === 'screen') {
+      dispatch(getAllMessage({ conversation_id: conversationId, offset: 0 }));
+    }
+    if (type === 'popup') {
+      dispatch(getAllMessageByReceiverId({ receiverId: conversationId, offset: 0 }));
+    }
+  }, [conversationId, dispatch, type]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -38,11 +47,16 @@ const ChatMain: FC<{
           dataLength={messages.length}
           next={() => {
             setOffset(offset + 20);
-            dispatch(getAllMessage({ conversation_id: conversationId, offset: offset + 20 }));
+            if (type === 'screen') {
+              dispatch(getAllMessage({ conversation_id: conversationId, offset: offset + LIMITCHAT }));
+            }
+            if (type === 'popup') {
+              dispatch(getAllMessageByReceiverId({ receiverId: conversationId, offset: offset + LIMITCHAT }));
+            }
           }}
-          hasMore={hasMore}
+          hasMore={hasMoreMessage}
           inverse={true}
-          loader={<CircularProgress sx={{ color: currentConversation?.theme || 'var(--mainColor)' }} />}
+          loader={<CircularProgress sx={{ color: theme || 'var(--mainColor)' }} />}
           scrollableTarget="scrollableDiv"
           style={{
             display: 'flex',
@@ -53,13 +67,7 @@ const ChatMain: FC<{
           }}
         >
           {messages.map((mess: MessageItem) => (
-            <Message
-              key={mess.id}
-              message={mess}
-              maxWidth={maxWidthMessage}
-              theme={currentConversation?.theme as string}
-              type={type}
-            />
+            <Message key={mess.id} message={mess} maxWidth={maxWidthMessage} theme={theme as string} type={type} />
           ))}
           <div
             style={{
