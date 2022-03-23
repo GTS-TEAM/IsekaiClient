@@ -40,7 +40,7 @@ const ChatView = () => {
   }, []);
 
   useEffect(() => {
-    const isSeen = currentConversationSeen?.seen.find((item) => item.user.id === user?.id);
+    const isSeen = currentConversationSeen?.seen?.find((item) => item.user.id === user?.id);
     if (isFocus && currentConversation?.last_message?.id && !isSeen) {
       dispatch(
         seenMessage({

@@ -1,7 +1,7 @@
 import { CircularProgress } from '@mui/material';
 import { chatSelector, getAllMessage, getAllMessageByReceiverId, unmountMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ConversationItem, MessageItem } from 'share/types';
 import { LIMITCHAT } from 'utils/constant';
@@ -20,16 +20,6 @@ const ChatMain: FC<{
   const [offset, setOffset] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
-
-  const mySelfSeen = useCallback(
-    (currentUserId: string) => {
-      if (currentConversation?.seen?.length === 1) {
-        return currentConversation?.seen?.some((item) => item.user.id === currentUserId);
-      }
-      return false;
-    },
-    [currentConversation?.seen],
-  );
 
   useEffect(() => {
     dispatch(unmountMessage());

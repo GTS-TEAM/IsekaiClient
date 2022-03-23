@@ -1,6 +1,6 @@
 import { Box, Button, ClickAwayListener, IconButton } from '@mui/material';
 import ModalWrapper from 'components/Modal';
-import { Header } from 'components/Modal/styles';
+import { Header } from 'components/Modal/Styles';
 import { updateConversation } from 'features/chatSlice';
 import { useAppDispatch } from 'hooks/hooks';
 import React, { useState } from 'react';

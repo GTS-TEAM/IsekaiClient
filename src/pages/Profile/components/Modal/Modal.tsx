@@ -1,7 +1,7 @@
 import { LoadingButton } from '@mui/lab';
 import { ClickAwayListener, Slider, Stack } from '@mui/material';
 import ModalWrapper from 'components/Modal';
-import { Header } from 'components/Modal/styles';
+import { Header } from 'components/Modal/Styles';
 import { editUserInfo, userSelector } from 'features/userSlice';
 import { useAppSelector } from 'hooks/hooks';
 import { IMG } from 'images';

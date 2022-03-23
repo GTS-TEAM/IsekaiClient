@@ -1,5 +1,5 @@
 import { Box, ClickAwayListener, IconButton } from '@mui/material';
-import { Header } from 'components/Modal/styles';
+import { Header } from 'components/Modal/Styles';
 import { updateConversation } from 'features/chatSlice';
 import { StyledModalWrap } from 'GlobalStyle';
 import { useAppDispatch } from 'hooks/hooks';

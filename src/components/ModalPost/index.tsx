@@ -3,7 +3,7 @@ import { Button, ClickAwayListener, Stack } from '@mui/material';
 import autosize from 'autosize';
 import Status from 'components/Emotion';
 import ModalWrapper from 'components/Modal';
-import { Header } from 'components/Modal/styles';
+import { Header } from 'components/Modal/Styles';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { IMG } from 'images';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';

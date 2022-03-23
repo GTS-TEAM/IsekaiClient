@@ -1,6 +1,6 @@
 import styled from '@emotion/styled/macro';
 import { Stack } from '@mui/material';
-import { Modal } from 'components/Modal/styles';
+import { Modal } from 'components/Modal/Styles';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { fadeIn } from './../../utils/keyframeStyle';
 
