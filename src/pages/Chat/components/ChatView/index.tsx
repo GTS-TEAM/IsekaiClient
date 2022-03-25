@@ -1,4 +1,3 @@
-import { authSelector } from 'features/authSlice';
 import { chatSelector, seenMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -11,7 +10,7 @@ import { StyledChatView } from './Styles';
 
 const ChatView = () => {
   const { id: conversationId } = useParams();
-  const { currentConversation, seen } = useAppSelector(chatSelector);
+  const { currentConversation } = useAppSelector(chatSelector);
   const chatViewRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
   const [isFocus, setIsFocus] = useState(false);
