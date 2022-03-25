@@ -1,10 +1,10 @@
+import { authSelector, registerHandler } from 'features/authSlice';
 import { useFormik } from 'formik';
 import { useAppDispatch } from 'hooks/hooks';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { authSelector, registerHandler } from '../../features/authSlice';
 import './Auth.scss';
 const Register = () => {
   const dispatch = useAppDispatch();
@@ -55,7 +55,7 @@ const Register = () => {
       <div className="container">
         <div className="auth__container">
           <h1>Register</h1>
-          {register.error && <div className="error-login">{register.error}</div>}
+          {register?.error && <div className="error-login">{register?.error}</div>}
           <form className="auth__form" onSubmit={formik.handleSubmit}>
             <div className="input__group">
               <label htmlFor="userName">User Name</label>
@@ -118,7 +118,7 @@ const Register = () => {
               ) : null}
             </div>
             <button type="submit" disabled={!(formik.dirty && formik.isValid)}>
-              {register.loading ? 'Loading...' : 'Register'}
+              {register?.loading ? 'Loading...' : 'Register'}
             </button>
           </form>
           <p className="register-link">

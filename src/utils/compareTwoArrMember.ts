@@ -1,4 +1,5 @@
-import { Member, User } from './../share/types';
+import { Member, User } from 'share/types';
+
 export const compareTwoArrMember = (_arr1: Member[], _arr2: User[]) => {
   // .concat() to not mutate arguments
   const arr1 = _arr1.concat().sort((a, b) => parseInt(a.id) - parseInt(b.id));

@@ -1,5 +1,5 @@
+import { IMG } from 'images';
 import { EmotionItem } from 'share/types';
-import { IMG } from '../images';
 
 const emotions: EmotionItem[] = [
   {
