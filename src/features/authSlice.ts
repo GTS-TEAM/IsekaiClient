@@ -3,7 +3,7 @@ import { User } from 'share/types';
 import { getTokenFromLocalStorage, setTokenToLocalStorage } from '../api/axoisClient';
 import { isekaiApi } from '../api/isekaiApi';
 import { ResLogin, Token } from './../share/types';
-import { RootState } from './../store'
+import { RootState } from './../store';
 
 interface parameterLogin {
   email: string;
@@ -12,8 +12,8 @@ interface parameterLogin {
 }
 
 interface parameterLoginGoogle {
-     accessToken:string
-     callback: () => any
+  accessToken: string;
+  callback: () => any;
 }
 
 export const loginHandler = createAsyncThunk<
@@ -21,7 +21,7 @@ export const loginHandler = createAsyncThunk<
   parameterLogin,
   {
     rejectValue: string;
-}
+  }
 >('auth/login', async (d, thunkApi) => {
   try {
     const { data } = await isekaiApi.login(d.email, d.password);
@@ -117,7 +117,6 @@ const initialState: InitialState = {
   },
 };
 
-
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -154,7 +153,7 @@ const authSlice = createSlice({
       .addCase(loginGoogleHandler.pending, (state) => {
         state.login.loading = true;
       })
-      .addCase(loginGoogleHandler.fulfilled,(state,action:PayloadAction<ResLogin>) => {
+      .addCase(loginGoogleHandler.fulfilled, (state, action: PayloadAction<ResLogin>) => {
         state.user = action.payload.user;
         state.token.access_token = action.payload.access_token;
         state.token.refresh_token = action.payload.refresh_token;
