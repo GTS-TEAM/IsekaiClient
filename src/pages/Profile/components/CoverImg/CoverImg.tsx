@@ -1,5 +1,4 @@
 import { Button } from '@mui/material';
-import Overlay from 'components/Overlay/Overlay';
 import { IMG } from 'images';
 import React, { useState } from 'react';
 import { AiFillCamera } from 'react-icons/ai';
@@ -40,7 +39,6 @@ const CoverImg: React.FC<Props> = ({ imgBgUrl, userId }) => {
         </InputImgTrigger>
       )}
       {openModal && <Modal onClose={closeModalHandler} field="background" />}
-      {openModal && <Overlay onClose={closeModalHandler} />}
     </StyledCoverImg>
   );
 };

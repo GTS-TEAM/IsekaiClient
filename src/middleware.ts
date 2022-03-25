@@ -5,6 +5,8 @@ import {
   createGroup,
   leaveGroup,
   receiveMessage,
+  receiveSeenMessage,
+  seenMessage,
   startConnecting,
   submitMessage,
   unmountChat,
@@ -35,6 +37,10 @@ export const chatMiddleware: Middleware = (store) => {
         if (data === 'jwt expired' || data === 'jwt malformed') {
           window.location.replace('/home');
         }
+      });
+
+      socket.on(ChatEvent.SEEN_MESSAGE, (data) => {
+        store.dispatch(receiveSeenMessage(data));
       });
 
       socket.on('error', (data) => {
@@ -80,6 +86,13 @@ export const chatMiddleware: Middleware = (store) => {
 
     if (unmountChat.match(action)) {
       socket.disconnect();
+    }
+
+    if (seenMessage.match(action) && isConnectionEstablished) {
+      socket.emit(ChatEvent.SEEN_MESSAGE, {
+        conversationId: action.payload.conversationId,
+        messageId: action.payload.messageId,
+      });
     }
 
     next(action);

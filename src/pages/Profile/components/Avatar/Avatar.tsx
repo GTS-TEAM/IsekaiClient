@@ -1,4 +1,3 @@
-import Overlay from 'components/Overlay/Overlay';
 import { userSelector } from 'features/userSlice';
 import { useOverFlowHidden } from 'hooks/useOverFlowHidden';
 import React, { useState } from 'react';
@@ -34,7 +33,6 @@ const Avatar = () => {
         )}
       </AvatarWrap>
       {openModal && <Modal onClose={closeModalHandler} field="avatar" />}
-      {openModal && <Overlay onClose={closeModalHandler} />}
     </React.Fragment>
   );
 };

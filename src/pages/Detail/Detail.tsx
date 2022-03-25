@@ -2,7 +2,6 @@ import { CircularProgress, Stack } from '@mui/material';
 import Actions from 'components/Actions/Actions';
 import Comments from 'components/Comments/Comments';
 import LiveStats from 'components/LiveStats/LiveStats';
-import Overlay from 'components/Overlay/Overlay';
 import SlideImgPost from 'components/SlideImgPost/SlideImgPost';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { authSelector } from 'features/authSlice';
@@ -47,7 +46,6 @@ const ModalViewPost = () => {
   if (loading) {
     return (
       <React.Fragment>
-        <Overlay style={{ backgroundColor: 'rgba(0,0,0,0.8)' }} />
         <CircularProgress
           sx={{ position: 'fixed', left: '50%', top: '50%', transform: 'translate(-50%,-50%)', color: '#fff', zIndex: 103 }}
         />

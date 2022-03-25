@@ -71,10 +71,10 @@ const Sidebar: React.FC<{
                 {conversation.type === ConversationType.GROUP ? (
                   <Avatar src={conversation.avatar as string} alt={conversation.name as string} />
                 ) : (
-                  <Avatar src={receiver?.avatar} alt={receiver?.username.charAt(0).toUpperCase()} />
+                  <Avatar src={receiver?.user.avatar} alt={receiver?.user.username.charAt(0).toUpperCase()} />
                 )}
                 <Box>
-                  <h3>{conversation.name || receiver?.username}</h3>
+                  <h3>{conversation.name || receiver?.nickname || receiver?.user.username}</h3>
                   <Box
                     sx={{
                       display: 'flex',

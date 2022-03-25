@@ -1,29 +1,8 @@
 import styled from '@emotion/styled/macro';
-import { Stack } from '@mui/material';
-import { motion } from 'framer-motion';
+import { Modal } from 'components/Modal/Styles';
 
-export const StyledModal = styled(motion.div)`
-  background-color: var(--fds-white);
-  border-radius: var(--borderRadius2);
-  z-index: 110;
-  width: 100%;
-  max-width: 72rem;
-  border: 1px solid var(--fds-gray-4);
-  transition: transform 0.1s ease;
-  position: fixed;
-`;
-
-export const Header = styled(Stack)`
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.6rem 2.8rem;
-`;
-
-export const Title = styled.h3`
-  font-size: 1.6rem;
-  font-weight: 500;
-  color: var(--fds-gray-10);
+export const StyledModal = styled(Modal)`
+  max-width: 70rem;
 `;
 
 export const CloseButton = styled.div`
@@ -43,7 +22,7 @@ export const CloseButton = styled.div`
 `;
 
 export const Body = styled.div`
-  padding: 0 2.8rem 1.6rem 2.8rem;
+  padding: 1.6rem 2.8rem 1.6rem 2.8rem;
   display: flex;
   align-items: center;
   justify-content: center;

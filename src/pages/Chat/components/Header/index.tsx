@@ -15,7 +15,6 @@ import { IoIosArrowBack, IoMdClose, IoMdLogOut } from 'react-icons/io';
 import { MdOutlineColorLens, MdOutlineRemoveCircleOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { ConversationItem, ConversationType, User } from 'share/types';
-import { convertNameConversation } from 'utils/convertNameConversation';
 import { getReceiver } from 'utils/getReceiver';
 import ModalChangeNameConversation from '../ModalChangeNameConversation';
 import ModalChangeTheme from '../ModalChangeTheme';
@@ -29,7 +28,8 @@ const Header: React.FC<{
   type?: 'popup' | 'screen';
   onClose?: () => any;
   currentConversation: ConversationItem;
-}> = ({ borderRadius, type, onClose, currentConversation }) => {
+  theme: string;
+}> = ({ borderRadius, type, onClose, currentConversation, theme }) => {
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
   const [isShowModalChangeTheme, setIsShowModalChangeTheme] = useState<boolean>(false);
   const [isShowModalChangeName, setIsShowModalChangeName] = useState<boolean>(false);
@@ -106,10 +106,10 @@ const Header: React.FC<{
         {currentConversation?.type === ConversationType.GROUP ? (
           <Avatar src={currentConversation?.avatar as string} alt={currentConversation?.name as string} />
         ) : (
-          <Avatar src={receiver?.avatar} alt={receiver?.username.charAt(0).toUpperCase()} />
+          <Avatar src={receiver?.user?.avatar} alt={receiver?.user?.username.charAt(0).toUpperCase()} />
         )}
         <Box>
-          <h3>{convertNameConversation(currentConversation as ConversationItem, currentUser as User)}</h3>
+          <h3>{currentConversation?.name || receiver?.nickname || receiver?.user.username}</h3>
           <span>Hoạt Động 10 phút trước</span>
         </Box>
       </RecipientBox>

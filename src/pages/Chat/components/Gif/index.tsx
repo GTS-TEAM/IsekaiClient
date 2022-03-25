@@ -45,12 +45,11 @@ const Component = React.forwardRef<HTMLDivElement>((props, ref) => {
         onGifClick={(gif, e) => {
           e.preventDefault();
           if (currentConversation?.type === ConversationType.GROUP) {
-            console.log(gif);
             dispatch(
               submitMessage({ message: gif.images.original.url, conversationId: id as string, type: MessageType.GIF }),
             );
           } else {
-            const receiver = getReceiver(currentConversation as ConversationItem, user as User);
+            const receiver = getReceiver(currentConversation as ConversationItem, user as User)?.user;
             dispatch(submitMessage({ message: gif.images.original.url, receiverId: receiver?.id, type: MessageType.GIF }));
           }
         }}

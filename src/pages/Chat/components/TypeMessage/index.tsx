@@ -6,7 +6,7 @@ import { authSelector } from 'features/authSlice';
 import { submitMessage } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { AiOutlineGif, AiOutlinePlus, AiOutlineSend } from 'react-icons/ai';
 import { BiSticker } from 'react-icons/bi';
 import { FiFile, FiFileText } from 'react-icons/fi';
@@ -29,7 +29,8 @@ import {
 
 const TypeMessage: React.FC<{
   currentConversation: ConversationItem;
-}> = ({ currentConversation }) => {
+  theme: string;
+}> = ({ currentConversation, theme }) => {
   const [textMessage, setTextMessage] = useState<string>('');
   const [isShowEmojiPicker, setIsShowEmojiPicker] = useState(false);
   const [isShowDropdown, setIsShowDropdown] = useState<boolean>(false);
@@ -48,11 +49,6 @@ const TypeMessage: React.FC<{
   >([]);
   const { user: currentUser } = useAppSelector(authSelector);
   const dispatch = useAppDispatch();
-
-  const theme = useMemo(
-    () => (currentConversation?.theme ? `${currentConversation?.theme} !important` : 'var(--mainColor)'),
-    [currentConversation?.theme],
-  );
 
   const changeTextMessageEmoji = (value: string) => {
     // two line get position of cursor
@@ -88,7 +84,7 @@ const TypeMessage: React.FC<{
           }),
         );
       } else {
-        const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
+        const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User)?.user;
         dispatch(
           submitMessage({
             message: textMessage.trim(),
@@ -106,7 +102,6 @@ const TypeMessage: React.FC<{
     if (file.size > 5 * 1024 * 1024) {
       setIsShowError(true);
       setIsShowDropdown(false);
-
       return;
     }
 

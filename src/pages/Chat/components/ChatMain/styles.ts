@@ -38,3 +38,9 @@ export const EndChat = styled.div`
     color: var(--fds-gray-7);
   }
 `;
+
+export const Seen = styled.div`
+  display: flex;
+  align-items: center;
+  column-gap: 0.3rem;
+`;

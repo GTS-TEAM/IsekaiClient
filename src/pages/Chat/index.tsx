@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import Layout from 'components/Layout/Layout';
-import { chatSelector, startConnecting, unmountChat } from 'features/chatSlice';
+import { chatSelector, getConversation, startConnecting, unmountChat } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { useWindowSize } from 'hooks/useWindowSize';
 import React, { useEffect, useMemo } from 'react';
@@ -13,9 +13,8 @@ const Chat = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const { windowWidth } = useWindowSize();
-  const { currentConversation } = useAppSelector(chatSelector);
   const navigate = useNavigate();
-
+  const { currentConversation } = useAppSelector(chatSelector);
   const responsive = useMemo(() => {
     if (windowWidth < 768 && currentConversation) {
       return {
@@ -45,6 +44,14 @@ const Chat = () => {
       dispatch(unmountChat());
     };
   }, [dispatch]);
+
+  console.log(currentConversation);
+
+  useEffect(() => {
+    if (!currentConversation) {
+      dispatch(getConversation(id as string));
+    }
+  }, [id, dispatch, currentConversation]);
 
   useEffect(() => {
     if (currentConversation) {

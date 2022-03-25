@@ -1,7 +1,7 @@
 import { Box, CircularProgress, ClickAwayListener, IconButton } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
-import ModalWrapper from 'components/NewModal';
-import { Header, Modal } from 'components/NewModal/styles';
+import ModalWrapper from 'components/Modal';
+import { Header, Modal } from 'components/Modal/Styles';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FiFileText } from 'react-icons/fi';
 import { GrFormClose } from 'react-icons/gr';

@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Checkbox, ClickAwayListener, FormControlLabel, IconButton } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
-import ModalWrapper from 'components/NewModal';
-import { Header } from 'components/NewModal/styles';
+import ModalWrapper from 'components/Modal';
+import { Header } from 'components/Modal/Styles';
 import { addMember } from 'features/chatSlice';
 import { useAppDispatch } from 'hooks/hooks';
 import React, { useState } from 'react';

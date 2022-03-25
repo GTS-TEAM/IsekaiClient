@@ -1,28 +1,35 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
-import { EmotionItem, ImgUpload, User } from 'share/types';
+import { User } from 'share/types';
 import { PostItem } from './../share/types';
 import { RootState } from './../store';
 
-export const uploadImg = async (files: ImgUpload[]) => {
+export const uploadImg = async (files: { id?: string; url: string; file?: File }[]) => {
   const formData = new FormData();
   files.forEach((item) => {
-    formData.append('files', item.file);
+    formData.append('files', item.file as File);
   });
   const { data } = await isekaiApi.uploadImg(formData);
   return data.urls;
 };
 
 interface ParameterCreatePost {
-  image: ImgUpload[];
+  image: {
+    id?: string;
+    url: string;
+    file?: File;
+  }[];
   description: string;
   emoji: any;
   callback: () => any;
 }
 
 export const createPost = createAsyncThunk('posts/createPost', async (d: ParameterCreatePost) => {
-  const urls = await uploadImg(d.image);
-  const { data } = await isekaiApi.createPost(urls, d.description, d.emoji);
+  let urls: string[] = [];
+  if (d.image.length > 0) {
+    urls = await uploadImg(d.image);
+  }
+  const { data } = await isekaiApi.createPost(urls as string[], d.description, d.emoji);
   d.callback(); // implement when create post completed
   return data;
 });
@@ -43,11 +50,12 @@ export const editPost = createAsyncThunk('posts/editPost', async (d: ParameterEd
     urls = await uploadImg(d.image);
     for (const item of d.image) {
       if (!item.hasOwnProperty('id')) {
-        tempImg.push(item);
+        tempImg.push(item.url);
       }
     }
     urls = [...tempImg, ...urls];
   }
+
   const { data } = await isekaiApi.editPost(d.postId, urls ? urls : d.image, d.description, d.emoji);
   d.callback(); // implement when edit post completed
   return data;
@@ -98,13 +106,6 @@ interface InitialState {
     error: null | string | undefined;
     hasMore: boolean;
   };
-  dataPosts: {
-    loading: boolean;
-    error: null | string | undefined;
-    postText: string;
-    emotion: EmotionItem | null;
-    image: any;
-  };
 }
 
 const initialState: InitialState = {
@@ -115,48 +116,12 @@ const initialState: InitialState = {
     error: null,
     hasMore: false,
   },
-  dataPosts: {
-    loading: false,
-    error: null,
-    postText: '',
-    emotion: null,
-    image: [],
-  },
 };
 
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    changePostText: (state, action: PayloadAction<string>) => {
-      state.dataPosts.postText = action.payload;
-    },
-    addPostImg: (state, action) => {
-      state.dataPosts.image.push(action.payload);
-    },
-    addPostFullImg: (state, action) => {
-      state.dataPosts.image = action.payload;
-    },
-    removePostImg: (state, action) => {
-      state.dataPosts.image = state.dataPosts.image.filter((item: any) => {
-        if (item.id) {
-          return item.id !== action.payload;
-        }
-        return item !== action.payload;
-      });
-    },
-    clearPostImg: (state) => {
-      state.dataPosts.image = [];
-    },
-    addPostEmotion: (state, action) => {
-      state.dataPosts.emotion = action.payload;
-    },
-    clearPostEmotion: (state) => {
-      state.dataPosts.emotion = null;
-    },
-    unmountTimeline: (state) => {
-      state.timeline.posts = [];
-    },
     toggleLike: (state, action: PayloadAction<{ postId: string; user: User | null }>) => {
       // action payload : id post
       const indexPost = state.timeline.posts.findIndex((item) => item.id === action.payload.postId);
@@ -194,7 +159,6 @@ const postsSlice = createSlice({
         commentCount: state.timeline.posts[indexPost].commentCount + 1,
       };
     },
-
     decreaseCmt: (state, action: PayloadAction<string>) => {
       const indexPost = state.timeline.posts.findIndex((item) => item.id === action.payload);
       state.timeline.posts[indexPost] = {
@@ -202,22 +166,18 @@ const postsSlice = createSlice({
         commentCount: state.timeline.posts[indexPost].commentCount - 1,
       };
     },
+    unmountTimeline: (state) => {
+      state.timeline.posts = [];
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(createPost.pending, (state) => {
-        state.dataPosts.loading = true;
-      })
+      .addCase(createPost.pending, (state) => {})
       .addCase(createPost.fulfilled, (state, action: PayloadAction<PostItem>) => {
-        state.dataPosts.loading = false;
         state.timeline.posts.unshift({
           ...action.payload,
           likes: [],
         });
-      })
-      .addCase(createPost.rejected, (state, action) => {
-        state.dataPosts.loading = false;
-        state.dataPosts.error = action.error.message;
       })
       .addCase(getTimeline.pending, (state) => {
         state.timeline.loading = true;
@@ -252,9 +212,6 @@ const postsSlice = createSlice({
         state.timeline.error = action.error.message;
         state.timeline.loading = false;
       })
-      .addCase(editPost.pending, (state) => {
-        state.dataPosts.loading = true;
-      })
       .addCase(
         editPost.fulfilled,
         (
@@ -275,7 +232,6 @@ const postsSlice = createSlice({
             description: action.payload.description,
             emoji: action.payload.emoji,
           };
-          state.dataPosts.loading = false;
         },
       )
       .addCase(deletePost.fulfilled, (state, action: PayloadAction<string>) => {
@@ -293,18 +249,6 @@ const postsSlice = createSlice({
   },
 });
 
-export const {
-  addPostEmotion,
-  clearPostEmotion,
-  addPostImg,
-  addPostFullImg,
-  clearPostImg,
-  removePostImg,
-  changePostText,
-  unmountTimeline,
-  decreaseCmt,
-  increaseCmt,
-  toggleLike,
-} = postsSlice.actions;
+export const { unmountTimeline, decreaseCmt, increaseCmt, toggleLike } = postsSlice.actions;
 export const postsSelector = (state: RootState) => state.posts;
 export default postsSlice.reducer;

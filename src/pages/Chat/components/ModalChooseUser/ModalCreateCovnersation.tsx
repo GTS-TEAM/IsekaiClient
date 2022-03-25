@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Checkbox, ClickAwayListener, FormControlLabel, IconButton } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
-import ModalWrapper from 'components/NewModal';
-import { Header } from 'components/NewModal/styles';
+import ModalWrapper from 'components/Modal';
+import { Header } from 'components/Modal/Styles';
 import { authSelector } from 'features/authSlice';
 import { addConversation, chatSelector, createGroup, selectConversation, unmountMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
@@ -89,6 +89,7 @@ const ModalCreateConversation: React.FC<{
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         theme: '#a56ffd',
+        seen: [],
       };
       const conversationExist = conversations.find(
         (conversation) =>

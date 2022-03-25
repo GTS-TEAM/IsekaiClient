@@ -1,46 +1,36 @@
 import { Avatar, Stack } from '@mui/material';
 import ModalPost from 'components/ModalPost';
-import Overlay from 'components/Overlay/Overlay';
-import { useAppDispatch } from 'hooks/hooks';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { authSelector } from '../../features/authSlice';
-import { changePostText, clearPostEmotion, clearPostImg } from '../../features/postsSlice';
-import {
-  closeCreatePostModal,
-  openCreatePostModal,
-  toggleHaveChooseEmotion,
-  toggleHaveChoosePhoto,
-  uiSelector,
-} from '../../features/uiSlice';
 import { useOverFlowHidden } from '../../hooks/useOverFlowHidden';
 import { IMG } from '../../images';
 import { Action, Bottom, Header, InputDummy, StyledCreatePost } from './Styles';
 
 const CreatePost = () => {
   const { user } = useSelector(authSelector);
-  const { modalPost: uiModalPost } = useSelector(uiSelector);
-  const dispatch = useAppDispatch();
+  const [haveChooseImg, setHaveChooseImg] = useState<boolean>(false);
+  const [haveChooseEmoji, setHaveChooseEmoji] = useState<boolean>(false);
+  const [isOpenModalAddPost, setIsOpenModalAddPost] = useState<boolean>(false);
 
-  const openModalCreatePostHandler = () => {
-    dispatch(openCreatePostModal());
-  };
+  const closeModalHandler = useCallback(() => {
+    setIsOpenModalAddPost(false);
+    setHaveChooseEmoji(false);
+    setHaveChooseImg(false);
+  }, []);
 
-  const closeModalCreatePostHandler = () => {
-    dispatch(closeCreatePostModal());
-    dispatch(clearPostEmotion());
-    dispatch(clearPostImg());
-    dispatch(changePostText(''));
-  };
-
-  useOverFlowHidden(uiModalPost.isOpenPost);
+  useOverFlowHidden(isOpenModalAddPost);
 
   return (
     <StyledCreatePost>
       <Header>
         <Stack direction="row" alignItems="center" columnGap="1.6rem">
           <Avatar src={user?.avatar} alt="" />
-          <InputDummy onClick={openModalCreatePostHandler}>
+          <InputDummy
+            onClick={() => {
+              setIsOpenModalAddPost(true);
+            }}
+          >
             <p>{user?.username} ơi, bạn đang nghĩ gì thế?</p>
           </InputDummy>
         </Stack>
@@ -49,8 +39,8 @@ const CreatePost = () => {
         <Stack direction="row" alignItems="center" columnGap="1.6rem">
           <Action
             onClick={() => {
-              dispatch(toggleHaveChoosePhoto());
-              openModalCreatePostHandler();
+              setHaveChooseImg(true);
+              setIsOpenModalAddPost(true);
             }}
           >
             <IMG.AddPhoto fill="#00a400" />
@@ -58,8 +48,8 @@ const CreatePost = () => {
           </Action>
           <Action
             onClick={() => {
-              dispatch(toggleHaveChooseEmotion());
-              openModalCreatePostHandler();
+              setHaveChooseEmoji(true);
+              setIsOpenModalAddPost(true);
             }}
           >
             <IMG.Emotion fill="#f5c33b" />
@@ -68,8 +58,16 @@ const CreatePost = () => {
         </Stack>
       </Bottom>
 
-      {uiModalPost.isOpenPost && <Overlay onClose={closeModalCreatePostHandler} />}
-      {uiModalPost.isOpenPost && <ModalPost type="post" onCloseModal={closeModalCreatePostHandler} />}
+      {isOpenModalAddPost && (
+        <ModalPost
+          type="post"
+          onCloseModal={closeModalHandler}
+          haveChooseEmoji={haveChooseEmoji}
+          haveChooseImg={haveChooseImg}
+          setHaveChooseEmoji={setHaveChooseEmoji}
+          setHaveChooseImg={setHaveChooseImg}
+        />
+      )}
     </StyledCreatePost>
   );
 };

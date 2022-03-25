@@ -52,7 +52,7 @@ export const StyledMessage = styled.div<{
   ${(p) =>
     p.type === MessageType.SYSTEM
       ? css`
-          background-color: unset;
+          background-color: unset !important;
           color: var(--fds-gray-3);
           margin-left: 0 !important;
           padding: unset;
@@ -171,12 +171,13 @@ export const Img = styled.img<{
 
 export const File = styled.div<{
   screenType?: 'popup' | 'screen';
+  theme: string;
 }>`
   display: flex;
   align-items: center;
   column-gap: 1.2rem;
   padding: 1.2rem;
-  background-color: var(--mainColor);
+  background-color: ${(p) => p.theme};
   border-radius: var(--borderRadius3);
 
   & > svg {
@@ -397,4 +398,22 @@ export const Video = styled.div<{
           max-width: 20rem;
         `
       : undefined}
+`;
+
+export const Seen = styled.div<{
+  left?: boolean;
+}>`
+  display: flex;
+  align-items: center;
+  column-gap: 0.4rem;
+  ${(p) =>
+    !p.left
+      ? css`
+          flex-direction: row;
+          justify-content: flex-end;
+        `
+      : css`
+          flex-direction: row-reverse;
+          justify-content: flex-end;
+        `}
 `;

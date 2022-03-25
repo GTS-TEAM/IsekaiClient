@@ -80,7 +80,12 @@ const Comments: FC<Props> = ({ postId, amountComment }) => {
   };
 
   const pressKeyboardHander = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(e.code);
+    if (e.key === 'Enter') {
+      sendCommentHandler();
+    }
+    if (e.key === 'Escape') {
+      setCommentText('');
+    }
   };
 
   useEffect(() => {

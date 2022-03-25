@@ -209,6 +209,10 @@ export const isekaiApi = {
     });
   },
 
+  getConversationByConversationId: (conversationId: string) => {
+    return axios.get<ConversationItem>(`conversations/${conversationId}`);
+  },
+
   getConversationByReceiverId: (receiverId: string) => {
     return axios.get<ConversationItem>(`conversations/r/${receiverId}`);
   },
