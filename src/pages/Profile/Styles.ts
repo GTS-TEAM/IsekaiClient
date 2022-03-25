@@ -5,6 +5,10 @@ export const StyledProfile = styled.div`
   margin-left: auto;
   margin-right: auto;
   width: 100%;
+
+  .main-container {
+    flex: 1;
+  }
 `;
 
 export const User = styled.div`
@@ -35,6 +39,7 @@ export const Sidebar = styled.aside`
   display: flex;
   flex-direction: column;
   row-gap: 1.2rem;
+  flex-shrink: 0;
   @media screen and (max-width: 1054px) {
     display: none;
   }

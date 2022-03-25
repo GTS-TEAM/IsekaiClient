@@ -1,7 +1,7 @@
+import { authSelector } from 'features/authSlice';
 import { useAppSelector } from 'hooks/hooks';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authSelector } from '../../features/authSlice';
 import Header from './components/Header/Header';
 import Hero from './components/Hero/Hero';
 

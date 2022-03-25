@@ -3,6 +3,7 @@ import Layout from 'components/Layout/Layout';
 import React from 'react';
 import SettingGeneral from './components/SettingGeneral/SettingGeneral';
 import SettingSecurity from './components/SettingSecurity/SettingSecurity';
+
 import { SettingAccountContainer, StyledSettingAccount } from './Styles';
 
 const SettingAccount = () => {

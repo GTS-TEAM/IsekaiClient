@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled/macro';
-import { fadeIn } from './utils/keyframeStyle';
+import { fadeIn } from 'utils/keyframeStyle';
 
 export const globalStyles = css`
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');

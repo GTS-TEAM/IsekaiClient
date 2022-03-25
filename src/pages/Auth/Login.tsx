@@ -1,16 +1,16 @@
+import { authSelector, loginGoogleHandler, loginHandler } from 'features/authSlice';
 import { useFormik } from 'formik';
 import { useAppDispatch } from 'hooks/hooks';
 import React, { useEffect } from 'react';
+//Google Login
+import { useGoogleLogin } from 'react-google-login';
 import { AiFillFacebook } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
-import { authSelector, loginGoogleHandler, loginHandler } from '../../features/authSlice';
-import './Auth.scss';
-//Google Login
-import { useGoogleLogin } from 'react-google-login';
 import { clientId } from 'share/types';
+import * as Yup from 'yup';
+import './Auth.scss';
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -71,7 +71,7 @@ const Login = () => {
       <div className="container">
         <div className="auth__container">
           <h1>Login</h1>
-          {login.error && <div className="error-login">{login.error}</div>}
+          {login?.error && <div className="error-login">{login?.error}</div>}
           <div className="btns__provider">
             <button onClick={() => signIn()}>
               <FcGoogle />
