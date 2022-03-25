@@ -1,11 +1,10 @@
 import { Box } from '@mui/material';
 import Layout from 'components/Layout/Layout';
-import { getConversation, startConnecting, unmountChat } from 'features/chatSlice';
-import { useAppDispatch } from 'hooks/hooks';
+import { chatSelector, getConversation, startConnecting, unmountChat } from 'features/chatSlice';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { useWindowSize } from 'hooks/useWindowSize';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ConversationItem } from 'share/types';
 import ChatView from './components/ChatView';
 import Sidebar from './components/Sidebar';
 import { ChatBody, StyledChat } from './styles';
@@ -14,9 +13,8 @@ const Chat = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const { windowWidth } = useWindowSize();
-  const [currentConversation, setCurrentConversation] = useState<ConversationItem | null>(null);
   const navigate = useNavigate();
-
+  const { currentConversation } = useAppSelector(chatSelector);
   const responsive = useMemo(() => {
     if (windowWidth < 768 && currentConversation) {
       return {
@@ -47,9 +45,13 @@ const Chat = () => {
     };
   }, [dispatch]);
 
+  console.log(currentConversation);
+
   useEffect(() => {
-    dispatch(getConversation(id as string));
-  }, [id, dispatch]);
+    if (!currentConversation) {
+      dispatch(getConversation(id as string));
+    }
+  }, [id, dispatch, currentConversation]);
 
   useEffect(() => {
     if (currentConversation) {
