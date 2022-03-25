@@ -65,6 +65,9 @@ interface SearchGlobal {
 
 export const StyledGlobalSearch = styled.div`
   position: relative;
+  @media screen and (max-width:868px) {
+    display:none ;
+  }
 `;
 
 export const SearchWrap = styled.div<SearchGlobal>`
@@ -82,7 +85,6 @@ export const SearchWrap = styled.div<SearchGlobal>`
   justify-self: center;
   transition: all 0.3s;
   position: relative;
-
   ${(p) =>
     p.isFocus
       ? css`

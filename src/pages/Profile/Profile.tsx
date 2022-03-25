@@ -1,5 +1,4 @@
 import { Stack } from '@mui/material';
-import Container from 'components/Container/Container';
 import CreatePost from 'components/CreatePost/CreatePost';
 import Layout from 'components/Layout/Layout';
 import ListPost from 'components/ListPost/ListPost';
@@ -13,7 +12,7 @@ import CoverImg from './components/CoverImg/CoverImg';
 import Info from './components/Info/Info';
 import PhotosPreview from './components/Photos/PhotosPreview';
 import ProfileMenu from './components/ProfileMenu/ProfileMenu';
-import { Sidebar, StyledProfile, User } from './Styles';
+import { Sidebar, SidebarIn, StyledProfile, User } from './Styles';
 
 const Profile = () => {
   const { id } = useParams();
@@ -52,33 +51,35 @@ const Profile = () => {
   return (
     <Layout>
       <StyledProfile className="layout">
-        <Container>
-          <div>
-            <CoverImg imgBgUrl={user?.background || ''} userId={user?.id || ''} />
-            <ProfileMenu />
-            <User>
-              <h2>{user?.username}</h2>
-              <p>3.2k Bạn bè</p>
-            </User>
-          </div>
-          <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-            <Stack direction="row" columnGap="1.2rem">
-              <Sidebar>
+        <div>
+          <CoverImg imgBgUrl={user?.background || ''} userId={user?.id || ''} />
+          <ProfileMenu />
+          <User>
+            <h2>{user?.username}</h2>
+            <p>3.2k Bạn bè</p>
+          </User>
+        </div>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} columnGap="1.2rem" spacing={{ xs: 1, sm: 2, md: 4 }}>
+            <Sidebar>
+              <Info bio={user?.bio || ''} userId={user?.id || ''} />
+              <PhotosPreview userId={id || ''} />
+            </Sidebar>
+            <main className="main-container">
+              <SidebarIn>
                 <Info bio={user?.bio || ''} userId={user?.id || ''} />
                 <PhotosPreview userId={id || ''} />
-              </Sidebar>
-              <main style={{ flex: '1' }}>
-                {currentUser?.id === user?.id && <CreatePost />}
-                <ListPost
-                  posts={timeline.posts}
-                  hasMore={timeline.hasMore}
-                  onFetchMore={fetchMoreHandler}
-                  style={currentUser?.id === user?.id ? { marginTop: '1.2rem' } : { marginTop: 'unset' }}
-                />
-              </main>
-            </Stack>
-          </div>
-        </Container>
+              </SidebarIn>
+              {currentUser?.id === user?.id && <CreatePost />}
+              <ListPost
+                posts={timeline.posts}
+                hasMore={timeline.hasMore}
+                onFetchMore={fetchMoreHandler}
+                style={currentUser?.id === user?.id ? { marginTop: '1.2rem' } : { marginTop: 'unset' }}
+              />
+            </main>
+          </Stack>
+        </div>
       </StyledProfile>
     </Layout>
   );
