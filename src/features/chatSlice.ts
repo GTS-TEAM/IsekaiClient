@@ -2,8 +2,8 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
 import { RootState } from 'store';
 import { LIMITCHAT, LIMIT_CONVERSATION } from 'utils/constant';
-import { v4 as uuid, v4 } from 'uuid';
-import { ConversationItem, Member, MemberFields, MessageItem } from './../share/types';
+import { v4 as uuid } from 'uuid';
+import { ConversationItem, ISeen, Member, MemberFields, MessageItem } from './../share/types';
 
 export const getAllMessage = createAsyncThunk<
   MessageItem[],
@@ -38,14 +38,17 @@ export const getAllConversations = createAsyncThunk<
   }
 >('chat/getAllConversations', async ({ offset, limit }, thunkApi) => {
   const { data } = await isekaiApi.getAllConversation(limit, offset);
-  thunkApi.dispatch(selectConversation(data[0]));
-  thunkApi.dispatch(setCurrentConversationSeen(data[0]));
   return data;
 });
 
 export const removeConversation = createAsyncThunk('chat/removeConversation', async (conversationId: string) => {
   await isekaiApi.removeConversation(conversationId);
   return conversationId;
+});
+
+export const getConversation = createAsyncThunk<ConversationItem, string>('chat/getConversation', async (conversationId) => {
+  const { data } = await isekaiApi.getConversationByConversationId(conversationId);
+  return data;
 });
 
 const initialState: {
@@ -64,6 +67,7 @@ const initialState: {
     receiverId: string;
     currentConversation: ConversationItem | null;
   };
+  seen: ISeen[];
 } = {
   isEstablishingConnection: false,
   isConnected: false,
@@ -80,6 +84,7 @@ const initialState: {
     currentConversation: null,
   },
   currentConversationSeen: null,
+  seen: [],
 };
 
 const chatSlice = createSlice({
@@ -94,15 +99,22 @@ const chatSlice = createSlice({
       state.isEstablishingConnection = true;
     },
     receiveMessage: (state, action: PayloadAction<MessageItem>) => {
+      console.log(action.payload);
       state.messages.unshift(action.payload);
+
       state.currentConversation = {
         ...action.payload.conversation,
         seen: action.payload.conversation.seen,
+        last_message: {
+          id: action.payload.id,
+          content: action.payload.content,
+          created_at: action.payload.updated_at,
+          sender: action.payload.sender,
+          type: action.payload.type,
+          updated_at: action.payload.created_at,
+        },
       };
-      state.currentConversationSeen = {
-        ...action.payload.conversation,
-        seen: action.payload.conversation.seen,
-      };
+
       state.popupChat.currentConversation = action.payload.conversation;
       const conversationExistIndex = state.conversations.findIndex(
         (conversation) => conversation.id === action.payload.conversation.id,
@@ -122,7 +134,7 @@ const chatSlice = createSlice({
           theme: action.payload.conversation.theme,
           name: action.payload.conversation.name,
           avatar: action.payload.conversation.avatar,
-          seen: [],
+          seen: action.payload.conversation.seen,
         };
       } else {
         state.conversations.push({
@@ -194,7 +206,9 @@ const chatSlice = createSlice({
           member?: MemberFields;
         };
       }>,
-    ) => {},
+    ) => {
+      return;
+    },
     unmountChat: (state) => {
       state.conversations = [];
       state.isConnected = false;
@@ -231,27 +245,25 @@ const chatSlice = createSlice({
       state.currentConversation = null;
     },
     seenMessage: (state, action) => {
-      console.log(action.payload);
+      return;
     },
     receiveSeenMessage: (state, action) => {
-      const indexConversationExist = state.conversations.findIndex(
-        (conversation) => conversation.id === action.payload.conversation.id,
-      );
-
-      const conversationExist = state.conversations[indexConversationExist];
-      if (conversationExist) {
-        state.conversations[indexConversationExist].seen.push({
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          id: v4(),
-          messageId: action.payload.message.id,
-          user: action.payload.user,
-        });
-        state.currentConversationSeen = state.conversations[indexConversationExist];
+      const indexSeenExist = state.seen.findIndex((item) => item.user.id === action.payload.user.id);
+      const seenExist = state.seen[indexSeenExist];
+      const newSeen: ISeen = {
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        id: uuid(),
+        messageId: action.payload.message.id,
+        user: action.payload.user,
+      };
+      if (seenExist) {
+        state.seen[indexSeenExist] = {
+          ...newSeen,
+        };
+      } else {
+        state.seen.push(newSeen);
       }
-    },
-    setCurrentConversationSeen: (state, action) => {
-      state.currentConversationSeen = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -310,6 +322,9 @@ const chatSlice = createSlice({
           });
         }
         state.conversations = state.conversations.filter((conversation) => conversation.id !== action.payload);
+      })
+      .addCase(getConversation.fulfilled, (state, action) => {
+        state.currentConversation = action.payload;
       });
   },
 });
@@ -331,7 +346,6 @@ export const {
   selectPopupChat,
   seenMessage,
   receiveSeenMessage,
-  setCurrentConversationSeen,
 } = chatSlice.actions;
 
 export const chatSelector = (state: RootState) => state.chat;

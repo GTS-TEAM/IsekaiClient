@@ -54,7 +54,6 @@ export const editPost = createAsyncThunk('posts/editPost', async (d: ParameterEd
       }
     }
     urls = [...tempImg, ...urls];
-    console.log({ urls, tempImg, haveId, img: d.image });
   }
 
   const { data } = await isekaiApi.editPost(d.postId, urls ? urls : d.image, d.description, d.emoji);

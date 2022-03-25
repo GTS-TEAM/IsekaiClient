@@ -6,7 +6,7 @@ import moment from 'moment';
 import React, { useMemo, useRef, useState } from 'react';
 import { BsFillVolumeDownFill, BsFillVolumeMuteFill, BsPauseFill, BsPlayCircle, BsPlayFill } from 'react-icons/bs';
 import { MdAttachFile, MdFileDownload } from 'react-icons/md';
-import { FileType, MessageItem, MessageType } from 'share/types';
+import { ConversationItem, FileType, MessageItem, MessageType } from 'share/types';
 import { formatDuration } from 'utils/formatDuration';
 import Features from '../Features';
 import { Audio, File, Img, MessageWrapStyled, Seen, StyledMessage, Video } from './styles';
@@ -16,9 +16,10 @@ interface Props {
   maxWidth?: string;
   theme: string;
   type?: 'popup' | 'screen';
+  currentConversation: ConversationItem;
 }
 
-const Message: React.FC<Props> = ({ message, theme, type }) => {
+const Message: React.FC<Props> = ({ message, theme, type, currentConversation }) => {
   const { user: currentUser } = useAppSelector(authSelector);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -30,7 +31,7 @@ const Message: React.FC<Props> = ({ message, theme, type }) => {
   const [currentDurationVideo, setCurrentDurationVideo] = useState<number>(0);
   const [volumeVideo, setVolumeVideo] = useState<number>(0);
   const [currentVolumeVideo, setCurrentVolumeVideo] = useState<number>(0);
-  const { currentConversationSeen } = useAppSelector(chatSelector);
+  const { seen } = useAppSelector(chatSelector);
 
   const left = useMemo(() => currentUser?.id === message.sender?.user.id, [currentUser?.id, message.sender?.user.id]);
 
@@ -43,28 +44,27 @@ const Message: React.FC<Props> = ({ message, theme, type }) => {
 
   return (
     <>
+      <Seen left={left}>
+        {seen.map((item) => {
+          return (
+            message.id === item.messageId &&
+            item.user.id !== currentUser?.id && (
+              <Avatar
+                key={item.id}
+                src={item.user.avatar}
+                alt={item.user.username}
+                sx={{
+                  width: '1.2rem',
+                  height: '1.2rem',
+                  fontSize: '0.8rem',
+                }}
+              />
+            )
+          );
+        })}
+      </Seen>
       {message.content.trim().length > 0 && (message.type === MessageType.TEXT || message.type === MessageType.SYSTEM) ? (
         <>
-          {message.id === currentConversationSeen?.last_message?.id && (
-            <Seen left={left}>
-              {currentConversationSeen?.seen.map((item) => {
-                return (
-                  item.user.id !== currentUser?.id && (
-                    <Avatar
-                      key={item.id}
-                      src={item.user.avatar}
-                      alt={item.user.username}
-                      sx={{
-                        width: '1.2rem',
-                        height: '1.2rem',
-                        fontSize: '0.8rem',
-                      }}
-                    />
-                  )
-                );
-              })}
-            </Seen>
-          )}
           <MessageWrapStyled left={left} type={message.type}>
             <Features left={left} />
             <StyledMessage type={message.type} themeStyle={theme} timeCreated={moment(message.created_at).format('HH:MM')}>
@@ -76,51 +76,17 @@ const Message: React.FC<Props> = ({ message, theme, type }) => {
       ) : null}
 
       {message.type === MessageType.GIF && (
-        <>
-          <Seen left={left}>
-            {currentConversationSeen?.seen.map((item) => {
-              return (
-                <Avatar
-                  key={item.id}
-                  src={item.user.avatar}
-                  alt={item.user.username}
-                  sx={{
-                    width: '1rem',
-                    height: '1rem',
-                    fontSize: '0.8rem',
-                  }}
-                />
-              );
-            })}
-          </Seen>
-          <MessageWrapStyled left={left} type={message.type}>
-            <Features left={left} />
-            <Img src={message.content} alt="" screenType={type} />
-            {message.sender && <Avatar src={avatar} alt={alt} />}
-          </MessageWrapStyled>
-        </>
+        <MessageWrapStyled left={left} type={message.type}>
+          <Features left={left} />
+          <Img src={message.content} alt="" screenType={type} />
+          {message.sender && <Avatar src={avatar} alt={alt} />}
+        </MessageWrapStyled>
       )}
 
       {message.files &&
         message.files.length > 0 &&
         message.files.map((file) => (
           <div key={file.id}>
-            <Seen left={left}>
-              {currentConversationSeen?.seen.map((item) => {
-                return (
-                  <Avatar
-                    key={item.id}
-                    src={item.user.avatar}
-                    alt={item.user.username}
-                    sx={{
-                      width: '1.2rem',
-                      height: '1.2rem',
-                      fontSize: '0.8rem',
-                    }}
-                  />
-                );
-              })}
-            </Seen>
             <MessageWrapStyled left={left} type={file.type}>
               <Features left={left} />
               {file.type === FileType.FILE && (

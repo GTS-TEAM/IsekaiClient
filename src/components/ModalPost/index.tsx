@@ -71,7 +71,6 @@ const ModalPost: React.FC<Props> = ({
     }[]
   >(imgsPost || []);
 
-  console.log(imgs);
 
   const allowBtn = useMemo(
     () => textInput.trim().length === 0 && imgs.length === 0 && status === null,
@@ -155,7 +154,6 @@ const ModalPost: React.FC<Props> = ({
     };
   }, [closeHandler]);
 
-  console.log(loading);
 
   return (
     <ModalWrapper>
@@ -186,7 +184,6 @@ const ModalPost: React.FC<Props> = ({
             {imgs.length !== 0 && (
               <ImgPreviewList sx={{ '--col': `${imgs.length > 2 ? 2 : imgs.length}` }}>
                 {imgs.map((img: any) => {
-                  console.log(img);
                   return (
                     <ImgPreview key={img.id || img.url}>
                       <img src={img.url || img} alt="" />

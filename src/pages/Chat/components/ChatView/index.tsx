@@ -11,12 +11,11 @@ import { StyledChatView } from './Styles';
 
 const ChatView = () => {
   const { id: conversationId } = useParams();
-  const { currentConversation, currentConversationSeen } = useAppSelector(chatSelector);
+  const { currentConversation, seen } = useAppSelector(chatSelector);
   const { user } = useAppSelector(authSelector);
   const chatViewRef = useRef<HTMLDivElement | null>(null);
-  const [isFocus, setIsFocus] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-
+  const [isFocus, setIsFocus] = useState(false);
   const theme = useMemo(() => {
     return isFocus
       ? currentConversation?.theme
@@ -40,16 +39,10 @@ const ChatView = () => {
   }, []);
 
   useEffect(() => {
-    const isSeen = currentConversationSeen?.seen?.find((item) => item.user.id === user?.id);
-    if (isFocus && currentConversation?.last_message?.id && !isSeen) {
-      dispatch(
-        seenMessage({
-          conversationId: currentConversation?.id,
-          messageId: currentConversation?.last_message?.id,
-        }),
-      );
+    if (isFocus && currentConversation?.last_message) {
+      dispatch(seenMessage({ conversationId: currentConversation?.id, messageId: currentConversation?.last_message?.id }));
     }
-  }, [currentConversation, isFocus, dispatch, user, currentConversationSeen]);
+  }, [currentConversation?.last_message, dispatch, currentConversation?.id, isFocus]);
 
   return (
     <StyledChatView ref={chatViewRef}>

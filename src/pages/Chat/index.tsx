@@ -1,10 +1,11 @@
 import { Box } from '@mui/material';
 import Layout from 'components/Layout/Layout';
-import { chatSelector, startConnecting, unmountChat } from 'features/chatSlice';
-import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { getConversation, startConnecting, unmountChat } from 'features/chatSlice';
+import { useAppDispatch } from 'hooks/hooks';
 import { useWindowSize } from 'hooks/useWindowSize';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ConversationItem } from 'share/types';
 import ChatView from './components/ChatView';
 import Sidebar from './components/Sidebar';
 import { ChatBody, StyledChat } from './styles';
@@ -13,7 +14,7 @@ const Chat = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const { windowWidth } = useWindowSize();
-  const { currentConversation } = useAppSelector(chatSelector);
+  const [currentConversation, setCurrentConversation] = useState<ConversationItem | null>(null);
   const navigate = useNavigate();
 
   const responsive = useMemo(() => {
@@ -45,6 +46,10 @@ const Chat = () => {
       dispatch(unmountChat());
     };
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getConversation(id as string));
+  }, [id, dispatch]);
 
   useEffect(() => {
     if (currentConversation) {

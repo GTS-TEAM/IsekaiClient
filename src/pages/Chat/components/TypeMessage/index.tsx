@@ -84,7 +84,7 @@ const TypeMessage: React.FC<{
           }),
         );
       } else {
-        const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
+        const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User)?.user;
         dispatch(
           submitMessage({
             message: textMessage.trim(),
@@ -102,7 +102,6 @@ const TypeMessage: React.FC<{
     if (file.size > 5 * 1024 * 1024) {
       setIsShowError(true);
       setIsShowDropdown(false);
-
       return;
     }
 

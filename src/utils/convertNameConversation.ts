@@ -1,6 +1,6 @@
 import { ConversationItem, ConversationType, User } from 'share/types';
 import { getReceiver } from 'utils/getReceiver';
-export const convertNameConversation = (currentConversation: ConversationItem, user: User): string | undefined => {
+export const convertNameConversation = (currentConversation: ConversationItem, user: User): string | undefined | null => {
   return currentConversation?.name
     ? currentConversation.name
     : currentConversation?.type === ConversationType.GROUP
@@ -10,5 +10,5 @@ export const convertNameConversation = (currentConversation: ConversationItem, u
         .join(', ')} ${
         currentConversation?.members.length - 2 > 0 ? `và ${currentConversation?.members.length - 2} người khác` : ''
       }`
-    : getReceiver(currentConversation, user as User)?.username;
+    : getReceiver(currentConversation, user as User)?.nickname;
 };

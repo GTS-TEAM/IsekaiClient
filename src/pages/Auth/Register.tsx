@@ -18,7 +18,6 @@ const Register = () => {
       confirmPassword: '',
     },
     onSubmit: (values, actions) => {
-      console.log(values);
       dispatch(
         registerHandler({
           userName: values.userName,

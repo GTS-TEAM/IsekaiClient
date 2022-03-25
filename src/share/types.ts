@@ -285,13 +285,7 @@ export interface ConversationItem {
   created_at: string;
   updated_at: string;
   theme: string | null;
-  seen: {
-    id: string;
-    created_at: string;
-    updated_at: string;
-    messageId: string;
-    user: User;
-  }[];
+  seen: ISeen[];
 }
 
 export enum MessageType {
@@ -316,4 +310,16 @@ export interface MemberFields {
 export interface PopupItem {
   currentConversation: ConversationItem;
   receiverId: string;
+}
+
+export interface ISeen {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  messageId: string;
+  user: {
+    id: string;
+    username: string;
+    avatar: string;
+  };
 }

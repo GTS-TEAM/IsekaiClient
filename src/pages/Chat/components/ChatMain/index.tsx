@@ -66,9 +66,14 @@ const ChatMain: FC<{
           }}
         >
           {messages.map((mess: MessageItem) => (
-            <React.Fragment key={mess.id}>
-              <Message message={mess} maxWidth={maxWidthMessage} theme={theme} type={type} />
-            </React.Fragment>
+            <Message
+              key={mess.id}
+              message={mess}
+              maxWidth={maxWidthMessage}
+              theme={theme}
+              type={type}
+              currentConversation={currentConversation}
+            />
           ))}
           <div
             style={{
