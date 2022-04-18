@@ -16,8 +16,8 @@ const Actions: React.FC<ActionsProps> = ({ onToggleComment, post, className, onL
     <StyledActions className={className}>
       <div onClick={onLike} className="like">
         <Stack direction="row" alignItems="center" columnGap="1rem" justifyContent="center">
-          {post.liked ? <AiFillLike style={post.liked ? { color: 'var(--mainColor)' } : undefined} /> : <AiOutlineLike />}
-          <span style={post.liked ? { color: 'var(--mainColor)' } : undefined}>Thích</span>
+          {post?.liked ? <AiFillLike style={post?.liked ? { color: 'var(--mainColor)' } : undefined} /> : <AiOutlineLike />}
+          <span style={post?.liked ? { color: 'var(--mainColor)' } : undefined}>Thích</span>
         </Stack>
       </div>
       <div className="comment" onClick={onToggleComment}>
