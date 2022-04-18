@@ -1,40 +1,30 @@
 import React, { FC, FormEvent, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { CommentItem } from 'share/types';
 import { isekaiApi } from '../../api/isekaiApi';
-import { increaseCmt } from '../../features/postsSlice';
 import Comment from './Comment';
 import { Bottom, StyledComments, StyledInputComment, StyledListComments } from './Styles';
 
 interface Props {
   postId: string;
   amountComment: number;
+  onIncreaseCmt: () => void;
 }
 
-const Comments: FC<Props> = ({ postId, amountComment }) => {
+const Comments: FC<Props> = ({ postId, amountComment, onIncreaseCmt }) => {
   const [comments, setComments] = useState<CommentItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [commentText, setCommentText] = useState<string>('');
-  const [disabledButton, setDisabledButton] = useState<boolean>(true);
   const [offset, setOffset] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(false);
-  const dispatch = useDispatch();
 
   const commentTextChangeHandler = (e: FormEvent<HTMLInputElement>) => {
     setCommentText(e.currentTarget.value);
-    if (e.currentTarget.value.trim().length === 0) {
-      setDisabledButton(true);
-      return;
-    }
-    setDisabledButton(false);
   };
 
   const sendCommentHandler = async () => {
     if (commentText.trim().length === 0) {
-      setDisabledButton(true);
       return;
     }
-    setDisabledButton(false);
     const { data } = await isekaiApi.commentPost(postId, commentText);
     const newComment = {
       content: data.content,
@@ -43,7 +33,7 @@ const Comments: FC<Props> = ({ postId, amountComment }) => {
       id: data.id,
       user: data.user,
     };
-    dispatch(increaseCmt(postId));
+    onIncreaseCmt();
     setComments([newComment, ...comments]);
     setCommentText('');
   };
@@ -115,7 +105,7 @@ const Comments: FC<Props> = ({ postId, amountComment }) => {
       <StyledInputComment
         onChange={commentTextChangeHandler}
         onSendComment={sendCommentHandler}
-        disabledBtn={disabledButton}
+        disabledBtn={commentText.trim().length === 0}
         value={commentText}
         onKeyDown={pressKeyboardHander}
       />
