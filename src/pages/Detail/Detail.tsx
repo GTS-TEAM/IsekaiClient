@@ -1,4 +1,4 @@
-import { CircularProgress, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
 import Actions from 'components/Actions/Actions';
 import Comments from 'components/Comments/Comments';
@@ -6,8 +6,7 @@ import LiveStats from 'components/LiveStats/LiveStats';
 import SlideImgPost from 'components/SlideImgPost/SlideImgPost';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { authSelector } from 'features/authSlice';
-import { postsSelector } from 'features/postsSlice';
-import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { useAppSelector } from 'hooks/hooks';
 import React, { useEffect, useState } from 'react';
 import { GrFormClose } from 'react-icons/gr';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -26,13 +25,9 @@ const ModalViewPost = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAppSelector(authSelector);
-  const {
-    timeline: { posts, loading },
-  } = useAppSelector(postsSelector);
   const postId = searchParams.get('id') as string;
   const slideIndex = searchParams.get('index');
   const [post, setPost] = useState<PostItem | null>(null);
-  const dispatch = useAppDispatch();
 
   const increaseCmtHandle = () => {
     if (post) {
@@ -100,21 +95,11 @@ const ModalViewPost = () => {
           console.log(error);
         });
     }
-  }, [postId, dispatch]);
+  }, [postId]);
 
   useEffect(() => {
     console.log(post);
   }, [post]);
-
-  if (loading) {
-    return (
-      <React.Fragment>
-        <CircularProgress
-          sx={{ position: 'fixed', left: '50%', top: '50%', transform: 'translate(-50%,-50%)', color: '#fff', zIndex: 103 }}
-        />
-      </React.Fragment>
-    );
-  }
 
   return (
     <StyledDetail>
