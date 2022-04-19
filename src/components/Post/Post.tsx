@@ -13,7 +13,7 @@ import ReactHtmlParser from 'react-html-parser';
 import { PostItem } from 'share/types';
 import { REGEX_URL } from 'utils/constant';
 import { authSelector } from '../../features/authSlice';
-import { deletePost, likePost } from '../../features/postsSlice';
+import { deletePost, increaseCmt, likePost } from '../../features/postsSlice';
 import { useOverFlowHidden } from '../../hooks/useOverFlowHidden';
 import { Body, Description, Header, StyledPost } from './Styles';
 interface Props {
@@ -178,7 +178,15 @@ const Post: React.FC<Props> = ({ post }) => {
         />
       </Body>
       <Actions post={post} onToggleComment={toggleOpenCommentHandler} className="actions" onLike={likePostHandler} />
-      {isOpenComment && <Comments postId={post.id} amountComment={post.commentCount} />}
+      {isOpenComment && (
+        <Comments
+          postId={post.id}
+          amountComment={post.commentCount}
+          onIncreaseCmt={() => {
+            dispatch(increaseCmt(post.id));
+          }}
+        />
+      )}
       {isOpenModalEdit && (
         <ModalPost
           type="edit"

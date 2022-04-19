@@ -119,7 +119,7 @@ const Login = () => {
             </button>
           </form>
           <Link to="/forgot-password" className="forgot-password ">
-            Forgot your password
+            Forgot your password?
           </Link>
           <p className="register-link">
             Don't have an account? <Link to="/register">Register</Link>
