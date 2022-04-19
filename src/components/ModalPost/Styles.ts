@@ -1,8 +1,5 @@
 import styled from '@emotion/styled/macro';
-import { Stack } from '@mui/material';
-import { Modal } from 'components/Modal/Styles';
-import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
-import { fadeIn } from './../../utils/keyframeStyle';
+import { Modal } from 'components/Modal/ModalWrapper/Styles';
 
 export const StyledModal = styled(Modal)`
   background-color: var(--fds-white);
@@ -11,196 +8,99 @@ export const StyledModal = styled(Modal)`
   max-width: 55rem;
 `;
 
-export const Close = styled.div`
-  width: 3rem;
-  height: 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background-color: var(--textColorGray);
-  position: absolute;
-  top: 1.6rem;
-  right: 1.6rem;
-  cursor: pointer;
-
-  svg {
-    width: 2.4rem;
-    height: 2.4rem;
-    color: var(--grayColor1);
-  }
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
-export const Body = styled.div`
-  max-height: 40rem;
+export const StyledBody = styled.div`
+  padding: 1.2rem;
   display: flex;
   flex-direction: column;
-  row-gap: 1.2rem;
-  padding: 1.2rem;
-  overflow-y: auto;
+  gap: 1.2rem;
 `;
 
-export const StyledUserBlockPost = styled(UserBlockPost)`
-  & > div {
-    column-gap: 1.2rem !important;
-  }
-
-  h3 {
-    color: var(--fds-gray-10);
-  }
-`;
-
-export const InputArea = styled.textarea`
-  resize: none;
-  font-size: 1.4rem;
-  color: var(--fds-gray-8);
-  font-family: inherit;
+export const Actions = styled.div`
   padding: 1.2rem;
-  background-color: var(--grayColor1);
-  border-radius: var(--borderRadius2);
-  border: 1px solid var(--fds-gray-4);
-  min-height: 11rem;
-  animation: ${fadeIn} 0.3s ease;
-`;
-
-export const Bottom = styled(Stack)`
-  padding: 1.2rem;
-  flex-direction: row;
+  display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 1.2rem;
   border-top: 1px solid var(--fds-gray-4);
-  background-color: var(--fds-white);
-  flex-shrink: 0;
-  border-radius: 0 0 var(--borderRadius2) var(--borderRadius2);
+  border-bottom: 1px solid var(--fds-gray-4);
 
-  h3 {
-    color: var(--fds-gray-10);
-    font-size: 1.6rem;
-    font-weight: 500;
-  }
-`;
-
-export const Actions = styled(Stack)`
-  flex-direction: row;
-  align-items: center;
-  column-gap: 2rem;
-
-  .add-photo,
-  .add-emotion {
-    border-radius: 50%;
-    cursor: pointer;
+  .MuiButton-root {
+    min-height: 3.2rem;
+    border-radius: 500px;
+    font-size: 1.2rem;
+    gap: 8px;
+    background-color: var(--fds-gray-6);
+    color: var(--fds-gray-3);
 
     svg {
-      width: 2.4rem;
-      height: 2.4rem;
-    }
-  }
-
-  button {
-    cursor: pointer;
-    font-size: 1.6rem;
-    background-color: var(--mainColor);
-    color: var(--textColorWhite);
-    border-radius: var(--borderRadius3);
-    text-transform: capitalize;
-    width: 8rem;
-    height: 4rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:disabled {
-      opacity: 0.7;
-      pointer-events: none;
-    }
-    &:hover {
-      background-color: var(--mainColor);
-      opacity: 0.9;
+      width: 2rem;
+      height: 2rem;
     }
   }
 `;
 
-export const Overlay = styled.div`
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+export const ListImgPreview = styled.ul`
+  --col: 4;
+  --gap: 1.2rem;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background-color: rgba($color: #000000, $alpha: 0.7);
-  z-index: 0;
-`;
-
-export const Loading = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  color: var(--fds-white);
-`;
-
-export const ImgPreviewList = styled(Stack)`
-  --gap: 1.6rem;
-  gap: var(--gap);
-  flex-direction: row;
   flex-wrap: wrap;
-  margin-right: calc(-1 * var(--gap));
+  gap: var(--gap);
+
+  li {
+    width: calc(100% / var(--col) - var(--gap));
+  }
+
+  li .outer {
+    position: relative;
+    padding-bottom: 100%;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  li .inner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    inset: 0;
+  }
+
+  li .inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  li .MuiButtonBase-root {
+    position: absolute;
+    right: -1.5rem;
+    top: -1.5rem;
+    width: 3rem;
+    height: 3rem;
+    z-index: 10;
+    background-color: var(--fds-gray-6);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+    svg {
+      width: 1.6rem;
+      height: 1.6rem;
+    }
+  }
 `;
 
-export const ImgPreview = styled.div`
-  position: relative;
+export const StyledChooseStatus = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: calc(100% / var(--col) - var(--gap));
-  background-color: #000;
-  animation: ${fadeIn} 0.3s ease;
+  width: max-content;
+  border-radius: 500px;
+  font-size: 1.4rem;
+  padding: 0.6rem 1.2rem;
+  gap: 8px;
+  background-color: var(--fds-gray-6);
+  color: var(--fds-gray-3);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 
   img {
-    margin: 0 auto;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-`;
-
-export const InputPhoto = styled.div`
-  flex-shrink: 0;
-  height: 15rem;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  border-radius: var(--borderRadius2);
-  position: relative;
-  background-color: var(--grayColor1);
-  border: 1px solid var(--fds-gray-4);
-  color: var(--fds-gray-8);
-  cursor: pointer;
-  animation: ${fadeIn} 0.3s ease;
-
-  input {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-  }
-
-  svg {
-    width: 2.4rem;
-    height: 2.4rem;
-  }
-
-  span {
-    font-size: 1.4rem;
+    width: 1.6rem;
+    height: 1.6rem;
   }
 `;

@@ -2,7 +2,7 @@ import { Avatar, ClickAwayListener } from '@mui/material';
 import { Box } from '@mui/system';
 import { isekaiApi } from 'api/isekaiApi';
 import ErrorAlert from 'components/ErrorAlert';
-import ModalConfirm from 'components/ModalConfirm';
+import ModalConfirm from 'components/Modal/ModalConfirm';
 import { authSelector } from 'features/authSlice';
 import { exitChatView, leaveGroup, removeConversation, updateConversation } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
@@ -45,6 +45,8 @@ const Header: React.FC<{
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
+
+  console.log(theme);
 
   return (
     <StyledHeader borderRadius={borderRadius}>
@@ -282,6 +284,7 @@ const Header: React.FC<{
           });
         }}
         isShow={isShowModalConfirm}
+        theme={currentConversation?.theme as string}
       />
       <ModalConfirm
         header="Xóa đoạn chat"
@@ -289,8 +292,8 @@ const Header: React.FC<{
         onClose={() => {
           setIsShowModalConfirmRemove(false);
         }}
-        onConfirm={() => {
-          dispatch(removeConversation(currentConversation?.id as string));
+        onConfirm={async () => {
+          await dispatch(removeConversation(currentConversation?.id as string));
           if (type === 'popup') {
             onClose && onClose();
             return;

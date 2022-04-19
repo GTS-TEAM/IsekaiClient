@@ -37,6 +37,7 @@ const Status: React.FC<Props> = ({ setStatus, status, setHaveChooseEmoji }) => {
             onFocus={() => {
               setSearch(emotions.filter((item) => item.name.toLowerCase().includes(textInput.toLowerCase())));
             }}
+            placeholder="Tìm kiếm"
           />
           <div className="icon">
             <BiSearch />
@@ -58,6 +59,7 @@ const Status: React.FC<Props> = ({ setStatus, status, setHaveChooseEmoji }) => {
                   key={item.id}
                   onClick={() => {
                     setStatus(item);
+                    setHaveChooseEmoji(false);
                   }}
                   className={item.id === status?.id ? 'selected' : undefined}
                 >
