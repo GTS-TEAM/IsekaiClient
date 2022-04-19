@@ -20,7 +20,6 @@ interface Props {
 const Comment: React.FC<Props> = ({ comment, postId, onRemoveComment, onEditComment }) => {
   const [commentTextEdit, setCommentTextEdit] = useState('');
   const [openEditComment, setOpenEditComment] = useState<string | null>(null);
-  const [disabledButtonEdit, setDisabledButtonEdit] = useState(true);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
@@ -28,15 +27,11 @@ const Comment: React.FC<Props> = ({ comment, postId, onRemoveComment, onEditComm
 
   const sendEditedCommentHandler = async (commentId: string) => {
     if (commentTextEdit.trim().length === 0) {
-      setDisabledButtonEdit(true);
       return;
     }
-    setDisabledButtonEdit(false);
     onEditComment(commentId);
     setOpenEditComment(null);
-
     comment.content = commentTextEdit;
-
     await isekaiApi.editComment(commentId, commentTextEdit);
     setCommentTextEdit('');
   };
@@ -49,11 +44,6 @@ const Comment: React.FC<Props> = ({ comment, postId, onRemoveComment, onEditComm
 
   const changeTextInputHandler = (e: React.FormEvent<HTMLInputElement>) => {
     setCommentTextEdit(e.currentTarget.value);
-    if (e.currentTarget.value.trim().length === 0 || e.currentTarget.value === comment.content) {
-      setDisabledButtonEdit(true);
-      return;
-    }
-    setDisabledButtonEdit(false);
   };
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -78,7 +68,7 @@ const Comment: React.FC<Props> = ({ comment, postId, onRemoveComment, onEditComm
     <InputComment
       value={commentTextEdit}
       onChange={changeTextInputHandler}
-      disabledBtn={disabledButtonEdit}
+      disabledBtn={commentTextEdit.trim().length === 0 || commentTextEdit.trim() === comment.content}
       onSendComment={() => {
         sendEditedCommentHandler(comment.id);
       }}

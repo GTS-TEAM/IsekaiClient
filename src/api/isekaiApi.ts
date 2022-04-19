@@ -235,4 +235,14 @@ export const isekaiApi = {
   getListFriend: () => {
     return axios.get<User[]>('user/list-friends');
   },
+
+  postForgetPassword: (data: string) => {
+    return axios.post('/auth/reset-password', {
+      email: data,
+    });
+  },
+
+  patchResetPassword: (data: { password: string; token: string }) => {
+    return axios.patch('/auth/reset-password', data);
+  },
 };
