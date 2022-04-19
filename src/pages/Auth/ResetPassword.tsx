@@ -25,9 +25,9 @@ const ResetPassword = () => {
           token: token,
         };
         await isekaiApi.patchResetPassword(newObj);
-        // navigate('/login', {
-        //   replace: true,
-        // });
+        navigate('/login', {
+          replace: true,
+        });
       } catch (error) {
         console.log(error);
       }
