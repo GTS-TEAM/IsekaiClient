@@ -70,20 +70,20 @@ const Login = () => {
     <div className="auth">
       <div className="container">
         <div className="auth__container">
-          <h1>Login</h1>
+          <h1>Đăng nhập</h1>
           {login?.error && <div className="error-login">{login?.error}</div>}
           <div className="btns__provider">
             <button onClick={() => signIn()}>
               <FcGoogle />
-              <span>Continue with Google</span>
+              <span>Tiếp tục với Google</span>
             </button>
             <button>
               <AiFillFacebook color="#3c5a99" />
-              <span>Continue with Facebook</span>
+              <span>Tiếp tục với Facebook</span>
             </button>
           </div>
           <div className="line">
-            <span>Or</span>
+            <span>Hoặc</span>
           </div>
           <form className="auth__form" onSubmit={formik.handleSubmit}>
             <div className="input__group">
@@ -101,7 +101,7 @@ const Login = () => {
               ) : null}
             </div>
             <div className="input__group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">Mật khẩu</label>
               <input
                 type="password"
                 name="password"
@@ -115,14 +115,14 @@ const Login = () => {
               ) : null}
             </div>
             <button type="submit" disabled={!(formik.dirty && formik.isValid)}>
-              {login.loading ? 'Loading...' : 'Login'}
+              {login.loading ? 'Loading...' : 'Đăng nhập'}
             </button>
           </form>
           <Link to="/forgot-password" className="forgot-password ">
-            Forgot your password
+            Quên mật khẩu
           </Link>
           <p className="register-link">
-            Don't have an account? <Link to="/register">Register</Link>
+            Không có tài khoản? <Link to="/register">Đăng kí</Link>
           </p>
         </div>
       </div>

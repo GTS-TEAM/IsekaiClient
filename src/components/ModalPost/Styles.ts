@@ -21,7 +21,6 @@ export const Actions = styled.div`
   align-items: center;
   gap: 1.2rem;
   border-top: 1px solid var(--fds-gray-4);
-  border-bottom: 1px solid var(--fds-gray-4);
 
   .MuiButton-root {
     min-height: 3.2rem;

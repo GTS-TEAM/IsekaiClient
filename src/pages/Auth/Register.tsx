@@ -54,11 +54,11 @@ const Register = () => {
     <div className="auth">
       <div className="container">
         <div className="auth__container">
-          <h1>Register</h1>
+          <h1>Đăng kí</h1>
           {register?.error && <div className="error-login">{register?.error}</div>}
           <form className="auth__form" onSubmit={formik.handleSubmit}>
             <div className="input__group">
-              <label htmlFor="userName">User Name</label>
+              <label htmlFor="userName">Tên</label>
               <input
                 type="text"
                 name="userName"
@@ -88,7 +88,7 @@ const Register = () => {
               ) : null}
             </div>
             <div className="input__group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">Mật khẩu</label>
               <input
                 type="password"
                 name="password"
@@ -103,7 +103,7 @@ const Register = () => {
               ) : null}
             </div>
             <div className="input__group">
-              <label htmlFor="confirmPassword">Confirm password</label>
+              <label htmlFor="confirmPassword">Xác nhận mật khẩu</label>
               <input
                 type="password"
                 name="confirmPassword"
@@ -118,11 +118,11 @@ const Register = () => {
               ) : null}
             </div>
             <button type="submit" disabled={!(formik.dirty && formik.isValid)}>
-              {register?.loading ? 'Loading...' : 'Register'}
+              {register?.loading ? 'Loading...' : 'Đăng kí'}
             </button>
           </form>
           <p className="register-link">
-            Already have an account? <Link to="/login">Login</Link>
+            Đã có tài khoản? <Link to="/login">Đăng nhập</Link>
           </p>
         </div>
       </div>
