@@ -45,10 +45,8 @@ const Chat = () => {
     };
   }, [dispatch]);
 
-  console.log(currentConversation);
-
   useEffect(() => {
-    if (!currentConversation) {
+    if (id && !currentConversation) {
       dispatch(getConversation(id as string));
     }
   }, [id, dispatch, currentConversation]);

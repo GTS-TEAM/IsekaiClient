@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PostItem } from 'share/types';
-import ReactGridFacebook from '../ReactGridFacebook/ReactGridFacebook';
+import ReactGridFacebook from './ReactGridFacebook';
 
 interface Props {
   post: PostItem;

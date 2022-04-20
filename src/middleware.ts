@@ -20,6 +20,8 @@ export const chatMiddleware: Middleware = (store) => {
   return (next) => (action) => {
     const isConnectionEstablished = socket && store.getState().chat.isConnected;
 
+    console.log(action);
+
     if (startConnecting.match(action)) {
       socket = io(END_POINT, {
         path: '/api/socket.io',
@@ -59,6 +61,7 @@ export const chatMiddleware: Middleware = (store) => {
     }
 
     if (createGroup.match(action) && isConnectionEstablished) {
+      console.log('hi');
       socket.emit(ChatEvent.CREATEGROUP, action.payload);
     }
 

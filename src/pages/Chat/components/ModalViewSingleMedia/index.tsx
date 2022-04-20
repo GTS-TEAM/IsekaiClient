@@ -1,5 +1,5 @@
 import { ClickAwayListener, Slider } from '@mui/material';
-import ModalWrapper from 'components/Modal';
+import { ModalWrapper } from 'components/Modal';
 import React, { useRef, useState } from 'react';
 import { BsFillVolumeDownFill, BsFillVolumeMuteFill, BsPauseFill, BsPlayCircle } from 'react-icons/bs';
 import { HiOutlineFolderDownload } from 'react-icons/hi';

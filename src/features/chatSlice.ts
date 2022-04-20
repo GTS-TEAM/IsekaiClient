@@ -99,7 +99,6 @@ const chatSlice = createSlice({
       state.isEstablishingConnection = true;
     },
     receiveMessage: (state, action: PayloadAction<MessageItem>) => {
-      console.log(action.payload);
       state.messages.unshift(action.payload);
 
       state.currentConversation = {
@@ -240,6 +239,7 @@ const chatSlice = createSlice({
       }>,
     ) => {
       state.conversations = state.conversations.filter((conversation) => conversation.id !== action.payload.conversationId);
+      state.currentConversation = null;
     },
     exitChatView: (state) => {
       state.currentConversation = null;
@@ -322,6 +322,7 @@ const chatSlice = createSlice({
           });
         }
         state.conversations = state.conversations.filter((conversation) => conversation.id !== action.payload);
+        state.currentConversation = null;
       })
       .addCase(getConversation.fulfilled, (state, action) => {
         state.currentConversation = action.payload;

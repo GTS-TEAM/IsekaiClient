@@ -81,7 +81,6 @@ export const Emotions = styled.div`
 
 export const StyledStatus = styled.div`
   position: relative;
-  margin: 0 1.2rem 1.2rem 1.2rem;
   .input-wrap {
     width: 100%;
     position: relative;
