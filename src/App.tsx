@@ -1,7 +1,9 @@
 import Layout from 'components/Layout/Layout';
 import RequireAuth from 'components/RequireAuth';
+import FogotPassword from 'pages/Auth/FogotPassword';
 import Login from 'pages/Auth/Login';
 import Register from 'pages/Auth/Register';
+import ResetPassword from 'pages/Auth/ResetPassword';
 import Chat from 'pages/Chat';
 import PopupChat from 'pages/Chat/components/PropupChat';
 import Post from 'pages/Detail/Detail';
@@ -19,6 +21,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<FogotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          {/* <Route path="/reset-password?token=:tokenURL" element={<ResetPassword />} /> */}
+
           <Route path="/register" element={<Register />} />
           <Route
             path="/home"
