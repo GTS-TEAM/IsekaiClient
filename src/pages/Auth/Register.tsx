@@ -54,6 +54,9 @@ const Register = () => {
     <div className="auth">
       <div className="container">
         <div className="auth__container">
+          <Link to="/" className="logo">
+            isekai
+          </Link>
           <h1>Đăng kí</h1>
           {register?.error && <div className="error-login">{register?.error}</div>}
           <form className="auth__form" onSubmit={formik.handleSubmit}>

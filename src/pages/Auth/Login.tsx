@@ -70,6 +70,9 @@ const Login = () => {
     <div className="auth">
       <div className="container">
         <div className="auth__container">
+          <Link to="/" className="logo">
+            isekai
+          </Link>
           <h1>Đăng nhập</h1>
           {login?.error && <div className="error-login">{login?.error}</div>}
           <div className="btns__provider">

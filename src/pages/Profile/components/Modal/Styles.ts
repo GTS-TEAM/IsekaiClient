@@ -25,9 +25,13 @@ export const Body = styled.div`
   padding: 1.6rem 2.8rem 1.6rem 2.8rem;
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-direction: column;
   row-gap: 1.2rem;
+  min-height: 262px;
+
+  p {
+    font-size: 1.4rem;
+  }
 
   .MuiSlider-root {
     max-width: 35rem;
@@ -158,4 +162,5 @@ export const ListPhotos = styled.div`
   flex-wrap: wrap;
   gap: var(--gap);
   margin-right: calc(-1 * var(--gap));
+  height: 100%;
 `;
