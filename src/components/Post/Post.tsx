@@ -15,6 +15,7 @@ import { REGEX_URL } from 'utils/constant';
 import { authSelector } from '../../features/authSlice';
 import { deletePost, increaseCmt, likePost } from '../../features/postsSlice';
 import { useOverFlowHidden } from '../../hooks/useOverFlowHidden';
+import './stylePost.scss';
 import { Body, Description, Header, StyledPost } from './Styles';
 interface Props {
   post: PostItem;
