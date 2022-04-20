@@ -133,7 +133,7 @@ const ModalPost: React.FC<Props> = ({
     <ModalWrapper
       titleHeader="Tạo bài viết"
       textCancel="Hủy"
-      textOk={type === 'edit' ? 'Chỉnh sửa' : 'Thêm bài viết'}
+      textOk={loading ? 'Loading...' : type === 'edit' ? 'Chỉnh sửa' : 'Thêm bài viết'}
       onOk={() => {
         type === 'post' ? createPostHandler() : editPostHandler();
       }}
