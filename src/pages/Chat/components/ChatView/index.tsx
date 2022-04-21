@@ -15,12 +15,8 @@ const ChatView = () => {
   const dispatch = useAppDispatch();
   const [isFocus, setIsFocus] = useState(false);
   const theme = useMemo(() => {
-    return isFocus
-      ? currentConversation?.theme
-        ? `${currentConversation.theme} !important`
-        : 'var(--mainColor)  !important'
-      : '#808080 !important';
-  }, [isFocus, currentConversation]) as string;
+    return currentConversation?.theme ? `${currentConversation.theme} !important` : 'var(--mainColor)  !important';
+  }, [currentConversation]) as string;
 
   useEffect(() => {
     function handleClickOutside(ev: MouseEvent) {

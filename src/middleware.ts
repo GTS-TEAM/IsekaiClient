@@ -1,28 +1,31 @@
 import { Middleware } from '@reduxjs/toolkit';
+import { loginGoogleHandler, loginHandler, logout } from 'features/authSlice';
 import {
   addMember,
-  connectionEstablished,
   createGroup,
   leaveGroup,
   receiveMessage,
   receiveSeenMessage,
   seenMessage,
-  startConnecting,
   submitMessage,
-  unmountChat,
   updateConversation,
 } from 'features/chatSlice';
+import { connectionEstablished, startConnecting, unConnect } from 'features/socketSlice';
 import { ChatEvent, MessageItem } from 'share/types';
 import { io, Socket } from 'socket.io-client';
 const END_POINT = 'wss://isekai-api.me';
 export const chatMiddleware: Middleware = (store) => {
   let socket: Socket;
   return (next) => (action) => {
-    const isConnectionEstablished = socket && store.getState().chat.isConnected;
+    const isConnectionEstablished = socket && store.getState().socket.isConnected;
 
     console.log(action);
 
-    if (startConnecting.match(action)) {
+    if (
+      startConnecting.match(action) ||
+      loginHandler.fulfilled.match(action) ||
+      loginGoogleHandler.fulfilled.match(action)
+    ) {
       socket = io(END_POINT, {
         path: '/api/socket.io',
         query: {
@@ -61,7 +64,6 @@ export const chatMiddleware: Middleware = (store) => {
     }
 
     if (createGroup.match(action) && isConnectionEstablished) {
-      console.log('hi');
       socket.emit(ChatEvent.CREATEGROUP, action.payload);
     }
 
@@ -87,15 +89,19 @@ export const chatMiddleware: Middleware = (store) => {
       });
     }
 
-    if (unmountChat.match(action)) {
-      socket.disconnect();
-    }
-
     if (seenMessage.match(action) && isConnectionEstablished) {
       socket.emit(ChatEvent.SEEN_MESSAGE, {
         conversationId: action.payload.conversationId,
         messageId: action.payload.messageId,
       });
+    }
+
+    if (unConnect.match(action)) {
+      socket.disconnect();
+    }
+
+    if (logout.match(action)) {
+      socket.disconnect();
     }
 
     next(action);

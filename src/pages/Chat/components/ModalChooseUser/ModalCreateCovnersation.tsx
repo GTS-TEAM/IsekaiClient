@@ -2,7 +2,7 @@ import { Avatar, Box, Button, Checkbox, FormControlLabel } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
 import { ModalWrapper } from 'components/Modal';
 import { authSelector } from 'features/authSlice';
-import { addConversation, chatSelector, createGroup, selectConversation } from 'features/chatSlice';
+import { addConversation, chatSelector, createGroup, selectConversation, unmountMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useCallback, useEffect, useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
@@ -44,6 +44,7 @@ const ModalCreateConversation: React.FC<{
       if (!conversationExist) {
         const choosesId: string[] = chooses.map((choose: any) => choose.id);
         dispatch(createGroup(choosesId));
+        dispatch(unmountMessage());
       } else {
         navigation(`/message/${conversationExist?.id}`);
         dispatch(selectConversation(conversationExist));

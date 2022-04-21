@@ -9,7 +9,7 @@ import { authSelector } from 'features/authSlice';
 import { useAppSelector } from 'hooks/hooks';
 import React, { useEffect, useState } from 'react';
 import { GrFormClose } from 'react-icons/gr';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { PostItem, User } from 'share/types';
 import {
   ButtonAddFriend,
@@ -22,11 +22,10 @@ import {
   StyledDetail,
 } from './Styles';
 const ModalViewPost = () => {
-  const [searchParams] = useSearchParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAppSelector(authSelector);
-  const postId = searchParams.get('id') as string;
-  const slideIndex = searchParams.get('index');
+
   const [post, setPost] = useState<PostItem | null>(null);
 
   const increaseCmtHandle = () => {
@@ -85,9 +84,9 @@ const ModalViewPost = () => {
   };
 
   useEffect(() => {
-    if (postId) {
+    if (id) {
       isekaiApi
-        .getPost(postId)
+        .getPost(id)
         .then((value) => {
           setPost(value.data);
         })
@@ -95,11 +94,7 @@ const ModalViewPost = () => {
           console.log(error);
         });
     }
-  }, [postId]);
-
-  useEffect(() => {
-    console.log(post);
-  }, [post]);
+  }, [id]);
 
   return (
     <StyledDetail>
@@ -107,7 +102,7 @@ const ModalViewPost = () => {
         <GrFormClose />
       </ButtonClose>
       <SlideImgPostWrap>
-        <SlideImgPost images={(post?.image as string[]) || []} slideIndex={slideIndex ? +slideIndex : 0} />
+        <SlideImgPost images={(post?.image as string[]) || []} slideIndex={0} />
       </SlideImgPostWrap>
       <Post>
         <PostHeader>
@@ -129,7 +124,7 @@ const ModalViewPost = () => {
           <Actions post={post as PostItem} onLike={likePostHandler} />
         </div>
         <CommentsArea>
-          <Comments postId={postId ? postId : ''} amountComment={post?.comments} onIncreaseCmt={increaseCmtHandle} />
+          <Comments postId={id ? id : ''} amountComment={post?.comments} onIncreaseCmt={increaseCmtHandle} />
         </CommentsArea>
       </Post>
     </StyledDetail>
