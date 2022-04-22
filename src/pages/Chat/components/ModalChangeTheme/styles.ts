@@ -1,6 +1,6 @@
 import styled from '@emotion/styled/macro';
 import { Button } from '@mui/material';
-import { Modal } from 'components/Modal/Styles';
+import { Modal } from 'components/Modal/ModalWrapper/Styles';
 
 export const StyledModalChangeTheme = styled(Modal)`
   max-width: 34rem;
