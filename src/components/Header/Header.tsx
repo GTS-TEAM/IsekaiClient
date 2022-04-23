@@ -1,4 +1,5 @@
 import { Avatar, MenuItem, Stack } from '@mui/material';
+import { unConnect } from 'features/socketSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React from 'react';
 import { useGoogleLogout } from 'react-google-login';
@@ -36,6 +37,7 @@ const Header = () => {
     dispatch(logout());
     handleCloseDropdown();
     deleteTokenFromLocalStorage();
+    dispatch(unConnect());
   };
 
   const clickGoToProfileUser = () => {
