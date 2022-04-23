@@ -1,4 +1,5 @@
 import { authSelector, loginGoogleHandler, loginHandler } from 'features/authSlice';
+import { startConnecting } from 'features/socketSlice';
 import { useFormik } from 'formik';
 import { useAppDispatch } from 'hooks/hooks';
 import React, { useEffect } from 'react';
@@ -18,8 +19,8 @@ const Login = () => {
   const { token, login } = useSelector(authSelector);
   const { signIn } = useGoogleLogin({
     clientId,
-    onSuccess(res: any) {
-      dispatch(
+    async onSuccess(res: any) {
+      const action = await dispatch(
         loginGoogleHandler({
           accessToken: res.tokenId,
           callback: () => {
@@ -29,6 +30,9 @@ const Login = () => {
           },
         }),
       );
+      if (loginGoogleHandler.fulfilled.match(action)) {
+        dispatch(startConnecting());
+      }
     },
     isSignedIn: true,
     cookiePolicy: 'single_host_origin',
@@ -40,8 +44,8 @@ const Login = () => {
       password: '',
     },
     //call back here
-    onSubmit: (values, actions) => {
-      dispatch(
+    onSubmit: async (values, actions) => {
+      const action = await dispatch(
         loginHandler({
           email: values.email,
           password: values.password,
@@ -52,6 +56,9 @@ const Login = () => {
           },
         }),
       );
+      if (loginHandler.fulfilled.match(action)) {
+        dispatch(startConnecting());
+      }
       actions.resetForm();
     },
     validationSchema: Yup.object({

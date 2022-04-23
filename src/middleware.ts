@@ -1,5 +1,5 @@
 import { Middleware } from '@reduxjs/toolkit';
-import { loginGoogleHandler, loginHandler, logout } from 'features/authSlice';
+import { logout } from 'features/authSlice';
 import {
   addMember,
   createGroup,
@@ -19,13 +19,7 @@ export const chatMiddleware: Middleware = (store) => {
   return (next) => (action) => {
     const isConnectionEstablished = socket && store.getState().socket.isConnected;
 
-    console.log(action);
-
-    if (
-      startConnecting.match(action) ||
-      loginHandler.fulfilled.match(action) ||
-      loginGoogleHandler.fulfilled.match(action)
-    ) {
+    if (startConnecting.match(action)) {
       socket = io(END_POINT, {
         path: '/api/socket.io',
         query: {
