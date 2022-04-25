@@ -323,3 +323,41 @@ export interface ISeen {
     avatar: string;
   };
 }
+
+export interface notifyLikeItem {
+  refId: string;
+  type: string;
+}
+
+export enum NotiType {
+  FRIEND_REQUEST = 'friendRequest',
+
+  FRIEND_ACCEPTED = 'friendAccepted',
+
+  POST_COMMENT = 'postComment',
+
+  POST_LIKE = 'postLike',
+
+  POST_SHARE = 'postShare',
+
+  POST_COMMENT_REPLY = 'postCommentReply',
+
+  POST_COMMENT_REPLY_LIKE = 'postCommentReplyLike',
+}
+
+export interface responseNotify {
+  content: string;
+  id: string;
+  receiver: {
+    ref_url: string;
+  };
+}
+
+export interface notifyItem {
+  avatar: string;
+  id: string;
+  content: string;
+  ref_url: string;
+  type: string;
+  is_read: boolean;
+}
