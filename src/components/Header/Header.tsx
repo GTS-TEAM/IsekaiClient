@@ -22,7 +22,6 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const notify = useAppSelector(notifySelector);
-  const [badgeContent, setbadgeContent] = React.useState(0);
 
   React.useEffect(() => {
     dispatch(getAllNotifycation());

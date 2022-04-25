@@ -11,7 +11,7 @@ import {
   updateConversation,
 } from 'features/chatSlice';
 import { connectionEstablished, startConnecting, unConnect } from 'features/socketSlice';
-import { ChatEvent, MessageItem, NotiType } from 'share/types';
+import { ChatEvent, MessageItem } from 'share/types';
 import { io, Socket } from 'socket.io-client';
 const END_POINT = 'wss://isekai-api.me';
 export const chatMiddleware: Middleware = (store) => {
