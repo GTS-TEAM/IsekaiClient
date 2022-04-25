@@ -5,6 +5,7 @@ import InputComment from 'components/InputComment/InputComment';
 export const StyledComments = styled.div`
   padding: 0.5rem 1.8rem;
   position: relative;
+  border-top: 1px solid var(--fds-gray-4);
 `;
 
 export const StyledListComments = styled.div`

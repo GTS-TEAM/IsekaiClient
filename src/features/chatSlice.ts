@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
 import { RootState } from 'store';
 import { LIMITCHAT, LIMIT_CONVERSATION } from 'utils/constant';
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid, v4 } from 'uuid';
 import { ConversationItem, ISeen, Member, MemberFields, MessageItem } from './../share/types';
 
 export const getAllMessage = createAsyncThunk<
@@ -52,8 +52,6 @@ export const getConversation = createAsyncThunk<ConversationItem, string>('chat/
 });
 
 const initialState: {
-  isEstablishingConnection: boolean;
-  isConnected: boolean;
   messages: MessageItem[];
   isLoading: boolean;
   error: null | string | undefined;
@@ -62,15 +60,11 @@ const initialState: {
   hasMoreMessage: boolean;
   hasMoreConversation: boolean;
   currentConversation: null | ConversationItem;
-  currentConversationSeen: null | ConversationItem;
   popupChat: {
     receiverId: string;
     currentConversation: ConversationItem | null;
   };
-  seen: ISeen[];
 } = {
-  isEstablishingConnection: false,
-  isConnected: false,
   messages: [],
   conversations: [],
   removedConversations: [],
@@ -83,21 +77,12 @@ const initialState: {
     receiverId: '',
     currentConversation: null,
   },
-  currentConversationSeen: null,
-  seen: [],
 };
 
 const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
-    startConnecting: (state) => {
-      state.isEstablishingConnection = true;
-    },
-    connectionEstablished: (state) => {
-      state.isConnected = true;
-      state.isEstablishingConnection = true;
-    },
     receiveMessage: (state, action: PayloadAction<MessageItem>) => {
       state.messages.unshift(action.payload);
 
@@ -114,7 +99,6 @@ const chatSlice = createSlice({
         },
       };
 
-      state.popupChat.currentConversation = action.payload.conversation;
       const conversationExistIndex = state.conversations.findIndex(
         (conversation) => conversation.id === action.payload.conversation.id,
       );
@@ -210,8 +194,6 @@ const chatSlice = createSlice({
     },
     unmountChat: (state) => {
       state.conversations = [];
-      state.isConnected = false;
-      state.isEstablishingConnection = false;
       state.messages = [];
     },
     addMember: (state, action: PayloadAction<{ membersId: string[]; conversationId: string; members: Member[] }>) => {
@@ -248,21 +230,30 @@ const chatSlice = createSlice({
       return;
     },
     receiveSeenMessage: (state, action) => {
-      const indexSeenExist = state.seen.findIndex((item) => item.user.id === action.payload.user.id);
-      const seenExist = state.seen[indexSeenExist];
-      const newSeen: ISeen = {
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        id: uuid(),
-        messageId: action.payload.message.id,
-        user: action.payload.user,
-      };
-      if (seenExist) {
-        state.seen[indexSeenExist] = {
-          ...newSeen,
+      const indexMessageSeen = state.currentConversation?.seen.findIndex(
+        (_seen) => _seen.user.id === action.payload.user.id,
+      ) as number; // cai tn maf tk user da seen tn trong currencovnersation
+      if (state.currentConversation?.seen[indexMessageSeen]) {
+        //  neu ma tk user do seen roi thi cap nhat lai cai id cua cai mess de render ra dung vi tri mess cua tk user do vua seen :)
+        state.currentConversation.seen[indexMessageSeen] = {
+          messageId: action.payload.message.id,
+          id: v4(),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          user: action.payload.user,
         };
       } else {
-        state.seen.push(newSeen);
+        // khong thi them no vao :0
+        if (state.currentConversation?.seen) {
+          const newSeenMessage: ISeen = {
+            messageId: action.payload.message.id,
+            id: v4(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            user: action.payload.user,
+          };
+          state.currentConversation.seen = [...state.currentConversation.seen, newSeenMessage];
+        }
       }
     },
   },
@@ -331,8 +322,6 @@ const chatSlice = createSlice({
 });
 
 export const {
-  connectionEstablished,
-  startConnecting,
   submitMessage,
   receiveMessage,
   unmountMessage,

@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import Layout from 'components/Layout/Layout';
-import { chatSelector, getConversation, startConnecting, unmountChat } from 'features/chatSlice';
+import { chatSelector, getConversation, unmountChat } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { useWindowSize } from 'hooks/useWindowSize';
 import React, { useEffect, useMemo } from 'react';
@@ -38,14 +38,6 @@ const Chat = () => {
   }, [windowWidth, currentConversation]);
 
   useEffect(() => {
-    dispatch(startConnecting());
-
-    return () => {
-      dispatch(unmountChat());
-    };
-  }, [dispatch]);
-
-  useEffect(() => {
     if (id && !currentConversation) {
       dispatch(getConversation(id as string));
     }
@@ -56,6 +48,12 @@ const Chat = () => {
       navigate(`/message/${currentConversation.id}`);
     }
   }, [currentConversation, navigate]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(unmountChat());
+    };
+  }, [dispatch]);
 
   return (
     <Layout>

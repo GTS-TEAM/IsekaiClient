@@ -6,6 +6,7 @@ import {
   InfoUser,
   MessageItem,
   MusicItem,
+  notifyItem,
   PostItem,
   ResLogin,
   Token,
@@ -244,5 +245,11 @@ export const isekaiApi = {
 
   patchResetPassword: (data: { password: string; token: string }) => {
     return axios.patch('/auth/reset-password', data);
+  },
+  getNotifycation: () => {
+    return axios.get<notifyItem[]>('/notif');
+  },
+  ReadNotifycation: (id: string) => {
+    return axios.patch(`/notif/${id}`);
   },
 };

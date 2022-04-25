@@ -12,8 +12,7 @@ const GridImg: React.FC<Props> = ({ post }) => {
 
   const clickImgHandler = (d: { index: number }) => {
     navigate({
-      pathname: '/post',
-      search: `?id=${post.id}&index=${d.index}`,
+      pathname: `/post/${post.id}`,
     });
   };
 

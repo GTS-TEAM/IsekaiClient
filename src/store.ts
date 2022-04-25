@@ -2,7 +2,9 @@ import { Action, combineReducers, configureStore, ThunkAction } from '@reduxjs/t
 import authSlice from 'features/authSlice';
 import chatSlice from 'features/chatSlice';
 import musicSlice from 'features/musicSlice';
+import notifySlice from 'features/notifySlice';
 import postsSlice from 'features/postsSlice';
+import socketSlice from 'features/socketSlice';
 import userSlice from 'features/userSlice';
 import weatherSlice from 'features/weatherSlice';
 import { chatMiddleware } from 'middleware';
@@ -12,7 +14,7 @@ import storage from 'redux-persist/lib/storage';
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['posts', 'auth', 'user', 'music', 'weather', 'chat'],
+  blacklist: ['posts', 'auth', 'user', 'music', 'weather', 'chat', 'socket'],
 };
 
 const authPersistConfig = {
@@ -34,6 +36,8 @@ const rootReducer = combineReducers({
   music: musicSlice,
   weather: persistReducer(weatherPersistConfig, weatherSlice),
   chat: chatSlice,
+  socket: socketSlice,
+  notify: notifySlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

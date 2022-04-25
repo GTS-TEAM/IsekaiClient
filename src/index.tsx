@@ -8,6 +8,7 @@ import localization from 'moment/locale/vi';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from 'store';
 
@@ -17,8 +18,10 @@ ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <LocalizationProvider dateAdapter={DateAdapter}>
-        <Global styles={globalStyles} />
-        <App />
+        <BrowserRouter>
+          <Global styles={globalStyles} />
+          <App />
+        </BrowserRouter>
       </LocalizationProvider>
     </PersistGate>
   </Provider>,

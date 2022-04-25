@@ -1,26 +1,23 @@
 import { Middleware } from '@reduxjs/toolkit';
+import { logout } from 'features/authSlice';
 import {
   addMember,
-  connectionEstablished,
   createGroup,
   leaveGroup,
   receiveMessage,
   receiveSeenMessage,
   seenMessage,
-  startConnecting,
   submitMessage,
-  unmountChat,
   updateConversation,
 } from 'features/chatSlice';
+import { connectionEstablished, startConnecting, unConnect } from 'features/socketSlice';
 import { ChatEvent, MessageItem } from 'share/types';
 import { io, Socket } from 'socket.io-client';
 const END_POINT = 'wss://isekai-api.me';
 export const chatMiddleware: Middleware = (store) => {
   let socket: Socket;
   return (next) => (action) => {
-    const isConnectionEstablished = socket && store.getState().chat.isConnected;
-
-    console.log(action);
+    const isConnectionEstablished = socket && store.getState().socket.isConnected;
 
     if (startConnecting.match(action)) {
       socket = io(END_POINT, {
@@ -32,6 +29,7 @@ export const chatMiddleware: Middleware = (store) => {
       });
 
       socket.on('connect', () => {
+        console.log('SOCKET CONNECTED');
         store.dispatch(connectionEstablished());
       });
 
@@ -55,13 +53,15 @@ export const chatMiddleware: Middleware = (store) => {
         }
         store.dispatch(receiveMessage(message));
       });
+      socket.on('notification', (res) => {
+        console.log(res);
+      });
     }
     if (submitMessage.match(action) && isConnectionEstablished) {
       socket.emit(ChatEvent.MESSAGE, { ...action.payload });
     }
 
     if (createGroup.match(action) && isConnectionEstablished) {
-      console.log('hi');
       socket.emit(ChatEvent.CREATEGROUP, action.payload);
     }
 
@@ -87,15 +87,19 @@ export const chatMiddleware: Middleware = (store) => {
       });
     }
 
-    if (unmountChat.match(action)) {
-      socket.disconnect();
-    }
-
     if (seenMessage.match(action) && isConnectionEstablished) {
       socket.emit(ChatEvent.SEEN_MESSAGE, {
         conversationId: action.payload.conversationId,
         messageId: action.payload.messageId,
       });
+    }
+
+    if (unConnect.match(action)) {
+      socket.disconnect();
+    }
+
+    if (logout.match(action)) {
+      socket.disconnect();
     }
 
     next(action);

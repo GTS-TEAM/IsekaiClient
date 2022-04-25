@@ -1,4 +1,4 @@
-import { chatSelector, selectPopupChat, startConnecting, unmountChat } from 'features/chatSlice';
+import { chatSelector, selectPopupChat } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
@@ -15,14 +15,6 @@ const PopupItem = () => {
   const dispatch = useAppDispatch();
   const { popupChat } = useAppSelector(chatSelector);
   const location = useLocation();
-
-  useEffect(() => {
-    dispatch(startConnecting());
-
-    return () => {
-      dispatch(unmountChat());
-    };
-  }, [dispatch]);
 
   useEffect(() => {
     if (location.pathname.includes('message')) {

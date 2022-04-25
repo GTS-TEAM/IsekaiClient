@@ -65,8 +65,8 @@ interface SearchGlobal {
 
 export const StyledGlobalSearch = styled.div`
   position: relative;
-  @media screen and (max-width:868px) {
-    display:none ;
+  @media screen and (max-width: 868px) {
+    display: none;
   }
 `;
 
@@ -287,5 +287,51 @@ export const DropdownMenu = styled(Menu)`
 
   .dropdown-list {
     padding-top: 0.8rem;
+  }
+`;
+
+interface propStyle {
+  length: number;
+}
+
+export const Notifycation = styled.ul<propStyle>`
+  display: flex;
+  flex-direction: column;
+  width: 27rem;
+  height: ${(p) => (p.length <= 0 ? '' : '30rem')};
+  overflow-y: ${(p) => (p.length >= 5 ? 'scroll' : 'hidden')};
+  overflow-x: hidden;
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0.5rem 0 1.5rem 0.5rem;
+    .title {
+      font-size: 2rem;
+    }
+    .icon {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--borderColor);
+    .link {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      span {
+        margin-left: 1rem;
+        color: black;
+      }
+    }
+    .icon {
+      margin-left: 1rem;
+      width: 2rem;
+      height: 2rem;
+    }
   }
 `;
