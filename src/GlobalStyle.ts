@@ -100,6 +100,11 @@ export const globalStyles = css`
     pointer-events: none;
   }
 
+  .toast {
+    font-size: 1.6rem;
+    font-weight: 500;
+  }
+
   .layout {
     margin-top: var(--headerHeight);
     min-height: calc(100vh - var(--headerHeight));
@@ -111,6 +116,14 @@ export const globalStyles = css`
     margin: 0 auto;
     max-width: 1230px;
     padding: 0 1.5rem;
+  }
+
+  .MuiAlert-message {
+    font-size: 1.4rem;
+  }
+
+  .MuiAlert-filledSuccess {
+    background-color: rgb(56, 142, 60);
   }
 `;
 

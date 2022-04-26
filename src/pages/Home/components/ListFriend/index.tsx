@@ -1,41 +1,28 @@
 import { Avatar } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
+import { authSelector } from 'features/authSlice';
+import { useAppSelector } from 'hooks/hooks';
 import React, { useEffect, useState } from 'react';
 import { User } from 'share/types';
 import { Card, CardBody, CardHeading } from './styles';
 
 const ListFriend = () => {
   const [friends, setFriends] = useState<User[]>([]);
+  const { user } = useAppSelector(authSelector);
 
   useEffect(() => {
     const getListFriend = async () => {
-      const { data } = await isekaiApi.getListFriend();
-      setFriends(data);
+      if (user) {
+        const { data } = await isekaiApi.getSuggestFriend();
+
+        console.log(data);
+        setFriends(data);
+      }
     };
     getListFriend();
-  }, []);
+  }, [user]);
 
   return (
-    // <StyledListFriend>
-    //   <div className="title">Người liên hệ</div>
-    //   <ul>
-    //     {friends.map((friend) => (
-    //       <React.Fragment key={friend.id}>
-    //         <li
-    //           onClick={(e) => {
-    //             e.stopPropagation();
-    //             chooseConversation(friend);
-    //           }}
-    //         >
-    //           <StyledFriend>
-    //             <Avatar src={friend.avatar} alt={friend.username} />
-    //             <span>{friend.username}</span>
-    //           </StyledFriend>
-    //         </li>
-    //       </React.Fragment>
-    //     ))}
-    //   </ul>
-    // </StyledListFriend>
     <Card>
       <CardHeading>
         <h4>Suggested friends</h4>
@@ -47,7 +34,16 @@ const ListFriend = () => {
             <div className="page-meta">
               <span>{friend.username}</span>
             </div>
-            <div className="add-friend">
+            <div
+              className="add-friend"
+              onClick={async () => {
+                try {
+                  await isekaiApi.addFriend(friend.id);
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"

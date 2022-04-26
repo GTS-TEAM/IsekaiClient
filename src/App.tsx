@@ -7,7 +7,6 @@ import Login from 'pages/Auth/Login';
 import Register from 'pages/Auth/Register';
 import ResetPassword from 'pages/Auth/ResetPassword';
 import Chat from 'pages/Chat';
-import PopupChat from 'pages/Chat/components/PropupChat';
 import Post from 'pages/Detail/Detail';
 import Homepage from 'pages/Home';
 import Landing from 'pages/Landing';
@@ -35,7 +34,6 @@ function App() {
 
   return (
     <>
-      <PopupChat />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />

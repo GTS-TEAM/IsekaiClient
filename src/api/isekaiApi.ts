@@ -232,8 +232,21 @@ export const isekaiApi = {
     });
   },
 
-  getListFriend: () => {
-    return axios.get<User[]>('user/list-friends');
+  addFriend: (reqId: string) => {
+    return axios.post(`user/friend-request/send/${reqId}`);
+  },
+
+  getSuggestFriend: (limit = 10, offset = 1) => {
+    return axios.get('user/suggest', {
+      params: {
+        limit,
+        offset,
+      },
+    });
+  },
+
+  getListFriend: (id: string) => {
+    return axios.get<User[]>(`user/friends/${id}`);
   },
 
   postForgetPassword: (data: string) => {

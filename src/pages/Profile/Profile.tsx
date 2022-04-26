@@ -22,6 +22,8 @@ const Profile = () => {
   const { user: currentUser } = useAppSelector(authSelector);
   const [page, setPage] = useState<number>(1);
 
+  console.log(user);
+
   const fetchMoreHandler = () => {
     if (id) {
       dispatch(getUserPosts({ userId: id, page: page + 1 }));
