@@ -33,7 +33,7 @@ export const globalStyles = css`
     --fds-gray-11: #cecece;
     --fds-gray-12: #e0e0e0;
     --textColorGray: #5a5a5a;
-    --mainColor: #a56ffd;
+    --mainColor: #5596e6;
     --grayColor: #747474;
     --grayColor1: #f7f7f7;
     --borderColor: #e5e5e5;
