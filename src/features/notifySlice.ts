@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
-import { notifyItem, notifyLikeItem, responseNotify } from 'share/types';
+import { notifyItem, responseNotify } from 'share/types';
 import { RootState } from 'store';
 
 export const initialState: {
