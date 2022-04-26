@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React from 'react';
 import { useGoogleLogout } from 'react-google-login';
 import { AiOutlineHome, AiOutlineMessage } from 'react-icons/ai';
-import { BiLike } from 'react-icons/bi';
+import { BiHeart } from 'react-icons/bi';
 import { FiLogOut, FiUsers } from 'react-icons/fi';
 import { IoNotificationsOutline, IoSettingsOutline } from 'react-icons/io5';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
@@ -117,7 +117,8 @@ const Header = () => {
           anchorEl={anchorEl}
           open={open}
           onClose={handleCloseDropdown}
-          sx={{ left: `${isDropDown ? '-20rem' : ''}`, width: `${isDropDown ? '30rem' : 'auto'}` }}
+          isDropDown={isDropDown}
+          sx={{ left: `${isDropDown ? '-4rem' : ''}` }}
         >
           {isDropDown ? (
             <>
@@ -130,10 +131,15 @@ const Header = () => {
                 {notify.notifyItem.map((notif) => (
                   <li id={notif.id} style={{ backgroundColor: `${notif.is_read ? 'white' : '#cbf4f5'}` }}>
                     <Link className="link" to={notif.ref_url} onClick={() => clickReadNotification(notif.id)}>
-                      <Avatar src={notif.avatar} sx={{ width: 40, height: 40 }} />
-                      <span>{notif.content}</span>
+                      <div className="left">
+                        <Avatar src={notif.avatar} sx={{ width: 40, height: 40 }} />
+                        <div className="middle">
+                          <span className="span-content">{notif.content}</span>
+                          <span>30 phút trước</span>
+                        </div>
+                      </div>
                     </Link>
-                    <BiLike className="icon" />
+                    <BiHeart className="icon" />
                   </li>
                 ))}
               </Notifycation>
