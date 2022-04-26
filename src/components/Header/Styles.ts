@@ -225,11 +225,14 @@ export const User = styled.div`
     }
   }
 `;
-
-export const DropdownMenu = styled(Menu)`
+interface isDropdown {
+  isDropDown: boolean;
+}
+export const DropdownMenu = styled(Menu)<isDropdown>`
   .MuiPaper-root {
     width: 100%;
-    max-width: 36rem;
+    max-width: ${(p) => (p.isDropDown ? '50rem' : '36rem')};
+    max-height: ${(p) => (p.isDropDown ? '50rem' : '')};
     box-shadow: 0px 5px 43px rgb(0 0 0 / 18%);
     padding: 0.8rem;
     border-radius: var(--borderRadius3);
@@ -297,19 +300,33 @@ interface propStyle {
 export const Notifycation = styled.ul<propStyle>`
   display: flex;
   flex-direction: column;
-  width: 27rem;
-  height: ${(p) => (p.length <= 0 ? '' : '30rem')};
-  overflow-y: ${(p) => (p.length >= 5 ? 'scroll' : 'hidden')};
+  height: ${(p) => (p.length <= 0 ? '' : '45rem')};
+  overflow-y: ${(p) => (p.length > 3 ? 'scroll' : 'hidden')};
+  position: relative;
   overflow-x: hidden;
+  ::-webkit-scrollbar {
+    width: 1rem;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+    background: #888;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
   .top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 0.5rem 0 1.5rem 0.5rem;
+    padding: 2rem;
     .title {
       font-size: 2rem;
     }
     .icon {
+      opacity: 0.5;
       width: 2rem;
       height: 2rem;
     }
@@ -317,21 +334,35 @@ export const Notifycation = styled.ul<propStyle>`
   li {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     border-top: 1px solid var(--borderColor);
-    .link {
-      display: flex;
-      align-items: center;
-      padding: 1rem;
-      span {
-        margin-left: 1rem;
-        color: black;
-      }
-    }
+    padding: 3rem;
     .icon {
       margin-left: 1rem;
       width: 2rem;
       height: 2rem;
+      opacity: 0.5;
+    }
+    .link {
+      display: flex;
+      span {
+        margin-left: 1rem;
+        color: black;
+        font-size: 1.5rem;
+        &.span-content {
+          margin-bottom: 1rem;
+        }
+      }
+      .left {
+        display: flex;
+        .MuiAvatar-root {
+          margin-right: 1rem;
+        }
+        .middle {
+          display: flex;
+          flex-direction: column;
+        }
+      }
     }
   }
 `;
