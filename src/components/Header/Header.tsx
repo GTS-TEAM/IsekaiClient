@@ -1,6 +1,7 @@
 import { Avatar, Badge, MenuItem, Stack } from '@mui/material';
 import { getAllNotifycation, notifySelector, readNotifycation } from 'features/notifySlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import moment from 'moment';
 import React from 'react';
 import { useGoogleLogout } from 'react-google-login';
 import { AiOutlineHome, AiOutlineMessage } from 'react-icons/ai';
@@ -135,7 +136,7 @@ const Header = () => {
                         <Avatar src={notif.avatar} sx={{ width: 40, height: 40 }} />
                         <div className="middle">
                           <span className="span-content">{notif.content}</span>
-                          <span>30 phút trước</span>
+                          <span>{moment(notif.updated_at, moment.defaultFormat).fromNow()}</span>
                         </div>
                       </div>
                     </Link>
