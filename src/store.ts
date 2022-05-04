@@ -5,6 +5,7 @@ import musicSlice from 'features/musicSlice';
 import notifySlice from 'features/notifySlice';
 import postsSlice from 'features/postsSlice';
 import socketSlice from 'features/socketSlice';
+import toastSlice from 'features/toastSlice';
 import userSlice from 'features/userSlice';
 import weatherSlice from 'features/weatherSlice';
 import { chatMiddleware } from 'middleware';
@@ -38,6 +39,7 @@ const rootReducer = combineReducers({
   chat: chatSlice,
   socket: socketSlice,
   notify: notifySlice,
+  toast: toastSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

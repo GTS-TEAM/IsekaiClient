@@ -1,21 +1,24 @@
 import { Avatar } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
 import { authSelector } from 'features/authSlice';
-import { useAppSelector } from 'hooks/hooks';
+import { addToast } from 'features/toastSlice';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useEffect, useState } from 'react';
-import { User } from 'share/types';
+import { AiOutlineUserAdd, AiOutlineUserDelete } from 'react-icons/ai';
+import { Link } from 'react-router-dom';
+import { IFriend } from 'share/types';
+import { v4 } from 'uuid';
 import { Card, CardBody, CardHeading } from './styles';
 
 const ListFriend = () => {
-  const [friends, setFriends] = useState<User[]>([]);
+  const [friends, setFriends] = useState<IFriend[]>([]);
   const { user } = useAppSelector(authSelector);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const getListFriend = async () => {
       if (user) {
         const { data } = await isekaiApi.getSuggestFriend();
-
-        console.log(data);
         setFriends(data);
       }
     };
@@ -29,38 +32,79 @@ const ListFriend = () => {
       </CardHeading>
       <CardBody>
         {friends.map((friend) => (
-          <div className="add-friend-block">
+          <div className="add-friend-block" key={friend.id}>
             <Avatar src={friend.avatar} alt={friend.username} />
             <div className="page-meta">
-              <span>{friend.username}</span>
+              <Link to={`/profile/${friend.id}`}>
+                <span>{friend.username}</span>
+              </Link>
             </div>
             <div
               className="add-friend"
               onClick={async () => {
-                try {
-                  await isekaiApi.addFriend(friend.id);
-                } catch (error) {
-                  console.log(error);
+                if (friend.status === 'none') {
+                  try {
+                    await isekaiApi.addFriend(friend.id);
+                    dispatch(
+                      addToast({
+                        content: 'Thêm bạn bè thành công',
+                        type: 'success',
+                        id: v4(),
+                      }),
+                    );
+                  } catch (error) {
+                    console.log(error);
+                    dispatch(
+                      addToast({
+                        content: 'Thêm bạn bè thất bại',
+                        type: 'error',
+                        id: v4(),
+                      }),
+                    );
+                  }
+                }
+
+                if (friend.status === 'pending') {
+                  try {
+                    await isekaiApi.responseFriendRequest(friend.id, 'none');
+                    dispatch(
+                      addToast({
+                        content: 'Hủy gởi lời kết bạn thành công',
+                        type: 'success',
+                        id: v4(),
+                      }),
+                    );
+                  } catch (error) {
+                    console.log(error);
+                    dispatch(
+                      addToast({
+                        content: 'Hủy gởi lời kết bạn thất bại',
+                        type: 'error',
+                        id: v4(),
+                      }),
+                    );
+                  }
                 }
               }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                className="feather feather-user-plus"
-              >
-                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="8.5" cy="7" r="4"></circle>
-                <line x1="20" y1="8" x2="20" y2="14"></line>
-                <line x1="23" y1="11" x2="17" y2="11"></line>
-              </svg>
+              {friend.status === 'pending' ? (
+                <AiOutlineUserDelete
+                  style={{
+                    width: 24,
+                    height: 24,
+                  }}
+                  title="Huỷ lời mời kết bạn"
+                />
+              ) : null}
+              {friend.status === 'none' && (
+                <AiOutlineUserAdd
+                  style={{
+                    width: 24,
+                    height: 24,
+                  }}
+                  title="Thêm bạn bè"
+                />
+              )}
             </div>
           </div>
         ))}

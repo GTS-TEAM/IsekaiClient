@@ -18,6 +18,7 @@ export const User = styled.div`
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
+  align-items: center;
 
   h2 {
     font-size: 2.2rem;
@@ -26,6 +27,15 @@ export const User = styled.div`
   p {
     font-size: 1.3rem;
     color: var(--fds-gray-1);
+  }
+
+  .button-friend {
+    background-color: var(--mainColor);
+    color: var(--fds-white);
+    font-size: 1.4rem;
+    text-transform: unset;
+    min-width: 15rem;
+    max-width: 15rem;
   }
 
   @media screen and (max-width: 1023.98px) {

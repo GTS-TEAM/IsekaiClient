@@ -3,7 +3,9 @@ import { LIMITCHAT } from 'utils/constant';
 import {
   CommentItem,
   ConversationItem,
+  IFriend,
   InfoUser,
+  IStatus,
   MessageItem,
   MusicItem,
   notifyItem,
@@ -238,14 +240,27 @@ export const isekaiApi = {
   },
 
   getSuggestFriend: (limit = 10, offset = 1) => {
-    return axios.get('user/suggest', {
+    return axios.get<IFriend[]>('user/suggest', {
       params: {
         limit,
         offset,
       },
     });
   },
-
+  getStatusFriend: (id: string) => {
+    return axios.get<{ request: IStatus }>(`user/friend/status/${id}`);
+  },
+  responseFriendRequest: (id: string, status: 'none' | 'accepted' | 'pending') => {
+    return axios.put(
+      `user/friend-request/response/${id}`,
+      {},
+      {
+        params: {
+          status,
+        },
+      },
+    );
+  },
   getListFriend: (id: string) => {
     return axios.get<User[]>(`user/friends/${id}`);
   },

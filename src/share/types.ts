@@ -361,3 +361,23 @@ export interface notifyItem {
   type: string;
   is_read: boolean;
 }
+
+export enum FriendRequestResponse {
+  ACCEPTED = 'accepted',
+  REJECTED = 'rejected',
+}
+
+export interface IStatus {
+  status: 'none' | 'accepted' | 'pending';
+  creator_id: string | null;
+}
+
+export interface IFriend extends User {
+  status: 'none' | 'accepted' | 'pending';
+}
+
+export interface IToast {
+  type: 'success' | 'info' | 'warning' | 'error';
+  content: string;
+  id: string;
+}
