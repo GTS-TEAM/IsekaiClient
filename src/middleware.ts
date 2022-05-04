@@ -29,6 +29,7 @@ export const chatMiddleware: Middleware = (store) => {
       });
 
       socket.on('connect', () => {
+        console.log('SOCKET CONNECTED');
         store.dispatch(connectionEstablished());
       });
 
@@ -51,6 +52,9 @@ export const chatMiddleware: Middleware = (store) => {
           return;
         }
         store.dispatch(receiveMessage(message));
+      });
+      socket.on('notification', (res) => {
+        console.log(res);
       });
     }
     if (submitMessage.match(action) && isConnectionEstablished) {
