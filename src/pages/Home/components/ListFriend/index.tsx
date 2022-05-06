@@ -50,7 +50,7 @@ const ListFriend = () => {
                         if (_f.id === friend.id) {
                           return {
                             ..._f,
-                            status: 'accepted',
+                            status: 'pending',
                           };
                         }
                         return _f;
