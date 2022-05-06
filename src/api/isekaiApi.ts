@@ -247,6 +247,17 @@ export const isekaiApi = {
       },
     });
   },
+  getFriendsRequest: () => {
+    return axios.get<
+      {
+        id: string;
+        created_at: string;
+        updated_at: string;
+        status: 'none' | 'accepted' | 'pending';
+        creator: User;
+      }[]
+    >('user/friend-request');
+  },
   getStatusFriend: (id: string) => {
     return axios.get<{ request: IStatus }>(`user/friend/status/${id}`);
   },
@@ -260,6 +271,9 @@ export const isekaiApi = {
         },
       },
     );
+  },
+  removeFriend: (id: string) => {
+    return axios.delete(`user/friends/${id}`);
   },
   getListFriend: (id: string) => {
     return axios.get<User[]>(`user/friends/${id}`);

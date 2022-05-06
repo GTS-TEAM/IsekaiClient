@@ -10,9 +10,11 @@ import Register from 'pages/Auth/Register';
 import ResetPassword from 'pages/Auth/ResetPassword';
 import Chat from 'pages/Chat';
 import Post from 'pages/Detail/Detail';
+import AllFriend from 'pages/Friends/components/AllFriend';
 import FriendsLayout from 'pages/Friends/components/FriendsLayout';
 import Home from 'pages/Friends/components/Home';
 import Request from 'pages/Friends/components/Request';
+import Suggest from 'pages/Friends/components/Suggest';
 import Homepage from 'pages/Home';
 import Landing from 'pages/Landing';
 import Profile from 'pages/Profile/Profile';
@@ -115,6 +117,26 @@ function App() {
               <RequireAuth>
                 <FriendsLayout>
                   <Request />
+                </FriendsLayout>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="suggest"
+            element={
+              <RequireAuth>
+                <FriendsLayout>
+                  <Suggest />
+                </FriendsLayout>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="all-friends"
+            element={
+              <RequireAuth>
+                <FriendsLayout>
+                  <AllFriend />
                 </FriendsLayout>
               </RequireAuth>
             }

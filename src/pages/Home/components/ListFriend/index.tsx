@@ -31,7 +31,7 @@ const ListFriend = () => {
         <h4>Suggested friends</h4>
       </CardHeading>
       <CardBody>
-        {friends.map((friend) => (
+        {friends.map((friend, index) => (
           <div className="add-friend-block" key={friend.id}>
             <Avatar src={friend.avatar} alt={friend.username} />
             <div className="page-meta">
@@ -45,6 +45,17 @@ const ListFriend = () => {
                 if (friend.status === 'none') {
                   try {
                     await isekaiApi.addFriend(friend.id);
+                    setFriends(
+                      [...friends].map((_f) => {
+                        if (_f.id === friend.id) {
+                          return {
+                            ..._f,
+                            status: 'accepted',
+                          };
+                        }
+                        return _f;
+                      }),
+                    );
                     dispatch(
                       addToast({
                         content: 'Thêm bạn bè thành công',
@@ -67,6 +78,17 @@ const ListFriend = () => {
                 if (friend.status === 'pending') {
                   try {
                     await isekaiApi.responseFriendRequest(friend.id, 'none');
+                    setFriends(
+                      [...friends].map((_f) => {
+                        if (_f.id === friend.id) {
+                          return {
+                            ..._f,
+                            status: 'none',
+                          };
+                        }
+                        return _f;
+                      }),
+                    );
                     dispatch(
                       addToast({
                         content: 'Hủy gởi lời kết bạn thành công',

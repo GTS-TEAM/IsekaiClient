@@ -13,4 +13,9 @@ export const StyledFriendLayout = styled.div`
     flex-grow: 1;
     margin-left: 27rem;
   }
+
+  .friends-content {
+    padding: 1.8rem;
+    width: 100%;
+  }
 `;

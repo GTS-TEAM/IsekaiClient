@@ -30,6 +30,8 @@ export const StyledSidebar = styled.div`
       color: inherit;
       transition: all 0.3s;
       border-radius: 4px;
+      font-family: inherit;
+      font-weight: 500;
 
       &:hover,
       &.is-active {
