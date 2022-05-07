@@ -3,7 +3,9 @@ import { LIMITCHAT } from 'utils/constant';
 import {
   CommentItem,
   ConversationItem,
+  IFriend,
   InfoUser,
+  IStatus,
   MessageItem,
   MusicItem,
   notifyItem,
@@ -233,8 +235,48 @@ export const isekaiApi = {
     });
   },
 
-  getListFriend: () => {
-    return axios.get<User[]>('user/list-friends');
+  addFriend: (reqId: string) => {
+    return axios.post(`user/friend-request/send/${reqId}`);
+  },
+
+  getSuggestFriend: (limit = 10, offset = 1) => {
+    return axios.get<IFriend[]>('user/suggest', {
+      params: {
+        limit,
+        offset,
+      },
+    });
+  },
+  getFriendsRequest: () => {
+    return axios.get<
+      {
+        id: string;
+        created_at: string;
+        updated_at: string;
+        status: 'none' | 'accepted' | 'pending';
+        creator: User;
+      }[]
+    >('user/friend-request');
+  },
+  getStatusFriend: (id: string) => {
+    return axios.get<{ request: IStatus }>(`user/friend/status/${id}`);
+  },
+  responseFriendRequest: (id: string, status: 'none' | 'accepted' | 'pending') => {
+    return axios.put(
+      `user/friend-request/response/${id}`,
+      {},
+      {
+        params: {
+          status,
+        },
+      },
+    );
+  },
+  removeFriend: (id: string) => {
+    return axios.delete(`user/friends/${id}`);
+  },
+  getListFriend: (id: string) => {
+    return axios.get<User[]>(`user/friends/${id}`);
   },
 
   postForgetPassword: (data: string) => {

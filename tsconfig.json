@@ -18,5 +18,5 @@
     "baseUrl": "./src",
     "jsxImportSource": "@emotion/react"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "Comments"]
 }

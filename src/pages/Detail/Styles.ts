@@ -39,20 +39,6 @@ export const Description = styled.p`
   font-size: 1.4rem;
 `;
 
-export const ButtonAddFriend = styled(Button)`
-  background-color: var(--fds-gray);
-  border-radius: var(--borderRadius2);
-  height: 3.5rem;
-  /* width: 100%; */
-  max-width: 10rem;
-  flex-shrink: 0;
-  padding: 0;
-  font-size: 1.4rem;
-  color: var(--fds-gray-1);
-  text-transform: unset;
-  /* border: 1px solid var(--fds-gray-2); */
-`;
-
 export const ButtonClose = styled(Button)`
   position: absolute;
   width: 4rem;

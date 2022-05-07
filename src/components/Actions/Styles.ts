@@ -3,7 +3,6 @@ import { Stack } from '@mui/material';
 
 export const StyledActions = styled(Stack)`
   display: flex;
-  --col: 3;
   border-top: 1px solid var(--fds-gray-4);
   padding: 0.5rem 1.2rem;
   gap: var(--gap);
@@ -14,7 +13,7 @@ export const StyledActions = styled(Stack)`
   .like,
   .comment,
   .share {
-    width: calc(100% / var(--col) - var(--gap));
+    width: 100%;
     flex-direction: row;
     justify-content: center;
     align-items: center;

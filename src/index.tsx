@@ -16,6 +16,7 @@ moment.updateLocale('vi', localization);
 
 ReactDOM.render(
   <Provider store={store}>
+    {/* @ts-ignore */}
     <PersistGate loading={null} persistor={persistor}>
       <LocalizationProvider dateAdapter={DateAdapter}>
         <BrowserRouter>

@@ -53,6 +53,7 @@ export const chatMiddleware: Middleware = (store) => {
         }
         store.dispatch(receiveMessage(message));
       });
+
       socket.on('notification', (res) => {
         console.log(res);
       });

@@ -1,27 +1,33 @@
 import Layout from 'components/Layout/Layout';
 import RequireAuth from 'components/RequireAuth';
+import Toast from 'components/Toast';
+import { authSelector } from 'features/authSlice';
 import { startConnecting, unConnect } from 'features/socketSlice';
-import { useAppDispatch } from 'hooks/hooks';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import FogotPassword from 'pages/Auth/FogotPassword';
 import Login from 'pages/Auth/Login';
 import Register from 'pages/Auth/Register';
 import ResetPassword from 'pages/Auth/ResetPassword';
 import Chat from 'pages/Chat';
-import PopupChat from 'pages/Chat/components/PropupChat';
 import Post from 'pages/Detail/Detail';
+import AllFriend from 'pages/Friends/components/AllFriend';
+import FriendsLayout from 'pages/Friends/components/FriendsLayout';
+import Home from 'pages/Friends/components/Home';
+import Request from 'pages/Friends/components/Request';
+import Suggest from 'pages/Friends/components/Suggest';
 import Homepage from 'pages/Home';
 import Landing from 'pages/Landing';
 import Profile from 'pages/Profile/Profile';
 import SettingAccount from 'pages/SettingAccount';
 import { useEffect } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 function App() {
   const dispatch = useAppDispatch();
-  const location = useLocation();
+  const { token } = useAppSelector(authSelector);
 
   useEffect(() => {
-    if (location.pathname === '/login' || location.pathname === '/register' || location.pathname === 'landing') {
+    if (!token.access_token) {
       return;
     } else {
       dispatch(startConnecting());
@@ -35,7 +41,7 @@ function App() {
 
   return (
     <>
-      <PopupChat />
+      <Toast />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
@@ -94,6 +100,48 @@ function App() {
             </RequireAuth>
           }
         />
+        <Route path="/friends">
+          <Route
+            index={true}
+            element={
+              <RequireAuth>
+                <FriendsLayout>
+                  <Home />
+                </FriendsLayout>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="request"
+            element={
+              <RequireAuth>
+                <FriendsLayout>
+                  <Request />
+                </FriendsLayout>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="suggest"
+            element={
+              <RequireAuth>
+                <FriendsLayout>
+                  <Suggest />
+                </FriendsLayout>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="all-friends"
+            element={
+              <RequireAuth>
+                <FriendsLayout>
+                  <AllFriend />
+                </FriendsLayout>
+              </RequireAuth>
+            }
+          />
+        </Route>
         <Route path="*" element={<p>Not found</p>} />
         {/* 
         <Route path="/login/identify">

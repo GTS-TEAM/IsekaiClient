@@ -21,7 +21,6 @@ interface ParameterCreatePost {
   }[];
   description: string;
   emoji: any;
-  callback: () => any;
 }
 
 export const createPost = createAsyncThunk('posts/createPost', async (d: ParameterCreatePost) => {
@@ -30,7 +29,6 @@ export const createPost = createAsyncThunk('posts/createPost', async (d: Paramet
     urls = await uploadImg(d.image);
   }
   const { data } = await isekaiApi.createPost(urls as string[], d.description, d.emoji);
-  d.callback(); // implement when create post completed
   return data;
 });
 
