@@ -116,7 +116,7 @@ export const Friend: React.FC<PropsItem> = ({ friend, index, type, setFriends, f
 
   const handleRemoveFriend = async (id: string) => {
     try {
-      const { data } = await isekaiApi.removeFriend(id);
+      await isekaiApi.removeFriend(id);
       dispatch(
         addToast({
           content: 'Hủy kết bạn thành công',
