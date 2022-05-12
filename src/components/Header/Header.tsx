@@ -13,20 +13,26 @@ import { clientId, notifyItem } from 'share/types';
 import { deleteTokenFromLocalStorage } from '../../api/axoisClient';
 import { authSelector, logout } from '../../features/authSlice';
 import GlobalSearch from './GlobalSearch';
-import { DropdownMenu, HeaderWrap, Logo, Navbar, NavItem, Notifycation, StyledHeader, User } from './Styles';
+import {
+  DropdownMenu,
+  HeaderWrap,
+  Logo,
+  Navbar,
+  NavItem,
+  StyledHeader,
+  StyledNotification,
+  StyledNotificationItem,
+  User,
+} from './Styles';
 
 const Header = () => {
   const { user } = useAppSelector(authSelector);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [isDropDown, setIsDropDown] = React.useState(false);
-  const open = Boolean(anchorEl);
+  const [menuEl, setMenuEl] = React.useState<null | HTMLDivElement>(null);
+  const [notificationEl, setNotificationEl] = React.useState<null | HTMLDivElement>(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const notify = useAppSelector(notifySelector);
+  const { notifyItem: notifies } = useAppSelector(notifySelector);
 
-  React.useEffect(() => {
-    dispatch(getAllNotifycation());
-  }, [dispatch]);
   const { signOut } = useGoogleLogout({
     clientId,
   });
@@ -45,12 +51,8 @@ const Header = () => {
     dispatch(readNotifycation(id));
   };
 
-  const handleClickOpenDropdown = (event: React.MouseEvent<HTMLDivElement>) => {
-    setIsDropDown(false);
-    setAnchorEl(event.currentTarget);
-  };
   const handleCloseDropdown = () => {
-    setAnchorEl(null);
+    setMenuEl(null);
   };
 
   const clickLogoutHandler = () => {
@@ -60,18 +62,9 @@ const Header = () => {
     deleteTokenFromLocalStorage();
   };
 
-  const clickGoToProfileUser = () => {
-    navigate(`/profile/${user?.id}`);
-  };
-
-  const clickGoToSettingHandler = () => {
-    navigate(`/setting`);
-  };
-
-  const clickShowContentNotifycation = (event: React.MouseEvent<HTMLDivElement>) => {
-    setIsDropDown(true);
-    setAnchorEl(event.currentTarget);
-  };
+  React.useEffect(() => {
+    dispatch(getAllNotifycation());
+  }, [dispatch]);
 
   return (
     <StyledHeader>
@@ -101,8 +94,12 @@ const Header = () => {
                 <AiOutlineMessage />
               </NavLink>
             </NavItem>
-            <NavItem onClick={clickShowContentNotifycation}>
-              <Badge badgeContent={getTotalItem(notify.notifyItem)} color="error">
+            <NavItem
+              onClick={(e) => {
+                setNotificationEl(e.currentTarget);
+              }}
+            >
+              <Badge badgeContent={getTotalItem(notifies)} color="error">
                 <IoNotificationsOutline />
               </Badge>
             </NavItem>
@@ -110,69 +107,102 @@ const Header = () => {
         </Stack>
         <Stack direction="row" alignItems="center" columnGap="1.2rem">
           <GlobalSearch />
-          <User onClick={handleClickOpenDropdown}>
+          <User
+            onClick={(e) => {
+              setMenuEl(e.currentTarget);
+            }}
+          >
             <Avatar src={user?.avatar} sx={{ width: 40, height: 40 }} />
           </User>
         </Stack>
         <DropdownMenu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleCloseDropdown}
-          isDropDown={isDropDown}
-          sx={{ left: `${isDropDown ? '-4rem' : ''}` }}
+          anchorEl={menuEl}
+          open={Boolean(menuEl)}
+          onClose={() => {
+            setMenuEl(null);
+          }}
         >
-          {isDropDown ? (
-            <>
-              <Notifycation length={notify.notifyItem.length}>
-                <div className="top">
-                  <span className="title">Thông báo</span>
-                  <IoNotificationsOutline className="icon" />
-                </div>
-                {notify.notifyItem.length === 0 && <h3>Hiện tại chưa có thông báo dành cho bạn !</h3>}
-                {notify.notifyItem.map((notif) => (
-                  <li id={notif.id} style={{ backgroundColor: `${notif.is_read ? 'white' : '#cbf4f5'}` }}>
-                    <Link className="link" to={notif.ref_url} onClick={() => clickReadNotification(notif.id)}>
-                      <div className="left">
-                        <Avatar src={notif.avatar} sx={{ width: 40, height: 40 }} />
-                        <div className="middle">
-                          <span className="span-content">{notif.content}</span>
-                          <span>{moment(notif.updated_at, moment.defaultFormat).fromNow()}</span>
-                        </div>
-                      </div>
-                    </Link>
-                    <BiHeart className="icon" />
-                  </li>
-                ))}
-              </Notifycation>
-            </>
-          ) : (
-            <>
-              <div className="dropdown-header">
-                <MenuItem onClick={clickGoToProfileUser}>
-                  <Avatar src={user?.avatar} sx={{ width: 64, height: 64 }} />
-                  <div className="text">
-                    <span className="name">{user?.username}</span>
-                    <span>Xem trang cá nhân của bạn</span>
-                  </div>
-                </MenuItem>
+          <div className="dropdown-header">
+            <MenuItem
+              onClick={() => {
+                navigate(`/profile/${user?.id}`);
+              }}
+            >
+              <Avatar src={user?.avatar} sx={{ width: 64, height: 64 }} />
+              <div className="text">
+                <span className="name">{user?.username}</span>
+                <span>Xem trang cá nhân của bạn</span>
               </div>
-              <div className="dropdown-list">
-                <MenuItem onClick={clickGoToSettingHandler}>
-                  <div className="icon">
-                    <IoSettingsOutline />
-                  </div>
-                  <span className="text-1">Cài đặt</span>
-                </MenuItem>
-                <MenuItem onClick={clickLogoutHandler}>
-                  <div className="icon">
-                    <FiLogOut />
-                  </div>
-                  <span className="text-1">Đăng xuất</span>
-                </MenuItem>
+            </MenuItem>
+          </div>
+          <div className="dropdown-list">
+            <MenuItem
+              onClick={() => {
+                navigate(`/setting`);
+              }}
+            >
+              <div className="icon">
+                <IoSettingsOutline />
               </div>
-            </>
-          )}
+              <span className="text-1">Cài đặt</span>
+            </MenuItem>
+            <MenuItem onClick={clickLogoutHandler}>
+              <div className="icon">
+                <FiLogOut />
+              </div>
+              <span className="text-1">Đăng xuất</span>
+            </MenuItem>
+          </div>
         </DropdownMenu>
+        <StyledNotification
+          open={Boolean(notificationEl)}
+          anchorEl={notificationEl}
+          onClose={() => {
+            setNotificationEl(null);
+          }}
+          anchorOrigin={{
+            horizontal: 'center',
+            vertical: 'bottom',
+          }}
+        >
+          <div className="header">
+            <span>Notifications</span>
+          </div>
+          {notifies.length > 0 ? (
+            <ul className="list">
+              {notifies.map((nofi) => {
+                return (
+                  <li
+                    onClick={() => {
+                      clickReadNotification(nofi.id);
+                    }}
+                  >
+                    <Link className="link" to={nofi.ref_url}>
+                      <StyledNotificationItem>
+                        <div className="content">
+                          <Avatar
+                            src="https://friendkit.cssninja.io/assets/img/avatars/dan.jpg"
+                            alt="Hi"
+                            sx={{ width: 40, height: 40 }}
+                          />
+                          <div className="main-content">
+                            <span className="text">{nofi.content}</span>
+                            <span className="time">{moment(nofi.updated_at, moment.defaultFormat).fromNow()}</span>
+                          </div>
+                        </div>
+                        <div className="icon">
+                          <BiHeart />
+                        </div>
+                      </StyledNotificationItem>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="no-data">Không có dữ liệu</p>
+          )}
+        </StyledNotification>
       </HeaderWrap>
     </StyledHeader>
   );
