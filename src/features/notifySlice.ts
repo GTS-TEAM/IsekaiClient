@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
 import { notifyItem, responseNotify } from 'share/types';
 import { RootState } from 'store';
-import { v4 } from 'uuid';
 
 export const initialState: {
   isLoading: Boolean;
@@ -12,17 +11,7 @@ export const initialState: {
 } = {
   isLoading: false,
   responsenotify: null,
-  notifyItem: [
-    {
-      avatar: 'no',
-      content: 'Hehe',
-      id: v4(),
-      is_read: false,
-      ref_url: 'hi',
-      type: 'message',
-      updated_at: new Date().toISOString(),
-    },
-  ],
+  notifyItem: [],
   is_read: false,
 };
 
@@ -49,7 +38,7 @@ const notifySlice = createSlice({
     });
     builder.addCase(getAllNotifycation.fulfilled, (state, action: PayloadAction<notifyItem[]>) => {
       state.isLoading = false;
-      // state.notifyItem = state.notifyItem.concat(action.payload);
+      state.notifyItem = action.payload;
     });
     builder.addCase(readNotifycation.pending, (state) => {
       state.isLoading = true;

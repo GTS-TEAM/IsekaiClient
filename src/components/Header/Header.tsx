@@ -180,11 +180,7 @@ const Header = () => {
                     <Link className="link" to={nofi.ref_url}>
                       <StyledNotificationItem>
                         <div className="content">
-                          <Avatar
-                            src="https://friendkit.cssninja.io/assets/img/avatars/dan.jpg"
-                            alt="Hi"
-                            sx={{ width: 40, height: 40 }}
-                          />
+                          <Avatar src={nofi.avatar} alt="Hi" sx={{ width: 40, height: 40 }} />
                           <div className="main-content">
                             <span className="text">{nofi.content}</span>
                             <span className="time">{moment(nofi.updated_at, moment.defaultFormat).fromNow()}</span>

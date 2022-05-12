@@ -327,6 +327,7 @@ export const StyledNotification = styled(Menu)`
 
   a {
     color: #a2a5b9;
+    width: 100%;
   }
 
   .no-data {
@@ -350,11 +351,11 @@ export const StyledNotificationItem = styled.div`
   .content {
     display: flex;
     align-items: center;
+    flex: 1;
   }
 
   .main-content {
     font-size: 1.4rem;
-    margin-bottom: 0.4rem;
   }
 
   .text {
