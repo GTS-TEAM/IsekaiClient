@@ -18,7 +18,7 @@ ReactDOM.render(
   <Provider store={store}>
     {/* @ts-ignore */}
     <PersistGate loading={null} persistor={persistor}>
-      <LocalizationProvider dateAdapter={DateAdapter}>
+      <LocalizationProvider dateAdapter={DateAdapter} locale={'vi'}>
         <BrowserRouter>
           <Global styles={globalStyles} />
           <App />

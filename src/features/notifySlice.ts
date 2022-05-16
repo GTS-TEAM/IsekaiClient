@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { isekaiApi } from 'api/isekaiApi';
-import { notifyItem, notifyLikeItem, responseNotify } from 'share/types';
+import { notifyItem, responseNotify } from 'share/types';
 import { RootState } from 'store';
 
 export const initialState: {
@@ -38,7 +38,7 @@ const notifySlice = createSlice({
     });
     builder.addCase(getAllNotifycation.fulfilled, (state, action: PayloadAction<notifyItem[]>) => {
       state.isLoading = false;
-      state.notifyItem = action.payload.reverse();
+      state.notifyItem = action.payload;
     });
     builder.addCase(readNotifycation.pending, (state) => {
       state.isLoading = true;

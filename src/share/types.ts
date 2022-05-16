@@ -11,6 +11,7 @@ export interface User {
   phone?: string;
   date?: string;
   address?: string;
+  last_activity: string | null;
 }
 
 export const clientId = '113229342458-nffji5842i81t7sp50g08k4q044c8tj5.apps.googleusercontent.com';
@@ -360,6 +361,7 @@ export interface notifyItem {
   ref_url: string;
   type: string;
   is_read: boolean;
+  updated_at: string;
 }
 
 export enum FriendRequestResponse {

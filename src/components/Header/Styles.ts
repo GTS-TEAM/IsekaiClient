@@ -225,18 +225,15 @@ export const User = styled.div`
     }
   }
 `;
-interface isDropdown {
-  isDropDown: boolean;
-}
-export const DropdownMenu = styled(Menu)<isDropdown>`
+
+export const DropdownMenu = styled(Menu)`
   .MuiPaper-root {
     width: 100%;
-    max-width: ${(p) => (p.isDropDown ? '50rem' : '36rem')};
-    max-height: ${(p) => (p.isDropDown ? '50rem' : '')};
+    max-width: 32rem;
     box-shadow: 0px 5px 43px rgb(0 0 0 / 18%);
     padding: 0.8rem;
-    border-radius: var(--borderRadius3);
     margin-top: 1rem;
+    border-radius: 0.65rem;
   }
 
   .MuiList-root {
@@ -246,7 +243,7 @@ export const DropdownMenu = styled(Menu)<isDropdown>`
   .MuiMenuItem-root {
     column-gap: 1rem;
     padding: 0.8rem;
-    border-radius: var(--borderRadius3);
+    border-radius: 0.65rem;
 
     .icon {
       width: 3.6rem;
@@ -293,76 +290,94 @@ export const DropdownMenu = styled(Menu)<isDropdown>`
   }
 `;
 
-interface propStyle {
-  length: number;
-}
+export const StyledNotification = styled(Menu)`
+  .MuiPaper-root {
+    height: 100%;
+    width: 100%;
+    max-width: 32rem;
+    max-height: 38.8rem;
+    font-size: 1.4rem;
+    border-radius: 0.65rem;
+    box-shadow: 0px 5px 43px rgb(0 0 0 / 18%) !important;
+    margin-top: 1rem;
+  }
 
-export const Notifycation = styled.ul<propStyle>`
-  display: flex;
-  flex-direction: column;
-  height: ${(p) => (p.length <= 0 ? '' : '45rem')};
-  overflow-y: ${(p) => (p.length > 3 ? 'scroll' : 'hidden')};
-  position: relative;
-  overflow-x: hidden;
-  ::-webkit-scrollbar {
-    width: 1rem;
+  .MuiList-root {
+    height: 100%;
   }
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-  ::-webkit-scrollbar-thumb {
-    border-radius: 1rem;
-    background: #888;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-  .top {
+
+  .header {
+    padding: 1.6rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 2rem;
-    .title {
-      font-size: 2rem;
-    }
-    .icon {
-      opacity: 0.5;
-      width: 2rem;
-      height: 2rem;
-    }
+    color: #a2a5b9;
+    text-transform: uppercase;
+    margin-top: -0.8rem;
+    border-bottom: 1px solid #e8e8e8;
   }
-  li {
+
+  .list {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-top: 1px solid var(--borderColor);
-    padding: 3rem;
-    .icon {
-      margin-left: 1rem;
-      width: 2rem;
-      height: 2rem;
-      opacity: 0.5;
-    }
-    .link {
-      display: flex;
-      span {
-        margin-left: 1rem;
-        color: black;
-        font-size: 1.5rem;
-        &.span-content {
-          margin-bottom: 1rem;
-        }
-      }
-      .left {
-        display: flex;
-        .MuiAvatar-root {
-          margin-right: 1rem;
-        }
-        .middle {
-          display: flex;
-          flex-direction: column;
-        }
-      }
+    flex-direction: column;
+    height: 100%;
+    max-height: 341px;
+    overflow-y: auto;
+  }
+
+  a {
+    color: #a2a5b9;
+    width: 100%;
+  }
+
+  .no-data {
+    color: inherit;
+    text-align: center;
+    padding: 1.6rem;
+    color: #a2a5b9;
+  }
+`;
+
+export const StyledNotificationItem = styled.div`
+  color: inherit;
+  padding: 1.6rem;
+  display: flex;
+  align-items: center;
+
+  .MuiAvatar-root {
+    margin-right: 1.6rem;
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+
+  .main-content {
+    font-size: 1.4rem;
+  }
+
+  .text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .time {
+    margin-top: 0.4rem;
+    font-size: 1.2rem;
+  }
+
+  .icon {
+    margin-left: 1.6rem;
+
+    svg {
+      width: 2.4rem;
+      height: 2.4rem;
     }
   }
 `;

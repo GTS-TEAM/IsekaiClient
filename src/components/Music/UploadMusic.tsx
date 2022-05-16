@@ -1,9 +1,11 @@
 import { Stack } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
 import { uploadSong } from 'features/musicSlice';
+import { addToast } from 'features/toastSlice';
 import { useFormik } from 'formik';
 import { useAppDispatch } from 'hooks/hooks';
 import React, { useRef, useState } from 'react';
+import { v4 } from 'uuid';
 import * as Yup from 'yup';
 import { ButtonUpload, FormUpload, InputField } from './Styles';
 const SUPPORTED_FORMATS: string[] = ['audio/ogg', 'audio/mpeg', 'audio/wav', 'video/webm'];
@@ -34,6 +36,13 @@ const UploadMusic = () => {
         dispatch(uploadSong(dataUrlRes.music));
       }
       setLoading(false);
+      dispatch(
+        addToast({
+          content: 'Tải lên thành công',
+          id: v4(),
+          type: 'success',
+        }),
+      );
       resetForm();
     },
     validationSchema: Yup.object({
@@ -46,7 +55,11 @@ const UploadMusic = () => {
         }),
       urlYoutube: Yup.string()
         .notRequired()
-        .matches(/((http(s):\/\/))((youtu.be\/))[\S]+/, 'Đường dẫn không hỗ trợ.'),
+        .matches(
+          // eslint-disable-next-line no-useless-escape
+          /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/gim,
+          'Đường dẫn không hỗ trợ.',
+        ),
     }),
   });
 
