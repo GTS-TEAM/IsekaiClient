@@ -5,18 +5,24 @@ import { RootState } from 'store';
 
 export const initialState: {
   isLoading: Boolean;
-  is_read: boolean;
   responsenotify: responseNotify | null;
   notifyItem: notifyItem[];
+  hasMore: boolean;
 } = {
   isLoading: false,
   responsenotify: null,
   notifyItem: [],
-  is_read: false,
+  hasMore: false,
 };
 
-export const getAllNotifycation = createAsyncThunk<notifyItem[]>('notif/getAllNotifycation', async () => {
-  const { data } = await isekaiApi.getNotifycation();
+export const getAllNotifycation = createAsyncThunk<
+  notifyItem[],
+  {
+    limit: number;
+    page: number;
+  }
+>('notif/getAllNotifycation', async ({ limit, page }) => {
+  const { data } = await isekaiApi.getNotifycation(limit, page);
   return data;
 });
 
@@ -31,23 +37,29 @@ const notifySlice = createSlice({
     addNewNotify: (state, action: PayloadAction<notifyItem>) => {
       state.notifyItem.unshift(action.payload);
     },
+    unmountNofi: (state) => {
+      state.notifyItem = [];
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getAllNotifycation.pending, (state) => {
       state.isLoading = true;
     });
     builder.addCase(getAllNotifycation.fulfilled, (state, action: PayloadAction<notifyItem[]>) => {
+      console.log(action.payload);
+      if (action.payload.length === 0) {
+        state.hasMore = false;
+      } else {
+        state.hasMore = true;
+      }
       state.isLoading = false;
-      state.notifyItem = action.payload;
-    });
-    builder.addCase(readNotifycation.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(readNotifycation.fulfilled, (state) => {
-      state.isLoading = false;
+      state.notifyItem = [...state.notifyItem, ...action.payload].sort((a, b) => {
+        return b.updated_at.localeCompare(a.updated_at);
+      });
     });
   },
 });
 
 export const notifySelector = (state: RootState) => state.notify;
+export const { unmountNofi } = notifySlice.actions;
 export default notifySlice.reducer;

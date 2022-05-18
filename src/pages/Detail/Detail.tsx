@@ -2,7 +2,9 @@ import { Stack } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
 import Actions from 'components/Actions/Actions';
 import Comments from 'components/Comments/Comments';
+import Layout from 'components/Layout/Layout';
 import LiveStats from 'components/LiveStats/LiveStats';
+import RequireAuth from 'components/RequireAuth';
 import SlideImgPost from 'components/SlideImgPost/SlideImgPost';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { authSelector } from 'features/authSlice';
@@ -86,6 +88,10 @@ const ModalViewPost = () => {
         });
     }
   }, [id]);
+
+  if (post?.image.length === 0) {
+    return <>Hi</>;
+  }
 
   return (
     <StyledDetail>

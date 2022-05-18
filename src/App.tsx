@@ -43,7 +43,7 @@ function App() {
     <>
       <Toast />
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/lading" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<FogotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
@@ -51,96 +51,53 @@ function App() {
 
         <Route path="/register" element={<Register />} />
         <Route
-          path="/home"
+          path="/"
           element={
             <RequireAuth>
-              <Layout>
-                <Homepage />
-              </Layout>
+              <Layout />
             </RequireAuth>
           }
-        />
-        <Route
-          path="/profile/:id"
-          element={
-            <RequireAuth>
-              <Profile />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/post/:id"
-          element={
-            <RequireAuth>
-              <Post />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/setting"
-          element={
-            <RequireAuth>
-              <SettingAccount />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/message"
-          element={
-            <RequireAuth>
-              <Chat />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/message/:id"
-          element={
-            <RequireAuth>
-              <Chat />
-            </RequireAuth>
-          }
-        />
-        <Route path="/friends">
-          <Route
-            index={true}
-            element={
-              <RequireAuth>
+        >
+          <Route index element={<Homepage />} />
+          <Route path="profile/:id" element={<Profile />} />
+          <Route path="post/:id" element={<Post />} />
+          <Route path="setting" element={<SettingAccount />} />
+          <Route path="message" element={<Chat />} />
+          <Route path="message/:id" element={<Chat />} />
+          <Route path="friends">
+            <Route
+              index={true}
+              element={
                 <FriendsLayout>
                   <Home />
                 </FriendsLayout>
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="request"
-            element={
-              <RequireAuth>
+              }
+            />
+            <Route
+              path="request"
+              element={
                 <FriendsLayout>
                   <Request />
                 </FriendsLayout>
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="suggest"
-            element={
-              <RequireAuth>
+              }
+            />
+            <Route
+              path="suggest"
+              element={
                 <FriendsLayout>
                   <Suggest />
                 </FriendsLayout>
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="all-friends"
-            element={
-              <RequireAuth>
+              }
+            />
+            <Route
+              path="all-friends"
+              element={
                 <FriendsLayout>
                   <AllFriend />
                 </FriendsLayout>
-              </RequireAuth>
-            }
-          />
+              }
+            />
+          </Route>
         </Route>
         <Route path="*" element={<p>Not found</p>} />
         {/* 

@@ -323,6 +323,7 @@ export const StyledNotification = styled(Menu)`
     height: 100%;
     max-height: 341px;
     overflow-y: auto;
+    padding: 0.8rem 0;
   }
 
   a {
