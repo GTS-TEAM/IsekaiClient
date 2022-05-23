@@ -8,15 +8,20 @@ export const initialState: {
   responsenotify: responseNotify | null;
   notifyItem: notifyItem[];
   hasMore: boolean;
+  unReaded: number;
 } = {
   isLoading: false,
   responsenotify: null,
   notifyItem: [],
   hasMore: false,
+  unReaded: 0,
 };
 
 export const getAllNotifycation = createAsyncThunk<
-  notifyItem[],
+  {
+    count: number;
+    notifications: notifyItem[];
+  },
   {
     limit: number;
     page: number;
@@ -45,17 +50,17 @@ const notifySlice = createSlice({
     builder.addCase(getAllNotifycation.pending, (state) => {
       state.isLoading = true;
     });
-    builder.addCase(getAllNotifycation.fulfilled, (state, action: PayloadAction<notifyItem[]>) => {
-      console.log(action.payload);
-      if (action.payload.length === 0) {
+    builder.addCase(getAllNotifycation.fulfilled, (state, action) => {
+      if (action.payload.notifications.length === 0) {
         state.hasMore = false;
       } else {
         state.hasMore = true;
       }
       state.isLoading = false;
-      state.notifyItem = [...state.notifyItem, ...action.payload].sort((a, b) => {
+      state.notifyItem = [...state.notifyItem, ...action.payload.notifications].sort((a, b) => {
         return b.updated_at.localeCompare(a.updated_at);
       });
+      state.unReaded = action.payload.count;
     });
   },
 });

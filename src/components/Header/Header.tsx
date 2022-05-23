@@ -2,7 +2,7 @@ import { Avatar, Badge, MenuItem, Stack } from '@mui/material';
 import { getAllNotifycation, notifySelector, readNotifycation, unmountNofi } from 'features/notifySlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useGoogleLogout } from 'react-google-login';
 import { AiOutlineHome, AiOutlineMessage } from 'react-icons/ai';
 import { BiHeart } from 'react-icons/bi';
@@ -72,11 +72,7 @@ const Header = () => {
   };
 
   React.useEffect(() => {
-    dispatch(getAllNotifycation({ limit: LIMIT, page: 1 }));
-
-    return () => {
-      dispatch(unmountNofi());
-    };
+    dispatch(getAllNotifycation({ limit: LIMIT, page: page }));
   }, [dispatch, page]);
 
   return (
@@ -188,6 +184,7 @@ const Header = () => {
               dataLength={notifies.length}
               hasMore={hasMore}
               loader={<p>Loading...</p>}
+              height={314}
             >
               {notifies.map((nofi) => {
                 return (

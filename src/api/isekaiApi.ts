@@ -289,7 +289,10 @@ export const isekaiApi = {
     return axios.patch('/auth/reset-password', data);
   },
   getNotifycation: (limit: number, page: number) => {
-    return axios.get<notifyItem[]>('/notif', {
+    return axios.get<{
+      count: number;
+      notifications: notifyItem[];
+    }>('/notif', {
       params: {
         limit,
         page,

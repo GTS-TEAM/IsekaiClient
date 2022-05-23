@@ -1,7 +1,6 @@
 import { Button, Stack } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
 import CreatePost from 'components/CreatePost/CreatePost';
-import Layout from 'components/Layout/Layout';
 import ListPost from 'components/ListPost/ListPost';
 import { authSelector } from 'features/authSlice';
 import { getUserPosts, postsSelector, unmountTimeline } from 'features/postsSlice';
@@ -55,7 +54,6 @@ const Profile = () => {
           console.log(res);
           const [statusRes, photosRes] = res;
           setStatus(statusRes.data.request);
-          setPhotos(photosRes.data);
         })
         .catch((error) => {
           console.log(error);

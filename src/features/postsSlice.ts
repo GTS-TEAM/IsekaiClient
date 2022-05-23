@@ -167,6 +167,9 @@ const postsSlice = createSlice({
     unmountTimeline: (state) => {
       state.timeline.posts = [];
     },
+    getOnePost: (state, action) => {
+      state.timeline.posts = [action.payload];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -247,6 +250,6 @@ const postsSlice = createSlice({
   },
 });
 
-export const { unmountTimeline, decreaseCmt, increaseCmt, toggleLike } = postsSlice.actions;
+export const { unmountTimeline, decreaseCmt, increaseCmt, toggleLike, getOnePost } = postsSlice.actions;
 export const postsSelector = (state: RootState) => state.posts;
 export default postsSlice.reducer;

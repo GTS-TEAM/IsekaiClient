@@ -2,24 +2,32 @@ import { Stack } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
 import Actions from 'components/Actions/Actions';
 import Comments from 'components/Comments/Comments';
-import Layout from 'components/Layout/Layout';
 import LiveStats from 'components/LiveStats/LiveStats';
-import RequireAuth from 'components/RequireAuth';
 import SlideImgPost from 'components/SlideImgPost/SlideImgPost';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { authSelector } from 'features/authSlice';
-import { useAppSelector } from 'hooks/hooks';
+import { getOnePost, postsSelector } from 'features/postsSlice';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useEffect, useState } from 'react';
 import { GrFormClose } from 'react-icons/gr';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PostItem, User } from 'share/types';
-import { ButtonClose, CommentsArea, Description, Post, PostHeader, SlideImgPostWrap, StyledDetail } from './Styles';
+import {
+  ButtonClose,
+  CommentsArea,
+  Description,
+  Post as StyledPost,
+  PostHeader,
+  SlideImgPostWrap,
+  StyledDetail,
+} from './Styles';
 const ModalViewPost = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAppSelector(authSelector);
-
+  const dispatch = useAppDispatch();
   const [post, setPost] = useState<PostItem | null>(null);
+  const { timeline } = useAppSelector(postsSelector);
 
   const increaseCmtHandle = () => {
     if (post) {
@@ -82,26 +90,27 @@ const ModalViewPost = () => {
         .getPost(id)
         .then((value) => {
           setPost(value.data);
+          dispatch(getOnePost(value.data));
         })
         .catch((error) => {
           console.log(error);
         });
     }
-  }, [id]);
-
-  if (post?.image.length === 0) {
-    return <>Hi</>;
-  }
+  }, [id, dispatch]);
 
   return (
     <StyledDetail>
-      <ButtonClose onClick={closeViewPostHandler}>
-        <GrFormClose />
-      </ButtonClose>
-      <SlideImgPostWrap>
-        <SlideImgPost images={(post?.image as string[]) || []} slideIndex={0} />
-      </SlideImgPostWrap>
-      <Post>
+      {post && post.image.length > 0 && (
+        <>
+          <ButtonClose onClick={closeViewPostHandler}>
+            <GrFormClose />
+          </ButtonClose>
+          <SlideImgPostWrap>
+            <SlideImgPost images={(post?.image as string[]) || []} slideIndex={0} />
+          </SlideImgPostWrap>
+        </>
+      )}
+      <StyledPost>
         <PostHeader>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             {post && (
@@ -122,7 +131,7 @@ const ModalViewPost = () => {
         <CommentsArea>
           <Comments postId={id ? id : ''} amountComment={post?.comments} onIncreaseCmt={increaseCmtHandle} />
         </CommentsArea>
-      </Post>
+      </StyledPost>
     </StyledDetail>
   );
 };
