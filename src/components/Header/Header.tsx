@@ -5,7 +5,6 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import { useGoogleLogout } from 'react-google-login';
 import { AiOutlineHome, AiOutlineMessage } from 'react-icons/ai';
-import { BiHeart } from 'react-icons/bi';
 import { FiLogOut, FiUsers } from 'react-icons/fi';
 import { IoNotificationsOutline, IoSettingsOutline } from 'react-icons/io5';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -202,9 +201,7 @@ const Header = () => {
                             <span className="time">{moment(nofi.updated_at, moment.defaultFormat).fromNow()}</span>
                           </div>
                         </div>
-                        <div className="icon">
-                          <BiHeart />
-                        </div>
+                        {!nofi.is_read && <div className="icon"></div>}
                       </StyledNotificationItem>
                     </Link>
                   </li>

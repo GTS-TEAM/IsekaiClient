@@ -32,7 +32,8 @@ export const getAllNotifycation = createAsyncThunk<
 });
 
 export const readNotifycation = createAsyncThunk('notif/readNotifycation', async (id: string) => {
-  isekaiApi.ReadNotifycation(id);
+  await isekaiApi.ReadNotifycation(id);
+  return id;
 });
 
 const notifySlice = createSlice({
@@ -50,18 +51,28 @@ const notifySlice = createSlice({
     builder.addCase(getAllNotifycation.pending, (state) => {
       state.isLoading = true;
     });
-    builder.addCase(getAllNotifycation.fulfilled, (state, action) => {
-      if (action.payload.notifications.length === 0) {
-        state.hasMore = false;
-      } else {
-        state.hasMore = true;
-      }
-      state.isLoading = false;
-      state.notifyItem = [...state.notifyItem, ...action.payload.notifications].sort((a, b) => {
-        return b.updated_at.localeCompare(a.updated_at);
+    builder
+      .addCase(getAllNotifycation.fulfilled, (state, action) => {
+        if (action.payload.notifications.length === 0) {
+          state.hasMore = false;
+        } else {
+          state.hasMore = true;
+        }
+        state.isLoading = false;
+        state.notifyItem = [...state.notifyItem, ...action.payload.notifications].sort((a, b) => {
+          return b.updated_at.localeCompare(a.updated_at);
+        });
+        state.unReaded = action.payload.count;
+      })
+      .addCase(readNotifycation.fulfilled, (state, action) => {
+        const indexRead = state.notifyItem.findIndex((_item) => _item.id === action.payload);
+        if (state.notifyItem[indexRead]) {
+          state.notifyItem[indexRead] = {
+            ...state.notifyItem[indexRead],
+            is_read: true,
+          };
+        }
       });
-      state.unReaded = action.payload.count;
-    });
   },
 });
 
