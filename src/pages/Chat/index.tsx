@@ -56,28 +56,26 @@ const Chat = () => {
   }, [dispatch]);
 
   return (
-    <Layout>
-      <StyledChat className="layout">
-        <ChatBody>
-          <Box
-            sx={{
-              display: responsive.displaySidebar,
-              width: responsive.width,
-            }}
-          >
-            <Sidebar />
-          </Box>
-          <Box
-            sx={{
-              justifyContent: 'center',
-              display: responsive.displayChatView,
-            }}
-          >
-            {id ? <ChatView /> : <p>Chọn cuộc trò chuyện.</p>}
-          </Box>
-        </ChatBody>
-      </StyledChat>
-    </Layout>
+    <StyledChat className="layout">
+      <ChatBody>
+        <Box
+          sx={{
+            display: responsive.displaySidebar,
+            width: responsive.width,
+          }}
+        >
+          <Sidebar />
+        </Box>
+        <Box
+          sx={{
+            justifyContent: 'center',
+            display: responsive.displayChatView,
+          }}
+        >
+          {id ? <ChatView /> : <p>Chọn cuộc trò chuyện.</p>}
+        </Box>
+      </ChatBody>
+    </StyledChat>
   );
 };
 

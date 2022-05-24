@@ -1,7 +1,6 @@
 import { Button, Stack } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
 import CreatePost from 'components/CreatePost/CreatePost';
-import Layout from 'components/Layout/Layout';
 import ListPost from 'components/ListPost/ListPost';
 import { authSelector } from 'features/authSlice';
 import { getUserPosts, postsSelector, unmountTimeline } from 'features/postsSlice';
@@ -27,8 +26,6 @@ const Profile = () => {
   const [page, setPage] = useState<number>(1);
   const [status, setStatus] = useState<IStatus | null>(null);
 
-  // console.log(status);
-
   const fetchMoreHandler = () => {
     if (id) {
       dispatch(getUserPosts({ userId: id, page: page + 1 }));
@@ -52,10 +49,11 @@ const Profile = () => {
   useEffect(() => {
     if (id) {
       dispatch(getUser(id));
-      isekaiApi
-        .getStatusFriend(id)
-        .then(({ data }) => {
-          setStatus(data.request);
+      Promise.all([isekaiApi.getStatusFriend(id), isekaiApi.getPostPhoto(id, 'photo')])
+        .then((res) => {
+          console.log(res);
+          const [statusRes, photosRes] = res;
+          setStatus(statusRes.data.request);
         })
         .catch((error) => {
           console.log(error);
@@ -64,139 +62,137 @@ const Profile = () => {
   }, [id, dispatch]);
 
   return (
-    <Layout>
-      <StyledProfile className="layout">
-        <div>
-          <CoverImg imgBgUrl={user?.background || ''} userId={user?.id || ''} />
-          <ProfileMenu />
-          <User>
-            <h2>{user?.username}</h2>
-            <p>3.2k Bạn bè</p>
-            {(() => {
-              if (id === currentUser?.id) {
-                return null;
-              }
-              switch (status?.status) {
-                case 'none':
+    <StyledProfile className="layout">
+      <div>
+        <CoverImg imgBgUrl={user?.background || ''} userId={user?.id || ''} />
+        <ProfileMenu />
+        <User>
+          <h2>{user?.username}</h2>
+          <p>3.2k Bạn bè</p>
+          {(() => {
+            if (id === currentUser?.id) {
+              return null;
+            }
+            switch (status?.status) {
+              case 'none':
+                return (
+                  <Button
+                    className="button-friend"
+                    onClick={async () => {
+                      try {
+                        if (id) {
+                          await isekaiApi.addFriend(id);
+                        }
+                        dispatch(
+                          addToast({
+                            content: 'Thêm bạn bè thành công',
+                            id: v4(),
+                            type: 'success',
+                          }),
+                        );
+                        setStatus({
+                          creator_id: currentUser?.id as string,
+                          status: 'pending',
+                        });
+                      } catch (error) {
+                        dispatch(
+                          addToast({
+                            content: 'Thêm bạn bè thất bại',
+                            id: v4(),
+                            type: 'error',
+                          }),
+                        );
+                      }
+                    }}
+                  >
+                    Kết bạn
+                  </Button>
+                );
+              case 'accepted':
+                return <Button className="button-friend">Huỷ kết bạn</Button>;
+              case 'pending':
+                if (status.creator_id === currentUser?.id) {
                   return (
                     <Button
                       className="button-friend"
                       onClick={async () => {
                         try {
                           if (id) {
-                            await isekaiApi.addFriend(id);
+                            await isekaiApi.responseFriendRequest(id, 'none');
+                            dispatch(
+                              addToast({
+                                content: 'Hủy kết bạn thành công',
+                                id: v4(),
+                                type: 'success',
+                              }),
+                            );
+                            setStatus({
+                              creator_id: null,
+                              status: 'none',
+                            });
                           }
+                        } catch (error) {}
+                      }}
+                    >
+                      Hủy lời mời kết bạn
+                    </Button>
+                  );
+                }
+
+                return (
+                  <Button
+                    className="button-friend"
+                    onClick={async () => {
+                      try {
+                        if (id) {
+                          await isekaiApi.responseFriendRequest(id, 'accepted');
                           dispatch(
                             addToast({
-                              content: 'Thêm bạn bè thành công',
+                              content: 'Đã chấp nhật kết bạn',
                               id: v4(),
                               type: 'success',
                             }),
                           );
                           setStatus({
                             creator_id: currentUser?.id as string,
-                            status: 'pending',
+                            status: 'accepted',
                           });
-                        } catch (error) {
-                          dispatch(
-                            addToast({
-                              content: 'Thêm bạn bè thất bại',
-                              id: v4(),
-                              type: 'error',
-                            }),
-                          );
                         }
-                      }}
-                    >
-                      Kết bạn
-                    </Button>
-                  );
-                case 'accepted':
-                  return <Button className="button-friend">Huỷ kết bạn</Button>;
-                case 'pending':
-                  if (status.creator_id === currentUser?.id) {
-                    return (
-                      <Button
-                        className="button-friend"
-                        onClick={async () => {
-                          try {
-                            if (id) {
-                              await isekaiApi.responseFriendRequest(id, 'none');
-                              dispatch(
-                                addToast({
-                                  content: 'Hủy kết bạn thành công',
-                                  id: v4(),
-                                  type: 'success',
-                                }),
-                              );
-                              setStatus({
-                                creator_id: null,
-                                status: 'none',
-                              });
-                            }
-                          } catch (error) {}
-                        }}
-                      >
-                        Hủy lời mời kết bạn
-                      </Button>
-                    );
-                  }
+                      } catch (error) {}
+                    }}
+                  >
+                    Chấp nhận kết bạn
+                  </Button>
+                );
 
-                  return (
-                    <Button
-                      className="button-friend"
-                      onClick={async () => {
-                        try {
-                          if (id) {
-                            await isekaiApi.responseFriendRequest(id, 'accepted');
-                            dispatch(
-                              addToast({
-                                content: 'Đã chấp nhật kết bạn',
-                                id: v4(),
-                                type: 'success',
-                              }),
-                            );
-                            setStatus({
-                              creator_id: currentUser?.id as string,
-                              status: 'accepted',
-                            });
-                          }
-                        } catch (error) {}
-                      }}
-                    >
-                      Chấp nhận kết bạn
-                    </Button>
-                  );
-
-                default:
-                  return null;
-              }
-            })()}
-          </User>
-        </div>
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} columnGap="1.2rem" spacing={{ xs: 1, sm: 2, md: 4 }}>
-            <Sidebar>
+              default:
+                return null;
+            }
+          })()}
+        </User>
+      </div>
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} columnGap="1.2rem" spacing={{ xs: 1, sm: 2, md: 4 }}>
+          <Sidebar>
+            <Info bio={user?.bio || ''} userId={user?.id || ''} />
+            <PhotosPreview userId={id || ''} />
+          </Sidebar>
+          <main className="main-container">
+            <SidebarIn>
               <Info bio={user?.bio || ''} userId={user?.id || ''} />
               <PhotosPreview userId={id || ''} />
-            </Sidebar>
-            <main className="main-container">
-              <SidebarIn>
-                <Info bio={user?.bio || ''} userId={user?.id || ''} />
-                <PhotosPreview userId={id || ''} />
-              </SidebarIn>
-              {currentUser?.id === user?.id && <CreatePost />}
-              <ListPost
-                posts={timeline.posts}
-                hasMore={timeline.hasMore}
-                onFetchMore={fetchMoreHandler}
-                style={currentUser?.id === user?.id ? { marginTop: '1.2rem' } : { marginTop: 'unset' }}
-              />
-            </main>
-          </Stack>
-        </div>
-      </StyledProfile>
-    </Layout>
+            </SidebarIn>
+            {currentUser?.id === user?.id && <CreatePost />}
+            <ListPost
+              posts={timeline.posts}
+              hasMore={timeline.hasMore}
+              onFetchMore={fetchMoreHandler}
+              style={currentUser?.id === user?.id ? { marginTop: '1.2rem' } : { marginTop: 'unset' }}
+            />
+          </main>
+        </Stack>
+      </div>
+    </StyledProfile>
   );
 };
 

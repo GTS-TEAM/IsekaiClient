@@ -11,7 +11,7 @@ const Landing = () => {
 
   useEffect(() => {
     if (token.access_token) {
-      navigate('/home');
+      navigate('/');
     }
   }, [token.access_token, navigate]);
   return (

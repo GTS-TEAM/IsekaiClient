@@ -15,7 +15,7 @@ import storage from 'redux-persist/lib/storage';
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['posts', 'auth', 'user', 'music', 'weather', 'chat', 'socket'],
+  blacklist: ['posts', 'auth', 'user', 'music', 'weather', 'chat', 'socket', 'notify'],
 };
 
 const authPersistConfig = {

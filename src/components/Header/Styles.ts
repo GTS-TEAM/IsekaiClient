@@ -323,6 +323,7 @@ export const StyledNotification = styled(Menu)`
     height: 100%;
     max-height: 341px;
     overflow-y: auto;
+    padding: 0.8rem 0;
   }
 
   a {
@@ -373,11 +374,10 @@ export const StyledNotificationItem = styled.div`
   }
 
   .icon {
-    margin-left: 1.6rem;
-
-    svg {
-      width: 2.4rem;
-      height: 2.4rem;
-    }
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: var(--mainColor);
+    margin-left: 1.5rem;
   }
 `;

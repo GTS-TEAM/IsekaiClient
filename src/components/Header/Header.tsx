@@ -1,13 +1,13 @@
 import { Avatar, Badge, MenuItem, Stack } from '@mui/material';
-import { getAllNotifycation, notifySelector, readNotifycation } from 'features/notifySlice';
+import { getAllNotifycation, notifySelector, readNotifycation, unmountNofi } from 'features/notifySlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { useGoogleLogout } from 'react-google-login';
 import { AiOutlineHome, AiOutlineMessage } from 'react-icons/ai';
-import { BiHeart } from 'react-icons/bi';
 import { FiLogOut, FiUsers } from 'react-icons/fi';
 import { IoNotificationsOutline, IoSettingsOutline } from 'react-icons/io5';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { clientId, notifyItem } from 'share/types';
 import { deleteTokenFromLocalStorage } from '../../api/axoisClient';
@@ -25,13 +25,16 @@ import {
   User,
 } from './Styles';
 
+const LIMIT = 6;
+
 const Header = () => {
   const { user } = useAppSelector(authSelector);
   const [menuEl, setMenuEl] = React.useState<null | HTMLDivElement>(null);
   const [notificationEl, setNotificationEl] = React.useState<null | HTMLDivElement>(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { notifyItem: notifies } = useAppSelector(notifySelector);
+  const { notifyItem: notifies, hasMore } = useAppSelector(notifySelector);
+  const [page, setPage] = useState<number>(1);
 
   const { signOut } = useGoogleLogout({
     clientId,
@@ -60,27 +63,32 @@ const Header = () => {
     dispatch(logout());
     handleCloseDropdown();
     deleteTokenFromLocalStorage();
+    dispatch(unmountNofi());
+  };
+
+  const handleMoreNoti = () => {
+    setPage(page + 1);
   };
 
   React.useEffect(() => {
-    dispatch(getAllNotifycation());
-  }, [dispatch]);
+    dispatch(getAllNotifycation({ limit: LIMIT, page: page }));
+  }, [dispatch, page]);
 
   return (
     <StyledHeader>
       <HeaderWrap>
         <Stack direction="row" alignItems="center" columnGap="4.8rem">
           <Logo>
-            <Link to="/home" className="large">
+            <Link to="/" className="large">
               ISEKAI
             </Link>
-            <Link to="/home" className="small">
+            <Link to="/" className="small">
               IK
             </Link>
           </Logo>
           <Navbar>
             <NavItem>
-              <NavLink to="/home">
+              <NavLink to="/">
                 <AiOutlineHome />
               </NavLink>
             </NavItem>
@@ -169,7 +177,14 @@ const Header = () => {
             <span>Notifications</span>
           </div>
           {notifies.length > 0 ? (
-            <ul className="list">
+            <InfiniteScroll
+              className="list"
+              next={handleMoreNoti}
+              dataLength={notifies.length}
+              hasMore={hasMore}
+              loader={<p>Loading...</p>}
+              height={314}
+            >
               {notifies.map((nofi) => {
                 return (
                   <li
@@ -186,15 +201,13 @@ const Header = () => {
                             <span className="time">{moment(nofi.updated_at, moment.defaultFormat).fromNow()}</span>
                           </div>
                         </div>
-                        <div className="icon">
-                          <BiHeart />
-                        </div>
+                        {!nofi.is_read && <div className="icon"></div>}
                       </StyledNotificationItem>
                     </Link>
                   </li>
                 );
               })}
-            </ul>
+            </InfiniteScroll>
           ) : (
             <p className="no-data">Không có dữ liệu</p>
           )}
