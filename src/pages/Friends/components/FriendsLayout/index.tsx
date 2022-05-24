@@ -1,4 +1,3 @@
-import Layout from 'components/Layout/Layout';
 import React from 'react';
 import Sidebar from '../Sidebar';
 import { StyledFriendLayout } from './styles';

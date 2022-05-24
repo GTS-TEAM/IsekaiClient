@@ -49,11 +49,12 @@ const Profile = () => {
   useEffect(() => {
     if (id) {
       dispatch(getUser(id));
-      Promise.all([isekaiApi.getStatusFriend(id), isekaiApi.getPostPhoto(id, 'photo')])
+      Promise.all([isekaiApi.getStatusFriend(id), isekaiApi.getListFriend(id)])
         .then((res) => {
           console.log(res);
-          const [statusRes, photosRes] = res;
+          const [statusRes, friendRes] = res;
           setStatus(statusRes.data.request);
+          console.log(friendRes);
         })
         .catch((error) => {
           console.log(error);

@@ -6,7 +6,7 @@ import LiveStats from 'components/LiveStats/LiveStats';
 import SlideImgPost from 'components/SlideImgPost/SlideImgPost';
 import UserBlockPost from 'components/UserBlockPost/UserBlockPost';
 import { authSelector } from 'features/authSlice';
-import { getOnePost, postsSelector } from 'features/postsSlice';
+import { getOnePost } from 'features/postsSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useEffect, useState } from 'react';
 import { GrFormClose } from 'react-icons/gr';
@@ -27,7 +27,6 @@ const ModalViewPost = () => {
   const { user } = useAppSelector(authSelector);
   const dispatch = useAppDispatch();
   const [post, setPost] = useState<PostItem | null>(null);
-  const { timeline } = useAppSelector(postsSelector);
 
   const increaseCmtHandle = () => {
     if (post) {

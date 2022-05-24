@@ -1,5 +1,4 @@
 import { Box } from '@mui/material';
-import Layout from 'components/Layout/Layout';
 import { chatSelector, getConversation, unmountChat } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { useWindowSize } from 'hooks/useWindowSize';
