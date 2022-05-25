@@ -1,4 +1,3 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Button, Menu, MenuItem, Stack } from '@mui/material';
 
@@ -59,10 +58,6 @@ export const Logo = styled.div`
   }
 `;
 
-interface SearchGlobal {
-  isFocus: boolean;
-}
-
 export const StyledGlobalSearch = styled.div`
   position: relative;
   @media screen and (max-width: 868px) {
@@ -70,7 +65,7 @@ export const StyledGlobalSearch = styled.div`
   }
 `;
 
-export const SearchWrap = styled.div<SearchGlobal>`
+export const SearchWrap = styled.div`
   width: 100%;
   min-width: 40rem;
   padding: 0 1.5rem;
@@ -85,14 +80,6 @@ export const SearchWrap = styled.div<SearchGlobal>`
   justify-self: center;
   transition: all 0.3s;
   position: relative;
-  ${(p) =>
-    p.isFocus
-      ? css`
-          background: var(--fds-white);
-          box-shadow: -1px 3px 10px 0 rgb(0 0 0 / 6%) !important;
-          border-color: #e3e3e3;
-        `
-      : null}
 
   input {
     background-color: transparent;

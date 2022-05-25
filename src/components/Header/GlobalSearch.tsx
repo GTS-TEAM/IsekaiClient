@@ -1,26 +1,24 @@
 import { Avatar } from '@mui/material';
 import { isekaiApi } from 'api/isekaiApi';
 import { useClickOutside } from 'hooks/useClickOutside';
-import React, { FormEvent, useRef, useState } from 'react';
+import useDebounce from 'hooks/useDebouce';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
 import { User } from 'share/types';
-import { ButtonSearch, ResultItem, SearchDropdown, SearchResultWrap, SearchWrap, StyledGlobalSearch } from './Styles';
+import { ResultItem, SearchDropdown, SearchResultWrap, SearchWrap, StyledGlobalSearch } from './Styles';
 
 const GlobalSearch = () => {
-  const [isFocus, setIsFocus] = useState(false);
-  const [haveButtonSearch, setHaveButtonSearch] = useState<boolean>(false);
   const [resultSearch, setResultSearch] = useState<User[] | null>(null);
   const [isOpenDropdown, setIsOpenDropdown] = useState<boolean>(false);
   const [queryText, setQueryText] = useState<string>('');
   const navigate = useNavigate();
   const dropdownRef = useRef<any>(null);
 
+  const debounceValue = useDebounce(queryText, 800);
+
   useClickOutside(dropdownRef, () => {
     setIsOpenDropdown(false);
-    setQueryText('');
-    setHaveButtonSearch(false);
-    setResultSearch(null);
   });
 
   const goToUserProfile = (id: string) => () => {
@@ -28,44 +26,40 @@ const GlobalSearch = () => {
     setIsOpenDropdown(false);
   };
 
-  const focusHandler = () => {
-    setIsFocus(true);
-  };
-
-  const blurHandler = () => {
-    setIsFocus(false);
-    setResultSearch(null);
-  };
-
-  const getResultSearchHandler = async () => {
-    const { data } = await isekaiApi.globalSearch(queryText);
+  const getResultSearchHandler = useCallback(async (debounceValue: string) => {
+    if (debounceValue.trim().length === 0) {
+      return;
+    }
+    const { data } = await isekaiApi.globalSearch(debounceValue);
     setIsOpenDropdown(true);
     setResultSearch(data);
-  };
+  }, []);
 
-  const changeTextHandler = (e: FormEvent<HTMLInputElement>) => {
-    setQueryText(e.currentTarget.value);
-    if (e.currentTarget.value.trim().length > 0) {
-      setHaveButtonSearch(true);
-    } else {
-      setHaveButtonSearch(false);
-      setIsOpenDropdown(false);
-    }
-  };
+  useEffect(() => {
+    getResultSearchHandler(debounceValue);
+  }, [getResultSearchHandler, debounceValue]);
 
   return (
     <StyledGlobalSearch>
-      <SearchWrap isFocus={isFocus}>
+      <SearchWrap>
         <BiSearch />
         <input
           type="text"
           placeholder="Search"
-          onFocus={focusHandler}
           value={queryText}
-          onBlur={blurHandler}
-          onChange={changeTextHandler}
+          onChange={(e) => {
+            if (e.target.value.trim().length === 0) {
+              setIsOpenDropdown(false);
+              setResultSearch([]);
+            }
+            setQueryText(e.currentTarget.value);
+          }}
+          onFocus={() => {
+            if (queryText.trim().length > 0) {
+              setIsOpenDropdown(true);
+            }
+          }}
         />
-        {haveButtonSearch && <ButtonSearch onClick={getResultSearchHandler}>Tìm</ButtonSearch>}
       </SearchWrap>
       {isOpenDropdown && resultSearch && (
         <SearchDropdown ref={dropdownRef}>
