@@ -9,6 +9,8 @@ import { getTimeline, postsSelector, unmountTimeline } from 'features/postsSlice
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListMusic } from '../../features/musicSlice';
+import Birthday from './components/Birthday';
+import FakeComponent from './components/FakeComponent';
 import ListFriend from './components/ListFriend';
 import { Feed, StyledHomepage } from './Styles';
 
@@ -47,6 +49,7 @@ const Homepage = () => {
         >
           <Music />
           <Weather />
+          <FakeComponent />
         </Stack>
         <Feed>
           <CreatePost />
@@ -54,6 +57,7 @@ const Homepage = () => {
         </Feed>
         <div className="w-25">
           <ListFriend />
+          <Birthday />
         </div>
       </Container>
     </StyledHomepage>
