@@ -7,12 +7,13 @@ import { authSelector } from 'features/authSlice';
 import { exitChatView, leaveGroup, removeConversation, updateConversation } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import moment from 'moment';
 import React, { useRef, useState } from 'react';
 import { AiOutlineEdit, AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { BiFileBlank, BiImageAdd } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoIosArrowBack, IoMdClose, IoMdLogOut } from 'react-icons/io';
-import { MdOutlineColorLens, MdOutlineRemoveCircleOutline } from 'react-icons/md';
+import { MdFiberManualRecord, MdOutlineColorLens, MdOutlineRemoveCircleOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { ConversationItem, ConversationType, User } from 'share/types';
 import { getReceiver } from 'utils/getReceiver';
@@ -21,7 +22,7 @@ import ModalChangeTheme from '../ModalChangeTheme';
 import ModalChooseUser from '../ModalChooseUser/ModalChooseUser';
 import ModalEditNickName from '../ModalEditNickName';
 import ModalViewFiles from '../ModalViewFiles';
-import { RecipientBox, StyledButtonIcon, StyledHeader } from './styles';
+import { RecipientBox, StyledBadge, StyledButtonIcon, StyledHeader } from './styles';
 
 const Header: React.FC<{
   borderRadius?: string;
@@ -46,6 +47,7 @@ const Header: React.FC<{
 
   const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
 
+  console.log('receiver', receiver);
   return (
     <StyledHeader borderRadius={borderRadius}>
       <ErrorAlert
@@ -106,11 +108,23 @@ const Header: React.FC<{
         {currentConversation?.type === ConversationType.GROUP ? (
           <Avatar src={currentConversation?.avatar as string} alt={currentConversation?.name as string} />
         ) : (
-          <Avatar src={receiver?.user?.avatar} alt={receiver?.user?.username.charAt(0).toUpperCase()} />
+          <div>
+            {!receiver?.user.last_activity ? (
+              <StyledBadge overlap="circular" anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} variant="dot">
+                <Avatar src={receiver?.user?.avatar} alt={receiver?.user?.username.charAt(0).toUpperCase()} />
+              </StyledBadge>
+            ) : (
+              <Avatar src={receiver?.user?.avatar} alt={receiver?.user?.username.charAt(0).toUpperCase()} />
+            )}
+          </div>
         )}
         <Box>
           <h3>{currentConversation?.name || receiver?.nickname || receiver?.user.username}</h3>
-          <span>Hoạt Động 10 phút trước</span>
+          {receiver?.user.last_activity === null ? (
+            <span>Đang hoạt động</span>
+          ) : (
+            <span>Hoạt động {moment(receiver?.user.last_activity, moment.defaultFormat).fromNow()}</span>
+          )}
         </Box>
       </RecipientBox>
       {type === 'popup' ? (

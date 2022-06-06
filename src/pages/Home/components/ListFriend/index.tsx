@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { ConversationItem, ConversationType, User } from 'share/types';
 import { v4 } from 'uuid';
 import { StyledFriend, StyledListFriend } from './styles';
+import moment from 'moment';
 
 const ListFriend = () => {
   const [friends, setFriends] = useState<User[]>([]);
@@ -92,7 +93,12 @@ const ListFriend = () => {
             >
               <StyledFriend>
                 <Avatar src={friend.avatar} alt={friend.username} />
-                <span>{friend.username}</span>
+                <div className="infoFr">
+                  <span>{friend.username}</span>
+                  <div className="online">
+                    <span className="timeFr">{moment(friend.last_activity, moment.defaultFormat).fromNow()}</span>
+                  </div>
+                </div>
               </StyledFriend>
             </li>
           </React.Fragment>

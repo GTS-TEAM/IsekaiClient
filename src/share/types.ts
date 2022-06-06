@@ -11,6 +11,7 @@ export interface User {
   phone?: string;
   date?: string;
   address?: string;
+  last_activity: string;
 }
 
 export const clientId = '113229342458-nffji5842i81t7sp50g08k4q044c8tj5.apps.googleusercontent.com';
