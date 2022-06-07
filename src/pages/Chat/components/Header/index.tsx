@@ -47,7 +47,6 @@ const Header: React.FC<{
 
   const receiver = getReceiver(currentConversation as ConversationItem, currentUser as User);
 
-  console.log('receiver', receiver);
   return (
     <StyledHeader borderRadius={borderRadius}>
       <ErrorAlert

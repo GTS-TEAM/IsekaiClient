@@ -8,6 +8,7 @@ import { ConversationItem, ConversationType, User } from 'share/types';
 import { v4 } from 'uuid';
 import { StyledFriend, StyledListFriend } from './styles';
 import moment from 'moment';
+import { StyledBadge } from 'pages/Chat/components/Header/styles';
 
 const ListFriend = () => {
   const [friends, setFriends] = useState<User[]>([]);
@@ -92,11 +93,21 @@ const ListFriend = () => {
               }}
             >
               <StyledFriend>
-                <Avatar src={friend.avatar} alt={friend.username} />
+                {!friend.last_activity ? (
+                  <StyledBadge overlap="circular" anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} variant="dot">
+                    <Avatar src={friend.avatar} alt={friend.username} />
+                  </StyledBadge>
+                ) : (
+                  <Avatar src={friend.avatar} alt={friend.username} />
+                )}
                 <div className="infoFr">
                   <span>{friend.username}</span>
                   <div className="online">
-                    <span className="timeFr">{moment(friend.last_activity, moment.defaultFormat).fromNow()}</span>
+                    {!friend.last_activity ? (
+                      <span className="timeFr">Đang hoạt động</span>
+                    ) : (
+                      <span className="timeFr">{moment(friend.last_activity, moment.defaultFormat).fromNow()}</span>
+                    )}
                   </div>
                 </div>
               </StyledFriend>
