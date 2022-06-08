@@ -90,7 +90,7 @@ export const StyleMdLiked = styled(Box)`
   transform: translate(-50%, -50%);
   background-color: white;
   padding: 2rem;
-  width: 500px;
+  width: 530px;
   outline: none;
   height: 43rem;
 
@@ -111,6 +111,7 @@ export const StyleMdLiked = styled(Box)`
     overflow: auto;
     display: flex;
     flex-direction: column;
+    margin-right: 1rem;
 
     .MuiAvatar-root {
       margin: 1rem;
