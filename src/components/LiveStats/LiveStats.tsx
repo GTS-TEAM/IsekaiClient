@@ -114,7 +114,7 @@ const LiveStats: React.FC<Props> = ({ totalLike, totalComment, userLiked, classN
                   aria-labelledby="modal-modal-title"
                   aria-describedby="modal-modal-description"
                 >
-                  <StyleMdLiked>
+                  <StyleMdLiked userLiked={userLiked}>
                     <div className="topMdLiked">
                       <h3>Tất cả</h3>
                       <IconButton

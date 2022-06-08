@@ -83,7 +83,7 @@ export const LikerText = styled(Stack)<propUser>`
   }
 `;
 
-export const StyleMdLiked = styled(Box)`
+export const StyleMdLiked = styled(Box)<propUser>`
   position: absolute;
   top: 50%;
   left: 50%;
@@ -92,7 +92,7 @@ export const StyleMdLiked = styled(Box)`
   padding: 2rem;
   width: 530px;
   outline: none;
-  height: 43rem;
+  height: fit-content;
 
   .topMdLiked {
     display: flex;
@@ -106,8 +106,8 @@ export const StyleMdLiked = styled(Box)`
   }
 
   .MuiList-root {
-    height: 36rem;
-    width: 480px;
+    height: ${(p) => (p.userLiked.length - 6 > 0 ? '40rem' : 'fit-content')};
+    width: 500px;
     overflow: auto;
     display: flex;
     flex-direction: column;
