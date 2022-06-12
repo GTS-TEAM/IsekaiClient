@@ -6,8 +6,9 @@ export const StyledDetail = styled.div`
   height: 100%;
   display: flex;
   max-width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 60px);
   background-color: var(--fds-white);
+  margin-top: 6rem;
 `;
 
 export const SlideImgPostWrap = styled.div`
@@ -15,7 +16,7 @@ export const SlideImgPostWrap = styled.div`
   max-width: 1080px;
 
   .swiper {
-    height: 100vh !important;
+    height: calc(100vh - 60px) !important;
   }
 `;
 
@@ -39,20 +40,6 @@ export const Description = styled.p`
   font-size: 1.4rem;
 `;
 
-export const ButtonAddFriend = styled(Button)`
-  background-color: var(--fds-gray);
-  border-radius: var(--borderRadius2);
-  height: 3.5rem;
-  /* width: 100%; */
-  max-width: 10rem;
-  flex-shrink: 0;
-  padding: 0;
-  font-size: 1.4rem;
-  color: var(--fds-gray-1);
-  text-transform: unset;
-  /* border: 1px solid var(--fds-gray-2); */
-`;
-
 export const ButtonClose = styled(Button)`
   position: absolute;
   width: 4rem;
@@ -61,7 +48,7 @@ export const ButtonClose = styled(Button)`
   align-items: center;
   justify-content: center;
   left: 1.6rem;
-  top: 1.6rem;
+  top: calc(1.6rem + 6rem);
   z-index: 10;
   border-radius: 50%;
   cursor: pointer;
@@ -76,3 +63,5 @@ export const ButtonClose = styled(Button)`
 `;
 
 export const CommentsArea = styled.div``;
+
+export const StyledDetailNoImg = styled.div``;

@@ -4,15 +4,26 @@ import { MusicItem } from 'share/types';
 import { RootState } from 'store';
 
 export const getListMusic = createAsyncThunk<
-  MusicItem[],
-  void,
+  {
+    data: MusicItem[];
+    type: 'hasMore' | 'noMore';
+  },
+  {
+    type: 'hasMore' | 'noMore';
+    page?: number;
+    limit?: number;
+    name?: string;
+  },
   {
     rejectValue: string;
   }
->('music/getListMusic', async (_, thunkApi) => {
+>('music/getListMusic', async ({ limit, name, page, type }, thunkApi) => {
   try {
-    const { data } = await isekaiApi.getListMusic();
-    return data;
+    const { data } = await isekaiApi.getListMusic(page, limit, name);
+    return {
+      data,
+      type,
+    };
   } catch (error: any) {
     return thunkApi.rejectWithValue('Something went wrong.');
   }
@@ -29,6 +40,7 @@ interface InitialState {
   isRepeatAll: boolean;
   isRepeatOnlyOne: boolean;
   indexCurrentSong: number;
+  hasMore: boolean;
 }
 
 const initialState: InitialState = {
@@ -40,6 +52,7 @@ const initialState: InitialState = {
   isRandom: false,
   isRepeatAll: false,
   isRepeatOnlyOne: false,
+  hasMore: false,
 };
 
 const musicSlice = createSlice({
@@ -70,17 +83,46 @@ const musicSlice = createSlice({
     uploadSong: (state, action) => {
       state.musics.push(action.payload);
     },
+    unMount: (state, action: PayloadAction<'hasMore' | 'noMore'>) => {
+      if (action.payload === 'hasMore') {
+        state.musics = [];
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getListMusic.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getListMusic.fulfilled, (state, action: PayloadAction<MusicItem[]>) => {
-        state.musics = action.payload;
-        state.loading = false;
-        state.currentSong = action.payload[0];
-      })
+      .addCase(
+        getListMusic.fulfilled,
+        (
+          state,
+          action: PayloadAction<{
+            data: MusicItem[];
+            type: 'hasMore' | 'noMore';
+          }>,
+        ) => {
+          if (action.payload.data.length < 10) {
+            state.hasMore = false;
+          } else {
+            state.hasMore = true;
+          }
+          if (action.payload.type === 'hasMore') {
+            state.musics = [...state.musics, ...action.payload.data];
+          }
+
+          if (action.payload.type === 'noMore') {
+            state.musics = action.payload.data;
+          }
+
+          if (!state.currentSong) {
+            state.currentSong = action.payload.data[0];
+          }
+
+          state.loading = false;
+        },
+      )
       .addCase(getListMusic.rejected, (state, action) => {
         state.error = action.payload;
         state.loading = false;
@@ -88,6 +130,6 @@ const musicSlice = createSlice({
   },
 });
 
-export const { skipSong, setCurrentSong, uploadSong } = musicSlice.actions;
+export const { skipSong, setCurrentSong, uploadSong, unMount } = musicSlice.actions;
 export const musicSelector = (state: RootState) => state.music;
 export default musicSlice.reducer;

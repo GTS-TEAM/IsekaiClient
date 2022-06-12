@@ -1,27 +1,23 @@
 import { Slider } from '@mui/material';
+import { useAudio } from 'hooks/useAudio';
 import React from 'react';
 import { formatDuration } from 'utils/formatDuration';
 import { DurationWrap } from './Styles';
 
-interface Props {
-  audio: any;
-  duration: number;
-  currentDuration: number;
-  setCurrentDuration: (value: number) => any;
-}
-
-const Progress: React.FC<Props> = ({ audio, duration, currentDuration, setCurrentDuration }) => {
-  const changeDurationHandler = (event: Event, newValue: number | number[]) => {
-    audio.currentTime = newValue as number;
-    setCurrentDuration(newValue as number);
-  };
-
+const Progress: React.FC = () => {
+  const audioCtx = useAudio();
   return (
     <div>
-      <Slider value={currentDuration} step={1} onChange={changeDurationHandler} min={0} max={duration} />
+      <Slider
+        value={audioCtx?.currentDuration as number}
+        step={1}
+        onChange={audioCtx?.handleChangeDuration}
+        min={0}
+        max={audioCtx?.duration}
+      />
       <DurationWrap>
-        <div className="left">{formatDuration(currentDuration)}</div>
-        <div className="right">{formatDuration(duration)}</div>
+        <div className="left">{formatDuration(audioCtx?.currentDuration as number)}</div>
+        <div className="right">{formatDuration(audioCtx?.duration as number)}</div>
       </DurationWrap>
     </div>
   );

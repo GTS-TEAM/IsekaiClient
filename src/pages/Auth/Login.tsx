@@ -24,7 +24,7 @@ const Login = () => {
         loginGoogleHandler({
           accessToken: res.tokenId,
           callback: () => {
-            navigate('/home', {
+            navigate('/', {
               replace: true,
             });
           },
@@ -50,7 +50,7 @@ const Login = () => {
           email: values.email,
           password: values.password,
           callback: () => {
-            navigate('/home', {
+            navigate('/', {
               replace: true,
             });
           },
@@ -69,7 +69,7 @@ const Login = () => {
 
   useEffect(() => {
     if (token.access_token) {
-      navigate('/home');
+      navigate('/');
     }
   }, [token.access_token, navigate]);
 
@@ -77,7 +77,7 @@ const Login = () => {
     <div className="auth">
       <div className="container">
         <div className="auth__container">
-          <Link to="/" className="logo">
+          <Link to="/lading" className="logo">
             isekai
           </Link>
           <h1>Đăng nhập</h1>

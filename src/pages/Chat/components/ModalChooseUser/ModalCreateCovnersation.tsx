@@ -4,6 +4,7 @@ import { ModalWrapper } from 'components/Modal';
 import { authSelector } from 'features/authSlice';
 import { addConversation, chatSelector, createGroup, selectConversation, unmountMessage } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import useDebounce from 'hooks/useDebouce';
 import React, { useCallback, useEffect, useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 import { IoCloseOutline } from 'react-icons/io5';
@@ -16,20 +17,15 @@ import { Body, ItemResult, ListChoose, ListResult } from './styles';
 const ModalCreateConversation: React.FC<{
   onClose: () => any;
 }> = ({ onClose }) => {
-  const [result, setResult] = useState<User[] | null>(null);
+  const [result, setResult] = useState<User[] | null>([]);
   const [chooses, setChooses] = useState<User[]>([]);
   const { currentConversation, conversations, removedConversations } = useAppSelector(chatSelector);
   const dispatch = useAppDispatch();
   const { user: currentUser } = useAppSelector(authSelector);
+  const [textSearch, setTextSearch] = useState<string>('');
   const navigation = useNavigate();
+  const debounceValue = useDebounce(textSearch, 800);
 
-  const handleSearch = useCallback(
-    async (text: string) => {
-      const { data } = await isekaiApi.globalSearch(text);
-      setResult(data.filter((_user) => _user.id !== currentUser?.id));
-    },
-    [currentUser],
-  );
   const isChecked = (id: string) => {
     return chooses.some((choose: User) => choose.id === id);
   };
@@ -124,9 +120,14 @@ const ModalCreateConversation: React.FC<{
     setResult([]);
   };
 
+  const handleSearch = useCallback(async (value: string) => {
+    const { data } = await isekaiApi.globalSearch(value);
+    setResult(data);
+  }, []);
+
   useEffect(() => {
-    handleSearch('');
-  }, [handleSearch]);
+    handleSearch(debounceValue);
+  }, [handleSearch, debounceValue]);
 
   return (
     <ModalWrapper
@@ -166,7 +167,7 @@ const ModalCreateConversation: React.FC<{
             type="text"
             placeholder="Tìm kiếm"
             onChange={(e) => {
-              handleSearch(e.target.value);
+              setTextSearch(e.target.value);
             }}
           />
         </Box>

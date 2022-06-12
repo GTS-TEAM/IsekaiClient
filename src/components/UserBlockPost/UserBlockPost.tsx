@@ -41,7 +41,7 @@ const UserBlockPost: React.FC<Props> = ({ userImg, userId, userName, time, emoji
           </Stack>
           {time && (
             <span style={{ fontSize: '1.3rem', color: 'var(--fds-gray-1)' }}>
-              {moment(time, moment.defaultFormat).fromNow()}
+              {moment(new Date(time).toUTCString()).fromNow()}
             </span>
           )}
         </Stack>

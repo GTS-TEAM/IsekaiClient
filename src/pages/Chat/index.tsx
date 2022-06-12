@@ -1,5 +1,4 @@
 import { Box } from '@mui/material';
-import Layout from 'components/Layout/Layout';
 import { chatSelector, getConversation, unmountChat } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { useWindowSize } from 'hooks/useWindowSize';
@@ -56,28 +55,26 @@ const Chat = () => {
   }, [dispatch]);
 
   return (
-    <Layout>
-      <StyledChat className="layout">
-        <ChatBody>
-          <Box
-            sx={{
-              display: responsive.displaySidebar,
-              width: responsive.width,
-            }}
-          >
-            <Sidebar />
-          </Box>
-          <Box
-            sx={{
-              justifyContent: 'center',
-              display: responsive.displayChatView,
-            }}
-          >
-            {id ? <ChatView /> : <p>Chọn cuộc trò chuyện.</p>}
-          </Box>
-        </ChatBody>
-      </StyledChat>
-    </Layout>
+    <StyledChat className="layout">
+      <ChatBody>
+        <Box
+          sx={{
+            display: responsive.displaySidebar,
+            width: responsive.width,
+          }}
+        >
+          <Sidebar />
+        </Box>
+        <Box
+          sx={{
+            justifyContent: 'center',
+            display: responsive.displayChatView,
+          }}
+        >
+          {id ? <ChatView /> : <p>Chọn cuộc trò chuyện.</p>}
+        </Box>
+      </ChatBody>
+    </StyledChat>
   );
 };
 

@@ -74,11 +74,13 @@ const ListFriend = () => {
 
   useEffect(() => {
     const getListFriend = async () => {
-      const { data } = await isekaiApi.getListFriend();
-      setFriends(data);
+      if (user) {
+        const { data } = await isekaiApi.getSuggestFriend();
+        setFriends(data);
+      }
     };
     getListFriend();
-  }, []);
+  }, [user]);
 
   return (
     <StyledListFriend>

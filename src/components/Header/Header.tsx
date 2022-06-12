@@ -1,35 +1,62 @@
-import { Avatar, MenuItem, Stack } from '@mui/material';
-import { unConnect } from 'features/socketSlice';
+import { Avatar, Badge, MenuItem, Stack } from '@mui/material';
+import { getAllNotifycation, notifySelector, readNotifycation, unmountNofi } from 'features/notifySlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import React from 'react';
+import moment from 'moment';
+import React, { useState } from 'react';
 import { useGoogleLogout } from 'react-google-login';
 import { AiOutlineHome, AiOutlineMessage } from 'react-icons/ai';
+import { BsFileEarmarkMusic } from 'react-icons/bs';
 import { FiLogOut, FiUsers } from 'react-icons/fi';
 import { IoNotificationsOutline, IoSettingsOutline } from 'react-icons/io5';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { clientId } from 'share/types';
+import { clientId, notifyItem } from 'share/types';
 import { deleteTokenFromLocalStorage } from '../../api/axoisClient';
 import { authSelector, logout } from '../../features/authSlice';
 import GlobalSearch from './GlobalSearch';
-import { DropdownMenu, HeaderWrap, Logo, Navbar, NavItem, StyledHeader, User } from './Styles';
+import {
+  DropdownMenu,
+  HeaderWrap,
+  Logo,
+  Navbar,
+  NavItem,
+  StyledHeader,
+  StyledNotification,
+  StyledNotificationItem,
+  User,
+} from './Styles';
+
+const LIMIT = 6;
 
 const Header = () => {
   const { user } = useAppSelector(authSelector);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const [menuEl, setMenuEl] = React.useState<null | HTMLDivElement>(null);
+  const [notificationEl, setNotificationEl] = React.useState<null | HTMLDivElement>(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { notifyItem: notifies, hasMore } = useAppSelector(notifySelector);
+  const [page, setPage] = useState<number>(1);
 
-  //sigout if login with google
   const { signOut } = useGoogleLogout({
     clientId,
   });
 
-  const handleClickOpenDropdown = (event: React.MouseEvent<HTMLDivElement>) => {
-    setAnchorEl(event.currentTarget);
+  const getTotalItem = (items: notifyItem[]) => {
+    let total = 0;
+    items.forEach((i) => {
+      if (!i.is_read) {
+        total++;
+      }
+    });
+    return total;
   };
+
+  const clickReadNotification = (id: string) => {
+    dispatch(readNotifycation(id));
+  };
+
   const handleCloseDropdown = () => {
-    setAnchorEl(null);
+    setMenuEl(null);
   };
 
   const clickLogoutHandler = () => {
@@ -37,32 +64,32 @@ const Header = () => {
     dispatch(logout());
     handleCloseDropdown();
     deleteTokenFromLocalStorage();
-    dispatch(unConnect());
+    dispatch(unmountNofi());
   };
 
-  const clickGoToProfileUser = () => {
-    navigate(`/profile/${user?.id}`);
+  const handleMoreNoti = () => {
+    setPage(page + 1);
   };
 
-  const clickGoToSettingHandler = () => {
-    navigate(`/setting`);
-  };
+  React.useEffect(() => {
+    dispatch(getAllNotifycation({ limit: LIMIT, page: page }));
+  }, [dispatch, page]);
 
   return (
     <StyledHeader>
       <HeaderWrap>
         <Stack direction="row" alignItems="center" columnGap="4.8rem">
           <Logo>
-            <Link to="/home" className="large">
+            <Link to="/" className="large">
               ISEKAI
             </Link>
-            <Link to="/home" className="small">
+            <Link to="/" className="small">
               IK
             </Link>
           </Logo>
           <Navbar>
             <NavItem>
-              <NavLink to="/home">
+              <NavLink to="/">
                 <AiOutlineHome />
               </NavLink>
             </NavItem>
@@ -77,19 +104,44 @@ const Header = () => {
               </NavLink>
             </NavItem>
             <NavItem>
-              <IoNotificationsOutline />
+              <NavLink to={'/music'}>
+                <BsFileEarmarkMusic />
+              </NavLink>
+            </NavItem>
+            <NavItem
+              onClick={(e) => {
+                setNotificationEl(e.currentTarget);
+              }}
+            >
+              <Badge badgeContent={getTotalItem(notifies)} color="error">
+                <IoNotificationsOutline />
+              </Badge>
             </NavItem>
           </Navbar>
         </Stack>
         <Stack direction="row" alignItems="center" columnGap="1.2rem">
           <GlobalSearch />
-          <User onClick={handleClickOpenDropdown}>
+          <User
+            onClick={(e) => {
+              setMenuEl(e.currentTarget);
+            }}
+          >
             <Avatar src={user?.avatar} sx={{ width: 40, height: 40 }} />
           </User>
         </Stack>
-        <DropdownMenu anchorEl={anchorEl} open={open} onClose={handleCloseDropdown}>
+        <DropdownMenu
+          anchorEl={menuEl}
+          open={Boolean(menuEl)}
+          onClose={() => {
+            setMenuEl(null);
+          }}
+        >
           <div className="dropdown-header">
-            <MenuItem onClick={clickGoToProfileUser}>
+            <MenuItem
+              onClick={() => {
+                navigate(`/profile/${user?.id}`);
+              }}
+            >
               <Avatar src={user?.avatar} sx={{ width: 64, height: 64 }} />
               <div className="text">
                 <span className="name">{user?.username}</span>
@@ -98,7 +150,11 @@ const Header = () => {
             </MenuItem>
           </div>
           <div className="dropdown-list">
-            <MenuItem onClick={clickGoToSettingHandler}>
+            <MenuItem
+              onClick={() => {
+                navigate(`/setting`);
+              }}
+            >
               <div className="icon">
                 <IoSettingsOutline />
               </div>
@@ -112,6 +168,56 @@ const Header = () => {
             </MenuItem>
           </div>
         </DropdownMenu>
+        <StyledNotification
+          open={Boolean(notificationEl)}
+          anchorEl={notificationEl}
+          onClose={() => {
+            setNotificationEl(null);
+          }}
+          anchorOrigin={{
+            horizontal: 'center',
+            vertical: 'bottom',
+          }}
+        >
+          <div className="header">
+            <span>Notifications</span>
+          </div>
+          {notifies.length > 0 ? (
+            <InfiniteScroll
+              className="list"
+              next={handleMoreNoti}
+              dataLength={notifies.length}
+              hasMore={hasMore}
+              loader={<p>Loading...</p>}
+              height={314}
+            >
+              {notifies.map((nofi) => {
+                return (
+                  <li
+                    onClick={() => {
+                      clickReadNotification(nofi.id);
+                    }}
+                  >
+                    <Link className="link" to={nofi.ref_url}>
+                      <StyledNotificationItem>
+                        <div className="content">
+                          <Avatar src={nofi.avatar} alt="Hi" sx={{ width: 40, height: 40 }} />
+                          <div className="main-content">
+                            <span className="text">{nofi.content}</span>
+                            <span className="time">{moment(nofi.updated_at, moment.defaultFormat).fromNow()}</span>
+                          </div>
+                        </div>
+                        {!nofi.is_read && <div className="icon"></div>}
+                      </StyledNotificationItem>
+                    </Link>
+                  </li>
+                );
+              })}
+            </InfiniteScroll>
+          ) : (
+            <p className="no-data">Không có dữ liệu</p>
+          )}
+        </StyledNotification>
       </HeaderWrap>
     </StyledHeader>
   );
