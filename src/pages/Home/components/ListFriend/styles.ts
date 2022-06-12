@@ -33,9 +33,21 @@ export const StyledFriend = styled.div`
     background-color: rgb(250, 250, 250);
   }
 
-  span {
-    font-size: 1.4rem;
-    font-weight: 500;
+  .infoFr {
+    display: flex;
+    flex-direction: column;
+
+    span {
+      font-size: 1.4rem;
+      font-weight: 500;
+      margin-bottom: 0.8rem;
+    }
+    .online {
+      .timeFr {
+        font-size: 1rem;
+        color: gray;
+      }
+    }
   }
 `;
 
