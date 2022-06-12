@@ -9,9 +9,10 @@ import { getUser, unMountUser, userSelector } from 'features/userSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { IStatus } from 'share/types';
+import { IStatus, User as IUser } from 'share/types';
 import { v4 } from 'uuid';
 import CoverImg from './components/CoverImg/CoverImg';
+import Friends from './components/Friends';
 import Info from './components/Info/Info';
 import PhotosPreview from './components/Photos/PhotosPreview';
 import ProfileMenu from './components/ProfileMenu/ProfileMenu';
@@ -25,6 +26,7 @@ const Profile = () => {
   const { user: currentUser } = useAppSelector(authSelector);
   const [page, setPage] = useState<number>(1);
   const [status, setStatus] = useState<IStatus | null>(null);
+  const [friends, setFriends] = useState<IUser[]>([]);
 
   const fetchMoreHandler = () => {
     if (id) {
@@ -51,10 +53,9 @@ const Profile = () => {
       dispatch(getUser(id));
       Promise.all([isekaiApi.getStatusFriend(id), isekaiApi.getListFriend(id)])
         .then((res) => {
-          console.log(res);
           const [statusRes, friendRes] = res;
           setStatus(statusRes.data.request);
-          console.log(friendRes);
+          setFriends(friendRes.data);
         })
         .catch((error) => {
           console.log(error);
@@ -177,6 +178,7 @@ const Profile = () => {
           <Sidebar>
             <Info bio={user?.bio || ''} userId={user?.id || ''} />
             <PhotosPreview userId={id || ''} />
+            <Friends friends={friends} />
           </Sidebar>
           <main className="main-container">
             <SidebarIn>

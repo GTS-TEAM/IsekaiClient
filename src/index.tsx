@@ -2,10 +2,10 @@ import { Global } from '@emotion/react';
 import { LocalizationProvider } from '@mui/lab';
 import DateAdapter from '@mui/lab/AdapterMoment';
 import App from 'App';
+import { AudioProvider } from 'context/audioContext';
 import { globalStyles } from 'GlobalStyle';
 import moment from 'moment';
 import localization from 'moment/locale/vi';
-import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
@@ -19,10 +19,12 @@ ReactDOM.render(
     {/* @ts-ignore */}
     <PersistGate loading={null} persistor={persistor}>
       <LocalizationProvider dateAdapter={DateAdapter} locale={'vi'}>
-        <BrowserRouter>
-          <Global styles={globalStyles} />
-          <App />
-        </BrowserRouter>
+        <AudioProvider>
+          <BrowserRouter>
+            <Global styles={globalStyles} />
+            <App />
+          </BrowserRouter>
+        </AudioProvider>
       </LocalizationProvider>
     </PersistGate>
   </Provider>,

@@ -30,7 +30,7 @@ const Homepage = () => {
     const fetchData = async () => {
       await new Promise<void>((resolve) => {
         setTimeout(() => {
-          dispatch(getListMusic());
+          dispatch(getListMusic({ page: 1, limit: 10, type: 'noMore' }));
         }, 1000);
         resolve();
       });

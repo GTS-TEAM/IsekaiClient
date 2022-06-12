@@ -2,6 +2,8 @@ import styled from '@emotion/styled/macro';
 
 export const StyledProfileMenu = styled.div`
   padding: 1rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
 
   @media screen and (max-width: 1023.98px) {
     display: none;

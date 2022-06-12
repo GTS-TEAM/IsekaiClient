@@ -5,6 +5,7 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import { useGoogleLogout } from 'react-google-login';
 import { AiOutlineHome, AiOutlineMessage } from 'react-icons/ai';
+import { BsFileEarmarkMusic } from 'react-icons/bs';
 import { FiLogOut, FiUsers } from 'react-icons/fi';
 import { IoNotificationsOutline, IoSettingsOutline } from 'react-icons/io5';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -100,6 +101,11 @@ const Header = () => {
             <NavItem>
               <NavLink to={'/message'}>
                 <AiOutlineMessage />
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink to={'/music'}>
+                <BsFileEarmarkMusic />
               </NavLink>
             </NavItem>
             <NavItem

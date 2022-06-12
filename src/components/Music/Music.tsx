@@ -14,6 +14,12 @@ const Music = () => {
     dispatch(setCurrentSong(music));
   };
 
+  // useEffect(() => {
+  //   return () => {
+  //     dispatch(unMount());
+  //   };
+  // }, [dispatch]);
+
   return (
     <StyledMusic>
       <Header />

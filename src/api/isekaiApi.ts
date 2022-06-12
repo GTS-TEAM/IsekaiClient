@@ -175,8 +175,14 @@ export const isekaiApi = {
     return axios.post<{ urls: string[] }>('/upload/video', arrFile);
   },
 
-  getListMusic: () => {
-    return axios.get<MusicItem[]>('music');
+  getListMusic: (page?: number, limit?: number, name?: string) => {
+    return axios.get<MusicItem[]>('music', {
+      params: {
+        page,
+        limit,
+        name,
+      },
+    });
   },
 
   globalSearch: (q: string) => {

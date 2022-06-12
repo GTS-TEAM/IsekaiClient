@@ -2,6 +2,7 @@ import Layout from 'components/Layout/Layout';
 import RequireAuth from 'components/RequireAuth';
 import Toast from 'components/Toast';
 import { authSelector } from 'features/authSlice';
+import { musicSelector } from 'features/musicSlice';
 import { startConnecting, unConnect } from 'features/socketSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import FogotPassword from 'pages/Auth/FogotPassword';
@@ -17,6 +18,7 @@ import Request from 'pages/Friends/components/Request';
 import Suggest from 'pages/Friends/components/Suggest';
 import Homepage from 'pages/Home';
 import Landing from 'pages/Landing';
+import Music from 'pages/Music';
 import Profile from 'pages/Profile/Profile';
 import SettingAccount from 'pages/SettingAccount';
 import { useEffect } from 'react';
@@ -25,6 +27,7 @@ import { Route, Routes } from 'react-router-dom';
 function App() {
   const dispatch = useAppDispatch();
   const { token } = useAppSelector(authSelector);
+  const { currentSong } = useAppSelector(musicSelector);
 
   useEffect(() => {
     if (!token.access_token) {
@@ -41,6 +44,9 @@ function App() {
 
   return (
     <>
+      <div id="audio">
+        <audio className="audio-global" src={currentSong?.url as string} style={{ display: 'none' }}></audio>
+      </div>
       <Toast />
       <Routes>
         <Route path="/lading" element={<Landing />} />
@@ -99,6 +105,14 @@ function App() {
             />
           </Route>
         </Route>
+        <Route
+          path="/music"
+          element={
+            <RequireAuth>
+              <Music />
+            </RequireAuth>
+          }
+        />
         <Route path="*" element={<p>Not found</p>} />
         {/* 
         <Route path="/login/identify">
