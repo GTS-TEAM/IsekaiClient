@@ -2,19 +2,18 @@ import styled from '@emotion/styled/macro';
 import { Stack } from '@mui/material';
 
 export const StyledActions = styled(Stack)`
-  --col: 3;
-  --gap: 0.5rem;
-  /* border-top: 1px solid var(--fds-gray-4);
-  border-bottom: 1px solid var(--fds-gray-4); */
+  display: flex;
+  border-top: 1px solid var(--fds-gray-4);
   padding: 0.5rem 1.2rem;
   gap: var(--gap);
   margin-right: calc(-1 * var(--gap));
   flex-direction: row;
+  justify-content: space-around;
 
   .like,
   .comment,
   .share {
-    width: calc(100% / var(--col) - var(--gap));
+    width: 100%;
     flex-direction: row;
     justify-content: center;
     align-items: center;

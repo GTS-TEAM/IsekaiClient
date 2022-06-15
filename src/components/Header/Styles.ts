@@ -1,4 +1,3 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Button, Menu, MenuItem, Stack } from '@mui/material';
 
@@ -59,18 +58,14 @@ export const Logo = styled.div`
   }
 `;
 
-interface SearchGlobal {
-  isFocus: boolean;
-}
-
 export const StyledGlobalSearch = styled.div`
   position: relative;
-  @media screen and (max-width:868px) {
-    display:none ;
+  @media screen and (max-width: 868px) {
+    display: none;
   }
 `;
 
-export const SearchWrap = styled.div<SearchGlobal>`
+export const SearchWrap = styled.div`
   width: 100%;
   min-width: 40rem;
   padding: 0 1.5rem;
@@ -85,14 +80,6 @@ export const SearchWrap = styled.div<SearchGlobal>`
   justify-self: center;
   transition: all 0.3s;
   position: relative;
-  ${(p) =>
-    p.isFocus
-      ? css`
-          background: var(--fds-white);
-          box-shadow: -1px 3px 10px 0 rgb(0 0 0 / 6%) !important;
-          border-color: #e3e3e3;
-        `
-      : null}
 
   input {
     background-color: transparent;
@@ -229,11 +216,11 @@ export const User = styled.div`
 export const DropdownMenu = styled(Menu)`
   .MuiPaper-root {
     width: 100%;
-    max-width: 36rem;
+    max-width: 32rem;
     box-shadow: 0px 5px 43px rgb(0 0 0 / 18%);
     padding: 0.8rem;
-    border-radius: var(--borderRadius3);
     margin-top: 1rem;
+    border-radius: 0.65rem;
   }
 
   .MuiList-root {
@@ -243,7 +230,7 @@ export const DropdownMenu = styled(Menu)`
   .MuiMenuItem-root {
     column-gap: 1rem;
     padding: 0.8rem;
-    border-radius: var(--borderRadius3);
+    border-radius: 0.65rem;
 
     .icon {
       width: 3.6rem;
@@ -287,5 +274,97 @@ export const DropdownMenu = styled(Menu)`
 
   .dropdown-list {
     padding-top: 0.8rem;
+  }
+`;
+
+export const StyledNotification = styled(Menu)`
+  .MuiPaper-root {
+    height: 100%;
+    width: 100%;
+    max-width: 32rem;
+    max-height: 38.8rem;
+    font-size: 1.4rem;
+    border-radius: 0.65rem;
+    box-shadow: 0px 5px 43px rgb(0 0 0 / 18%) !important;
+    margin-top: 1rem;
+  }
+
+  .MuiList-root {
+    height: 100%;
+  }
+
+  .header {
+    padding: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #a2a5b9;
+    text-transform: uppercase;
+    margin-top: -0.8rem;
+    border-bottom: 1px solid #e8e8e8;
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 341px;
+    overflow-y: auto;
+    padding: 0.8rem 0;
+  }
+
+  a {
+    color: #a2a5b9;
+    width: 100%;
+  }
+
+  .no-data {
+    color: inherit;
+    text-align: center;
+    padding: 1.6rem;
+    color: #a2a5b9;
+  }
+`;
+
+export const StyledNotificationItem = styled.div`
+  color: inherit;
+  padding: 1.6rem;
+  display: flex;
+  align-items: center;
+
+  .MuiAvatar-root {
+    margin-right: 1.6rem;
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+
+  .main-content {
+    font-size: 1.4rem;
+  }
+
+  .text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .time {
+    margin-top: 0.4rem;
+    font-size: 1.2rem;
+  }
+
+  .icon {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: var(--mainColor);
+    margin-left: 1.5rem;
   }
 `;

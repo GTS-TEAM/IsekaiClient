@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
-import Layout from 'components/Layout/Layout';
-import { chatSelector, getConversation, startConnecting, unmountChat } from 'features/chatSlice';
+import { chatSelector, getConversation, unmountChat } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { useWindowSize } from 'hooks/useWindowSize';
 import React, { useEffect, useMemo } from 'react';
@@ -38,17 +37,7 @@ const Chat = () => {
   }, [windowWidth, currentConversation]);
 
   useEffect(() => {
-    dispatch(startConnecting());
-
-    return () => {
-      dispatch(unmountChat());
-    };
-  }, [dispatch]);
-
-  console.log(currentConversation);
-
-  useEffect(() => {
-    if (!currentConversation) {
+    if (id && !currentConversation) {
       dispatch(getConversation(id as string));
     }
   }, [id, dispatch, currentConversation]);
@@ -59,29 +48,33 @@ const Chat = () => {
     }
   }, [currentConversation, navigate]);
 
+  useEffect(() => {
+    return () => {
+      dispatch(unmountChat());
+    };
+  }, [dispatch]);
+
   return (
-    <Layout>
-      <StyledChat className="layout">
-        <ChatBody>
-          <Box
-            sx={{
-              display: responsive.displaySidebar,
-              width: responsive.width,
-            }}
-          >
-            <Sidebar />
-          </Box>
-          <Box
-            sx={{
-              justifyContent: 'center',
-              display: responsive.displayChatView,
-            }}
-          >
-            {id ? <ChatView /> : <p>Chọn cuộc trò chuyện.</p>}
-          </Box>
-        </ChatBody>
-      </StyledChat>
-    </Layout>
+    <StyledChat className="layout">
+      <ChatBody>
+        <Box
+          sx={{
+            display: responsive.displaySidebar,
+            width: responsive.width,
+          }}
+        >
+          <Sidebar />
+        </Box>
+        <Box
+          sx={{
+            justifyContent: 'center',
+            display: responsive.displayChatView,
+          }}
+        >
+          {id ? <ChatView /> : <p>Chọn cuộc trò chuyện.</p>}
+        </Box>
+      </ChatBody>
+    </StyledChat>
   );
 };
 

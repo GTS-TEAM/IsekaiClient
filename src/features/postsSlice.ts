@@ -21,7 +21,6 @@ interface ParameterCreatePost {
   }[];
   description: string;
   emoji: any;
-  callback: () => any;
 }
 
 export const createPost = createAsyncThunk('posts/createPost', async (d: ParameterCreatePost) => {
@@ -30,7 +29,6 @@ export const createPost = createAsyncThunk('posts/createPost', async (d: Paramet
     urls = await uploadImg(d.image);
   }
   const { data } = await isekaiApi.createPost(urls as string[], d.description, d.emoji);
-  d.callback(); // implement when create post completed
   return data;
 });
 
@@ -169,6 +167,9 @@ const postsSlice = createSlice({
     unmountTimeline: (state) => {
       state.timeline.posts = [];
     },
+    getOnePost: (state, action) => {
+      state.timeline.posts = [action.payload];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -249,6 +250,6 @@ const postsSlice = createSlice({
   },
 });
 
-export const { unmountTimeline, decreaseCmt, increaseCmt, toggleLike } = postsSlice.actions;
+export const { unmountTimeline, decreaseCmt, increaseCmt, toggleLike, getOnePost } = postsSlice.actions;
 export const postsSelector = (state: RootState) => state.posts;
 export default postsSlice.reducer;

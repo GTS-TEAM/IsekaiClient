@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PostItem } from 'share/types';
-import ReactGridFacebook from '../ReactGridFacebook/ReactGridFacebook';
+import ReactGridFacebook from './ReactGridFacebook';
 
 interface Props {
   post: PostItem;
@@ -12,8 +12,7 @@ const GridImg: React.FC<Props> = ({ post }) => {
 
   const clickImgHandler = (d: { index: number }) => {
     navigate({
-      pathname: '/post',
-      search: `?id=${post.id}&index=${d.index}`,
+      pathname: `/post/${post.id}`,
     });
   };
 

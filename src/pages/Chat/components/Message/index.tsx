@@ -1,6 +1,5 @@
 import { Avatar, Slider } from '@mui/material';
 import { authSelector } from 'features/authSlice';
-import { chatSelector } from 'features/chatSlice';
 import { useAppSelector } from 'hooks/hooks';
 import moment from 'moment';
 import React, { useMemo, useRef, useState } from 'react';
@@ -31,7 +30,6 @@ const Message: React.FC<Props> = ({ message, theme, type, currentConversation })
   const [currentDurationVideo, setCurrentDurationVideo] = useState<number>(0);
   const [volumeVideo, setVolumeVideo] = useState<number>(0);
   const [currentVolumeVideo, setCurrentVolumeVideo] = useState<number>(0);
-  const { seen } = useAppSelector(chatSelector);
 
   const left = useMemo(() => currentUser?.id === message.sender?.user.id, [currentUser?.id, message.sender?.user.id]);
 
@@ -45,7 +43,7 @@ const Message: React.FC<Props> = ({ message, theme, type, currentConversation })
   return (
     <>
       <Seen left={left}>
-        {seen.map((item) => {
+        {currentConversation?.seen?.map((item) => {
           return (
             message.id === item.messageId &&
             item.user.id !== currentUser?.id && (

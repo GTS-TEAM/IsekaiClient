@@ -1,5 +1,5 @@
 import styled from '@emotion/styled/macro';
-import { Modal } from 'components/Modal/Styles';
+import { Modal } from 'components/Modal/ModalWrapper/Styles';
 
 export const StyledModal = styled(Modal)`
   max-width: 55rem;
@@ -13,6 +13,8 @@ export const ListMember = styled.ul`
   display: flex;
   flex-direction: column;
   row-gap: 1.2rem;
+  max-height: 312px;
+  overflow-y: auto;
 `;
 
 export const MemberItem = styled.div`

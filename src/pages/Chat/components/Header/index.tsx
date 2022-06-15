@@ -2,7 +2,7 @@ import { Avatar, ClickAwayListener } from '@mui/material';
 import { Box } from '@mui/system';
 import { isekaiApi } from 'api/isekaiApi';
 import ErrorAlert from 'components/ErrorAlert';
-import ModalConfirm from 'components/ModalConfirm';
+import ModalConfirm from 'components/Modal/ModalConfirm';
 import { authSelector } from 'features/authSlice';
 import { exitChatView, leaveGroup, removeConversation, updateConversation } from 'features/chatSlice';
 import { DropdownContent, DropdownItem, DropdownMenu } from 'GlobalStyle';
@@ -13,7 +13,7 @@ import { AiOutlineEdit, AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { BiFileBlank, BiImageAdd } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoIosArrowBack, IoMdClose, IoMdLogOut } from 'react-icons/io';
-import { MdFiberManualRecord, MdOutlineColorLens, MdOutlineRemoveCircleOutline } from 'react-icons/md';
+import { MdOutlineColorLens, MdOutlineRemoveCircleOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { ConversationItem, ConversationType, User } from 'share/types';
 import { getReceiver } from 'utils/getReceiver';
@@ -295,6 +295,7 @@ const Header: React.FC<{
           });
         }}
         isShow={isShowModalConfirm}
+        theme={currentConversation?.theme as string}
       />
       <ModalConfirm
         header="Xóa đoạn chat"
@@ -302,8 +303,8 @@ const Header: React.FC<{
         onClose={() => {
           setIsShowModalConfirmRemove(false);
         }}
-        onConfirm={() => {
-          dispatch(removeConversation(currentConversation?.id as string));
+        onConfirm={async () => {
+          await dispatch(removeConversation(currentConversation?.id as string));
           if (type === 'popup') {
             onClose && onClose();
             return;

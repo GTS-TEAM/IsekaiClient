@@ -1,35 +1,19 @@
-import { LinkPreview } from '@dhaiwat10/react-link-preview';
-import { Button, ClickAwayListener, Stack } from '@mui/material';
-import autosize from 'autosize';
+import { Alert, Avatar, Button, IconButton, Snackbar, Stack, TextareaAutosize } from '@mui/material';
+import { Box } from '@mui/system';
 import Status from 'components/Emotion';
-import ModalWrapper from 'components/Modal';
-import { Header } from 'components/Modal/Styles';
+import ModalWrapper from 'components/Modal/ModalWrapper';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import { IMG } from 'images';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { AiOutlineCamera } from 'react-icons/ai';
+import { BsEmojiSunglasses } from 'react-icons/bs';
 import { IoClose } from 'react-icons/io5';
-import { RiImageAddFill } from 'react-icons/ri';
 import { EmotionItem } from 'share/types';
-import { REGEX_URL } from 'utils/constant';
 import { v4 } from 'uuid';
 import { authSelector } from '../../features/authSlice';
 import { createPost, editPost } from '../../features/postsSlice';
-import {
-  Actions,
-  Body,
-  Bottom,
-  Close,
-  ImgPreview,
-  ImgPreviewList,
-  InputArea,
-  InputPhoto,
-  StyledModal,
-  StyledUserBlockPost,
-} from './Styles';
+import { Actions, ListImgPreview, StyledBody, StyledChooseStatus } from './Styles';
 
 interface Props {
-  className?: string;
-  style?: React.CSSProperties;
   type: 'post' | 'edit';
   postId?: string;
   onCloseModal: () => any;
@@ -46,8 +30,6 @@ interface Props {
 }
 
 const ModalPost: React.FC<Props> = ({
-  className,
-  style,
   type,
   postId,
   onCloseModal,
@@ -70,7 +52,9 @@ const ModalPost: React.FC<Props> = ({
       file?: File;
     }[]
   >(imgsPost || []);
-
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [openToast, setOpenToast] = React.useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = React.useState<boolean>(true);
 
   const allowBtn = useMemo(
     () => textInput.trim().length === 0 && imgs.length === 0 && status === null,
@@ -121,25 +105,27 @@ const ModalPost: React.FC<Props> = ({
 
   const createPostHandler = async () => {
     setLoading(true);
-    await dispatch(
+    const action = await dispatch(
       createPost({
         description: textInput,
         image: imgs,
         emoji: status?.id,
-        callback: () => {
-          onCloseModal();
-        },
       }),
     );
-    setLoading(false);
-  };
+    setOpenToast(true);
 
-  useEffect(() => {
-    const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
-    if (textarea) {
-      autosize(textarea);
+    if (createPost.fulfilled.match(action)) {
+      setLoading(false);
+      setIsSuccess(true);
+      onCloseModal();
     }
-  }, []);
+
+    if (createPost.rejected.match(action)) {
+      setLoading(false);
+      setIsSuccess(false);
+      onCloseModal();
+    }
+  };
 
   const closeHandler = useCallback(() => {
     setStatus(null);
@@ -154,103 +140,117 @@ const ModalPost: React.FC<Props> = ({
     };
   }, [closeHandler]);
 
-
   return (
-    <ModalWrapper>
-      <ClickAwayListener onClickAway={closeHandler}>
-        <StyledModal className={className} style={style}>
-          <Header>
-            <h3>Tạo bài viết</h3>
-            <Button onClick={closeHandler}>
-              <IoClose />
-            </Button>
-          </Header>
-          <Body>
-            <StyledUserBlockPost
-              userImg={user?.avatar || ''}
-              userId={user?.id || ''}
-              userName={user?.username || ''}
-              emoji={status?.id as number}
-            />
-            <InputArea
-              name="postValue"
-              onChange={(e) => {
-                setTextInput(e.target.value);
+    <>
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        open={openToast}
+        autoHideDuration={3000}
+        onClose={() => {
+          setOpenToast(false);
+        }}
+      >
+        <Alert
+          onClose={() => {
+            setOpenToast(false);
+          }}
+          severity={isSuccess ? 'success' : 'error'}
+          sx={{ width: '100%' }}
+          variant="filled"
+        >
+          {isSuccess ? 'Thêm bài viết thành công' : 'Đã có lỗi khi thêm bài viết'}
+        </Alert>
+      </Snackbar>
+      <ModalWrapper
+        titleHeader="Tạo bài viết"
+        textCancel="Hủy"
+        textOk={loading ? 'Loading...' : type === 'edit' ? 'Chỉnh sửa' : 'Thêm bài viết'}
+        onOk={() => {
+          type === 'post' ? createPostHandler() : editPostHandler();
+        }}
+        hiddenButtonCancel={true}
+        onClose={onCloseModal}
+        propsButtonOk={{
+          disabled: allowBtn,
+        }}
+      >
+        <StyledBody>
+          <Stack direction="row" gap={'1.2rem'}>
+            <Avatar src={user?.avatar as string} alt={user?.username as string} />
+            <Box
+              sx={{
+                width: '100%',
               }}
-              placeholder={`${user?.username} ơi, bạn đang nghĩ gì thế?`}
-              value={textInput}
-            />
-            {REGEX_URL.test(textInput) && <LinkPreview url={textInput.match(REGEX_URL)?.[0]} />}
-            {imgs.length !== 0 && (
-              <ImgPreviewList sx={{ '--col': `${imgs.length > 2 ? 2 : imgs.length}` }}>
-                {imgs.map((img: any) => {
-                  return (
-                    <ImgPreview key={img.id || img.url}>
+            >
+              <TextareaAutosize
+                maxRows={4}
+                minRows={4}
+                style={{
+                  width: '100%',
+                  resize: 'none',
+                  fontSize: '1.4rem',
+                  minHeight: '12rem',
+                  maxHeight: '12rem',
+                }}
+                placeholder={`${user?.username} ơi. Bạn đang nghĩ gì thế!`}
+                onChange={(e) => {
+                  setTextInput(e.target.value);
+                }}
+              />
+            </Box>
+          </Stack>
+          {imgs.length !== 0 && (
+            <ListImgPreview>
+              {imgs.map((img: any) => (
+                <li key={img.id || img.url}>
+                  <div className="outer">
+                    <IconButton onClick={removeImgHandler(img.id || img)}>
+                      <IoClose />
+                    </IconButton>
+                    <div className="inner">
                       <img src={img.url || img} alt="" />
-                      <Close onClick={removeImgHandler(img.id || img)}>
-                        <IoClose />
-                      </Close>
-                    </ImgPreview>
-                  );
-                })}
-              </ImgPreviewList>
-            )}
-
-            {haveChooseImg && (
-              <InputPhoto>
-                <input type="file" accept="image/*" onChange={onImageChange} />
-                <Close
-                  onClick={() => {
-                    setHaveChooseImg(false);
-                  }}
-                >
-                  <IoClose />
-                </Close>
-                <Stack justifyContent="center" alignItems="center" rowGap="1.6rem">
-                  <RiImageAddFill />
-                  <span>Thêm ảnh hoặc kéo và thả</span>
-                </Stack>
-              </InputPhoto>
-            )}
-          </Body>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ListImgPreview>
+          )}
+          {status && (
+            <StyledChooseStatus>
+              <img src={status.icon} alt="" />
+              <span>{status.name}</span>
+              <IconButton
+                onClick={() => {
+                  setStatus(null);
+                }}
+              >
+                <IoClose />
+              </IconButton>
+            </StyledChooseStatus>
+          )}
           {haveChooseEmoji && <Status status={status} setStatus={setStatus} setHaveChooseEmoji={setHaveChooseEmoji} />}
-          <Bottom>
-            <h3>Thêm vào bài viết</h3>
-            <Actions>
-              <div
-                className="add-photo"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setHaveChooseImg(!haveChooseImg);
-                }}
-              >
-                <IMG.AddPhoto style={{ fill: '#00a400' }} />
-              </div>
-              <div
-                className="add-emotion"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setHaveChooseEmoji(!haveChooseEmoji);
-                }}
-              >
-                <IMG.Emotion style={{ fill: '#f5c33b' }} />
-              </div>
-              {type === 'edit' && (
-                <button onClick={editPostHandler} disabled={allowBtn}>
-                  Edit
-                </button>
-              )}
-              {type === 'post' && (
-                <button onClick={createPostHandler} disabled={allowBtn}>
-                  Post
-                </button>
-              )}
-            </Actions>
-          </Bottom>
-        </StyledModal>
-      </ClickAwayListener>
-      {loading ? <p>Loading</p> : null}
-    </ModalWrapper>
+        </StyledBody>
+        <Actions>
+          <Button
+            onClick={() => {
+              inputRef.current?.click();
+            }}
+          >
+            <AiOutlineCamera />
+            <span>Hình ảnh</span>
+          </Button>
+          <Button
+            onClick={() => {
+              setHaveChooseEmoji(!haveChooseEmoji);
+            }}
+          >
+            <BsEmojiSunglasses />
+            <span>Trạng thái</span>
+          </Button>
+        </Actions>
+        <input type="file" accept="image/*" style={{ display: 'none' }} ref={inputRef} onChange={onImageChange} />
+      </ModalWrapper>
+    </>
   );
 };
 

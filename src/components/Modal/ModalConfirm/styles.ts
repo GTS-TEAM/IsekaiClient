@@ -1,5 +1,5 @@
 import styled from '@emotion/styled/macro';
-import { Modal } from 'components/Modal/Styles';
+import { Modal } from 'components/Modal/ModalWrapper/Styles';
 
 export const StyledModal = styled(Modal)`
   max-width: 55rem;
@@ -14,6 +14,7 @@ export const Body = styled.div`
   p {
     font-size: 1.4rem;
     color: var(--fds-gray-10);
+    line-height: 1.5;
   }
 
   .MuiBox-root {

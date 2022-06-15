@@ -14,6 +14,8 @@ export const CoverOverLay = styled.div`
 
 export const StyledCoverImg = styled.div`
   position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
 
   &:hover ${CoverOverLay} {
     opacity: 1;
