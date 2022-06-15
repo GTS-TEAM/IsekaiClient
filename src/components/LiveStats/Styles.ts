@@ -93,6 +93,7 @@ export const StyleMdLiked = styled(Box)<propUser>`
   width: 530px;
   outline: none;
   height: fit-content;
+  border-radius: 10px;
 
   .topMdLiked {
     display: flex;

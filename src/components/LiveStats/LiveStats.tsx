@@ -25,6 +25,7 @@ const LiveStats: React.FC<Props> = ({ totalLike, totalComment, userLiked, classN
   const { user } = useAppSelector(authSelector);
   const [openLiked, setOpenLiked] = useState(false);
   const dispatch = useAppDispatch();
+  console.log(userLiked);
   const chooseConversation = async (friend: User) => {
     try {
       const { data } = await isekaiApi.getConversationByReceiverId(friend.id);
