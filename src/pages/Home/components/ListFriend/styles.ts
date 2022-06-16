@@ -8,6 +8,7 @@ export const StyledListFriend = styled.div`
   display: flex;
   flex-direction: column;
   row-gap: 1.2rem;
+  margin-bottom: 1.6rem;
 
   ul {
     display: flex;
@@ -28,14 +29,31 @@ export const StyledFriend = styled.div`
   cursor: pointer;
   padding: 1.2rem;
   border-radius: var(--borderRadius2);
+  width: 100%;
 
   &:hover {
     background-color: rgb(250, 250, 250);
   }
 
-  span {
-    font-size: 1.4rem;
-    font-weight: 500;
+  .infoFr {
+    display: flex;
+    flex-direction: column;
+
+    span {
+      font-size: 1.4rem;
+      font-weight: 500;
+      margin-bottom: 0.8rem;
+    }
+    .online {
+      .timeFr {
+        font-size: 1rem;
+        color: gray;
+      }
+    }
+  }
+
+  .add-friend {
+    margin-left: auto;
   }
 `;
 

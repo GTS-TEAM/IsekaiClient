@@ -1,5 +1,6 @@
 import styled from '@emotion/styled/macro';
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
+import { User } from 'share/types';
 
 export const StyledLiveStats = styled(Stack)`
   flex-direction: row;
@@ -30,7 +31,11 @@ export const LikerGroup = styled.div`
   }
 `;
 
-export const LikerText = styled(Stack)`
+interface propUser {
+  userLiked: User[];
+}
+
+export const LikerText = styled(Stack)<propUser>`
   line-height: 1.5;
 
   a {
@@ -41,6 +46,87 @@ export const LikerText = styled(Stack)`
     &:not(:last-child)::after {
       content: ',  ';
       margin-right: 0.3rem;
+    }
+  }
+
+  .showUserLiked {
+    position: relative;
+    span {
+      width: fit-content;
+      height: ${(p) => (p.userLiked.length - 2 > 0 ? '2rem' : '')};
+      :hover {
+        border-bottom: 1px solid;
+        cursor: pointer;
+      }
+
+      :hover + .hoverShowUserLike {
+        display: flex;
+      }
+    }
+
+    .hoverShowUserLike {
+      background-color: rgba(0, 0, 0, 0.5);
+      position: absolute;
+      bottom: 2rem;
+      flex-direction: column;
+      padding: 4px;
+      display: none;
+      border-radius: 0.5rem;
+
+      span {
+        color: white;
+        padding: 4px;
+        height: fit-content;
+        width: 15rem;
+      }
+    }
+  }
+`;
+
+export const StyleMdLiked = styled(Box)<propUser>`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 2rem;
+  width: 530px;
+  outline: none;
+  height: fit-content;
+  border-radius: 10px;
+
+  .topMdLiked {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid gray;
+  }
+
+  h3 {
+    padding: 1rem;
+  }
+
+  .MuiList-root {
+    height: ${(p) => (p.userLiked.length - 6 > 0 ? '40rem' : 'fit-content')};
+    width: 500px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    margin-right: 1rem;
+
+    .MuiAvatar-root {
+      margin: 1rem;
+    }
+  }
+
+  .PoShowLiked {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .showLiLiked {
+      display: flex;
+      align-items: center;
     }
   }
 `;

@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled/macro';
-import { IconButton } from '@mui/material';
+import { Badge, IconButton } from '@mui/material';
 import { Box } from '@mui/system';
 
 export const StyledHeader = styled.div<{ borderRadius?: string }>`
@@ -82,3 +82,20 @@ export const StyledButtonIcon = styled(IconButton)`
     color: #a2a5b9;
   }
 `;
+
+export const StyledBadge = styled(Badge)({
+  '& .MuiBadge-badge': {
+    backgroundColor: '#44b700',
+    color: '#44b700',
+    '&::after': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      borderRadius: '50%',
+      border: '1px solid currentColor',
+      content: '""',
+    },
+  },
+});
