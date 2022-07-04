@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import { chatSelector, getConversation, unmountChat } from 'features/chatSlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { useWindowSize } from 'hooks/useWindowSize';
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChatView from './components/ChatView';
 import Sidebar from './components/Sidebar';
@@ -42,11 +42,13 @@ const Chat = () => {
     }
   }, [id, dispatch, currentConversation]);
 
-  useEffect(() => {
-    if (currentConversation) {
-      navigate(`/message/${currentConversation.id}`);
-    }
-  }, [currentConversation, navigate]);
+  // useEffect(() => {
+  //   if (currentConversation) {
+  //     navigate(`/message/${currentConversation.id}`);
+  //   } else {
+  //     navigate(`/message`);
+  //   }
+  // }, [currentConversation, navigate]);
 
   useEffect(() => {
     return () => {
