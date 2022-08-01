@@ -63,7 +63,11 @@
        <br/>
        <br/>
     +Delete and edit comment
+     <br/>
+    <br/>
     ![image](https://user-images.githubusercontent.com/97892253/182073274-57b7b0b5-9ea8-46f3-8e06-6cf6fb3b5a99.png)
+     <br/>
+    <br/>
     +Show list of users and online or offline time
      <br/>
      <br/>
