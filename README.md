@@ -41,7 +41,7 @@
 <br/><br/>
 <li>Edit and delete posts</li>
 <br/><br/>
-   <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182175381-810ae852-6b20-4f6f-bed8-e789120e3bb4.png" alt="ISEKAI" width="400px" height="500px"/></a>
+   <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182177821-4c86d3ad-9073-4cd9-8574-0787d3abb53d.png" alt="ISEKAI" width="400px" height="500px"/></a>
 <br/><br/>
 <li>Like and comment post</li>
 <br/><br/>
@@ -49,7 +49,7 @@
 <br/><br/>
 <li>Delete and edit comment</li>
 <br/><br/>
-   <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182073274-57b7b0b5-9ea8-46f3-8e06-6cf6fb3b5a99.png" alt="ISEKAI" width="400px" height="500px"/></a>
+   <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182178115-3a7468dc-2d0b-4e62-97c9-3594e67fa42a.png" alt="ISEKAI" width="400px" height="500px"/></a>
 <br/><br/>
 <li>Show list of users and online or offline time</li>
 <br/><br/>
@@ -74,6 +74,7 @@
    <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182070566-3ccc1c35-3cda-4082-9daf-5ff954e7794e.png" alt="ISEKAI" width="400px" height="500px"/></a>
 <br/><br/>
 <li>Hover show users liked</li>
+<br/><br/>
    <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182072808-aaab0f99-1ed0-4fae-a527-d7fe9f8233c9.png" alt="ISEKAI" width="400px" height="500px"/></a>
 <br/><br/>
 <li>Click show users liked</li>
