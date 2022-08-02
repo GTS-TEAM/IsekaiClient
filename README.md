@@ -25,7 +25,7 @@
    <br/><br/>
 + Change password
    <br/><br/>
-   <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182071609-15e71379-fc03-4e6b-b092-1c3d3e8aaba1.png" alt="ISEKAI" width="400px" height="500px"/></a>
+   <a href="#"><img src="https://i.ibb.co/G9x2mb2/image.png" alt="ISEKAI" height="500px"/></a>
     <br/><br/>
  <p>
  <strong>📙Posts</strong>
@@ -37,7 +37,7 @@
 <br/><br/>
 <li>Upload new post</li>
 <br/><br/>
-   <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182069066-93d6ddfe-f87a-481e-9d61-8143a6a981a4.png" alt="ISEKAI" width="400px" height="500px"/></a>
+   <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182069066-93d6ddfe-f87a-481e-9d61-8143a6a981a4.png" alt="ISEKAI" height="500px"/></a>
 <br/><br/>
 <li>Edit and delete posts</li>
 <br/><br/>
@@ -67,7 +67,7 @@
 <br/><br/>
    <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182070442-4c84d2ed-e1f6-48a7-bcee-5371ef14dddc.png" alt="ISEKAI" width="400px" height="500px"/></a>
 <br/><br/>
-   <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182070473-0a467b8f-fac5-4f51-9aa8-d0e249414ca5.png" alt="ISEKAI" width="400px" height="500px"/></a>
+   <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182070473-0a467b8f-fac5-4f51-9aa8-d0e249414ca5.png" alt="ISEKAI" height="500px"/></a>
 <br/><br/>
 <li>Show weather information</li>
 <br/><br/>
@@ -101,10 +101,10 @@
  <strong>✉Messger</strong>
 </p>
 <br/><br/>
-   <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182072199-e7b21e98-060f-4350-b48c-d477e84be92c.png" alt="ISEKAI" width="400px""/></a>
+   <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182072199-e7b21e98-060f-4350-b48c-d477e84be92c.png" alt="ISEKAI" height="500px"/></a>
 <br/><br/>
 <li>Realtime Chat</li>
-   <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182072347-79d79333-0b04-409b-a930-6ed648209b86.png" alt="ISEKAI" width="400px"/></a>
+   <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182072347-79d79333-0b04-409b-a930-6ed648209b86.png" alt="ISEKAI" height="500px"/></a>
 <br/><br/>
 <li>Add files, edit nicknames, delete chats</li>
 <br/><br/>
