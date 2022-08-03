@@ -12,25 +12,25 @@
 
 <p>
    <br/><br/>
-   <strong>🔐Authentication:</strong>
+   <strong>🔐Authentication</strong>
 </p>
-+ <span id="login">Login with email and password</span>
+<li><span id="login">Login with email and password</span></li>
    <br/><br/>
    <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182647868-0a569011-9c8c-43a1-be9a-7ecf850d27f3.png" alt="ISEKAI" height="500px"/></a>
    <br/><br/>
-<span id="register">Register with email and password</span>
+<li><span id="register">Register with email and password</span></li>
    <br/><br/>
    <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182648156-42ae0309-9266-496e-93e4-3547205585d5.png" alt="ISEKAI" height="500px"/></a>
       <br/>
-+ <span id="forgot">Forgot password</span>
+<li><span id="forgot">Forgot password</span></li>
    <br/><br/>
    <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182648448-988fb009-7b35-4b64-a950-8cf01c77d748.png" alt="ISEKAI" height="500px"/></a>
      <br/><br/>
-   + <span id="googleLogin">Login with Google<span>
+   <li><span id="googleLogin">Login with Google<span></li>
     <br/><br/>
    <a href="#"><img src="https://user-images.githubusercontent.com/97892253/182650100-9879f452-9a63-44c8-84c4-b4020f4eeace.png" alt="ISEKAI" width="100%" height="500px"/></a>
    <br/><br/>
-   + <span id="change">Change password</span>
+   <li><span id="change">Change password</span></li>
    <br/><br/>
    <a href="#"><img src="https://i.ibb.co/G9x2mb2/image.png" alt="ISEKAI" height="500px"/></a>
     <br/><br/>
