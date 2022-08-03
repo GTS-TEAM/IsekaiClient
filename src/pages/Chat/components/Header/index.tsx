@@ -303,14 +303,13 @@ const Header: React.FC<{
           setIsShowModalConfirmRemove(false);
         }}
         onConfirm={async () => {
-          await dispatch(removeConversation(currentConversation?.id as string));
-          if (type === 'popup') {
-            onClose && onClose();
-            return;
+          const action = await dispatch(removeConversation(currentConversation?.id as string));
+
+          if (removeConversation.fulfilled.match(action)) {
+            navigate('/message', {
+              replace: true,
+            });
           }
-          navigate('/message', {
-            replace: true,
-          });
         }}
         isShow={isShowModalConfirmRemove}
       />
