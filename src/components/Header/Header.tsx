@@ -1,5 +1,5 @@
 import { Avatar, Badge, MenuItem, Stack } from '@mui/material';
-import { getAllNotifycation, notifySelector, readNotifycation, unmountNofi } from 'features/notifySlice';
+import { getAllNotifycation, getUnreadMessage, notifySelector, readNotifycation, unmountNofi } from 'features/notifySlice';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import moment from 'moment';
 import React, { useState } from 'react';
@@ -34,7 +34,7 @@ const Header = () => {
   const [notificationEl, setNotificationEl] = React.useState<null | HTMLDivElement>(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { notifyItem: notifies, hasMore } = useAppSelector(notifySelector);
+  const { notifyItem: notifies, hasMore, count } = useAppSelector(notifySelector);
   const [page, setPage] = useState<number>(1);
 
   const { signOut } = useGoogleLogout({
@@ -73,6 +73,7 @@ const Header = () => {
 
   React.useEffect(() => {
     dispatch(getAllNotifycation({ limit: LIMIT, page: page }));
+    dispatch(getUnreadMessage());
   }, [dispatch, page]);
 
   return (
@@ -99,8 +100,11 @@ const Header = () => {
               </NavLink>
             </NavItem>
             <NavItem>
+              {/*count api unread message*/}
               <NavLink to={'/message'}>
-                <AiOutlineMessage />
+                <Badge badgeContent={count} color="error">
+                  <AiOutlineMessage />
+                </Badge>
               </NavLink>
             </NavItem>
             <NavItem>

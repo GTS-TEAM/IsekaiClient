@@ -30,6 +30,8 @@ const Sidebar: React.FC<{
     dispatch(getAllConversations({ offset: 0, limit: LIMIT_CONVERSATION }));
   }, [dispatch]);
 
+  console.log('Conversations', conversations);
+
   return (
     <>
       <StyledSidebar style={style}>

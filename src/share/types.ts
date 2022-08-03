@@ -287,6 +287,7 @@ export interface ConversationItem {
   updated_at: string;
   theme: string | null;
   seen: ISeen[];
+  unread_message_count: number;
 }
 
 export enum MessageType {

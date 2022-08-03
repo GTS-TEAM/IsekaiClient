@@ -308,4 +308,7 @@ export const isekaiApi = {
   ReadNotifycation: (id: string) => {
     return axios.patch(`/notif/${id}`);
   },
+  GetUnreadMessage: () => {
+    return axios.get('/conversations/unread');
+  },
 };

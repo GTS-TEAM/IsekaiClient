@@ -138,6 +138,7 @@ const chatSlice = createSlice({
           },
           theme: action.payload.conversation.theme,
           seen: [],
+          unread_message_count: action.payload.conversation.unread_message_count,
         });
       }
 

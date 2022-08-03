@@ -9,12 +9,14 @@ export const initialState: {
   notifyItem: notifyItem[];
   hasMore: boolean;
   unReaded: number;
+  count: number;
 } = {
   isLoading: false,
   responsenotify: null,
   notifyItem: [],
   hasMore: false,
   unReaded: 0,
+  count: 0,
 };
 
 export const getAllNotifycation = createAsyncThunk<
@@ -28,6 +30,11 @@ export const getAllNotifycation = createAsyncThunk<
   }
 >('notif/getAllNotifycation', async ({ limit, page }) => {
   const { data } = await isekaiApi.getNotifycation(limit, page);
+  return data;
+});
+
+export const getUnreadMessage = createAsyncThunk('notif/getAllConversations', async () => {
+  const { data } = await isekaiApi.GetUnreadMessage();
   return data;
 });
 
@@ -72,6 +79,9 @@ const notifySlice = createSlice({
             is_read: true,
           };
         }
+      })
+      .addCase(getUnreadMessage.fulfilled, (state, action) => {
+        state.count = action.payload.count;
       });
   },
 });
